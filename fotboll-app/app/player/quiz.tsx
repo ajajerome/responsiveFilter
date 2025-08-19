@@ -28,10 +28,13 @@ export default function QuizScreen() {
   }, []);
 
   const handleNext = useCallback(() => {
-    // TODO: award XP, persist progress via store
+    // TODO: award XP, persist progress via store (actions.addXp)
     setLastCorrect(null);
-    setCounter((c) => c + 1);
-  }, []);
+    setQueue((q) => (q && q.length ? q.slice(1) : q));
+    if (!queue || queue.length <= 1) {
+      setCounter((c) => c + 1);
+    }
+  }, [queue]);
 
   return (
     <View style={styles.container}>

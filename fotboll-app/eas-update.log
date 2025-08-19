@@ -1,8 +1,9 @@
 [expo-cli] Starting Metro Bundler
-[expo-cli] iOS node_modules/expo-router/entry.js ▓▓▓▓▓▓▓▓▓▓▓▓▓▓░░ 91.1% (1016/1086)
-[expo-cli] Android node_modules/expo-router/entry.js ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓░ 99.9% (1107/1107)
-[expo-cli] iOS Bundled 3752ms node_modules/expo-router/entry.js (1086 modules)
-[expo-cli] Android Bundled 5834ms node_modules/expo-router/entry.js (1107 modules)
+[expo-cli] iOS node_modules/expo-router/entry.js ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓░ 99.9% (1112/1112)
+[expo-cli] Android node_modules/expo-router/entry.js ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓░ 99.9% (1109/1109)
+[expo-cli] iOS Bundled 4187ms node_modules/expo-router/entry.js (1112 modules)
+[expo-cli] Android Bundled 6407ms node_modules/expo-router/entry.js (1109 modules)
+[expo-cli] Android node_modules/expo-router/entry.js ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓░ 99.9% (1109/1109)
 [expo-cli] Creating asset map
 [expo-cli] 
 [expo-cli] › Assets (35):
@@ -24,12 +25,12 @@
 [expo-cli] node_modules/expo-router/assets/unmatched.png (4.75 kB)
 [expo-cli] 
 [expo-cli] › ios bundles (2):
-[expo-cli] _expo/static/js/ios/entry-dca8f0fc153183cdf5a315c3b0637674.hbc (1.68 MB)
-[expo-cli] _expo/static/js/ios/entry-dca8f0fc153183cdf5a315c3b0637674.hbc.map (6.47 MB)
+[expo-cli] _expo/static/js/ios/entry-0c6ddeb7cfece4c10e76357fe6ab05d8.hbc (1.68 MB)
+[expo-cli] _expo/static/js/ios/entry-0c6ddeb7cfece4c10e76357fe6ab05d8.hbc.map (6.47 MB)
 [expo-cli] 
 [expo-cli] › android bundles (2):
-[expo-cli] _expo/static/js/android/entry-9dffb0472b0013fdca8d3d8c16bac80d.hbc (1.67 MB)
-[expo-cli] _expo/static/js/android/entry-9dffb0472b0013fdca8d3d8c16bac80d.hbc.map (6.46 MB)
+[expo-cli] _expo/static/js/android/entry-df36bba68f56d404d03e1f9235dc81fc.hbc (1.68 MB)
+[expo-cli] _expo/static/js/android/entry-df36bba68f56d404d03e1f9235dc81fc.hbc.map (6.46 MB)
 [expo-cli] 
 [expo-cli] › Files (2):
 [expo-cli] assetmap.json (11 kB)
@@ -43,12 +44,12 @@
 Branch             preview
 Runtime version    1.0.0
 Platform           android, ios
-Update group ID    835cd563-cc09-437f-988f-99a31ab0a6e2
-Android update ID  1c8a788a-df83-4c84-be12-cd0af337e954
-iOS update ID      23ff076b-1e66-4613-aa95-482ba2c05aa5
-Message            preview sync
-Commit             37e465a329f54a4d2d94ca06fc7390d351afae69*
-EAS Dashboard      https://expo.dev/accounts/jappmaster/projects/fotbollstranaren/updates/835cd563-cc09-437f-988f-99a31ab0a6e2
+Update group ID    0e489cab-1a4b-44df-aee9-2a6af0dd045e
+Android update ID  520ed581-2eeb-4930-8687-0790808b3b42
+iOS update ID      e233c987-417e-4f4b-8764-25c6737bdbde
+Message            auto-advance + real datasets
+Commit             19c8632defdcb94c82d53315f71366fcf75833f4*
+EAS Dashboard      https://expo.dev/accounts/jappmaster/projects/fotbollstranaren/updates/0e489cab-1a4b-44df-aee9-2a6af0dd045e
 
 No compatible builds found for the following fingerprints:
     iOS fingerprint:  b31ccb05232f058bdc1491da3a0dd8ebb4f10dfe
