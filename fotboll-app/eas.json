@@ -3,19 +3,17 @@
     "version": ">= 14.0.0"
   },
   "build": {
-    "ios": {
-      "workflow": "managed",
-      "distribution": "internal",
-      "cache": { "clear": true }
+    "development": {
+      "developmentClient": true,
+      "distribution": "internal"
+    },
+    "preview": {
+      "distribution": "internal"
+    },
+    "production": {
+      "autoIncrement": true
     }
   },
-  "submit": {
-    "ios": {
-      "appleId": "",
-      "ascAppId": "",
-      "companyName": "",
-      "sku": "fotboll-app"
-    }
-  }
+  "submit": {}
 }
 
