@@ -1,29 +1,32 @@
 import { Link } from "expo-router";
-import { View, Text, Pressable, StyleSheet } from "react-native";
+import { Text, StyleSheet } from "react-native";
+import Screen from "@/components/ui/Screen";
+import Card from "@/components/ui/Card";
+import Button from "@/components/ui/Button";
+import { colors } from "@/theme";
 
 export default function PlayerHome() {
   return (
-    <View style={styles.container}>
+    <Screen>
       <Text style={styles.title}>Välj nivå</Text>
-      <Link href="/player/level/5-manna" asChild>
-        <Pressable style={styles.button}><Text style={styles.buttonText}>5-manna</Text></Pressable>
-      </Link>
-      <Link href="/player/level/7-manna" asChild>
-        <Pressable style={styles.button}><Text style={styles.buttonText}>7-manna</Text></Pressable>
-      </Link>
-      <Link href="/player/level/9-manna" asChild>
-        <Pressable style={styles.button}><Text style={styles.buttonText}>9-manna</Text></Pressable>
-      </Link>
-      <Link href="/player/repetition" asChild>
-        <Pressable style={[styles.button, { backgroundColor: '#ff9f0a' }]}><Text style={styles.buttonText}>Repetitionsläge</Text></Pressable>
-      </Link>
-    </View>
+      <Card>
+        <Link href="/player/level/5-manna" asChild>
+          <Button title="5-manna" onPress={() => {}} />
+        </Link>
+        <Link href="/player/level/7-manna" asChild>
+          <Button title="7-manna" onPress={() => {}} style={{ marginTop: 12 }} />
+        </Link>
+        <Link href="/player/level/9-manna" asChild>
+          <Button title="9-manna" onPress={() => {}} style={{ marginTop: 12 }} />
+        </Link>
+        <Link href="/player/repetition" asChild>
+          <Button title="Repetitionsläge" onPress={() => {}} variant="secondary" style={{ marginTop: 12 }} />
+        </Link>
+      </Card>
+    </Screen>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, alignItems: "center", justifyContent: "center", padding: 24, gap: 12 },
-  title: { fontSize: 22, fontWeight: "700", marginBottom: 16 },
-  button: { backgroundColor: "#1e90ff", paddingHorizontal: 16, paddingVertical: 12, borderRadius: 8, minWidth: 240, alignItems: "center" },
-  buttonText: { color: "white", fontWeight: "600" }
+  title: { fontSize: 24, fontWeight: "800", color: colors.text, textAlign: "center" },
 });

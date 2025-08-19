@@ -1,13 +1,9 @@
 [expo-cli] Starting Metro Bundler
-[expo-cli] iOS node_modules/expo-router/entry.js ▓▓▓░░░░░░░░░░░░░ 19.1% (150/343)
-[expo-cli] Android node_modules/expo-router/entry.js ▓▓░░░░░░░░░░░░░░ 13.1% ( 89/246)
-[expo-cli] iOS node_modules/expo-router/entry.js ▓▓▓▓▓▓▓▓▓▓▓▓░░░░ 76.4% (612/700)
-[expo-cli] Android node_modules/expo-router/entry.js ▓▓▓▓▓▓▓▓▓▓░░░░░░ 64.4% (530/672)
-[expo-cli] iOS node_modules/expo-router/entry.js ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓░ 96.1% (929/965)
-[expo-cli] Android node_modules/expo-router/entry.js ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓░ 97.1% (912/939)
-[expo-cli] Android Bundled 13190ms node_modules/expo-router/entry.js (974 modules)
-[expo-cli] iOS node_modules/expo-router/entry.js ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓░ 99.9% (982/982)
-[expo-cli] iOS Bundled 15180ms node_modules/expo-router/entry.js (982 modules)
+[expo-cli] iOS node_modules/expo-router/entry.js ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓░ 99.8% (1100/1101)
+[expo-cli] Android node_modules/expo-router/entry.js ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓░ 99.8% (1096/1098)
+[expo-cli] iOS Bundled 5612ms node_modules/expo-router/entry.js (1101 modules)
+[expo-cli] Android node_modules/expo-router/entry.js ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓░ 99.9% (1098/1098)
+[expo-cli] Android Bundled 8045ms node_modules/expo-router/entry.js (1098 modules)
 [expo-cli] Creating asset map
 [expo-cli] 
 [expo-cli] › Assets (33):
@@ -26,13 +22,13 @@
 [expo-cli] node_modules/expo-router/assets/sitemap.png (465 B)
 [expo-cli] node_modules/expo-router/assets/unmatched.png (4.75 kB)
 [expo-cli] 
-[expo-cli] › android bundles (2):
-[expo-cli] _expo/static/js/android/entry-97f6e1462d2d9a89b914a2a56421bc2b.hbc (1.52 MB)
-[expo-cli] _expo/static/js/android/entry-97f6e1462d2d9a89b914a2a56421bc2b.hbc.map (5.99 MB)
-[expo-cli] 
 [expo-cli] › ios bundles (2):
-[expo-cli] _expo/static/js/ios/entry-e8d3f6f84ce86bf607971aacc4cef6ae.hbc (1.53 MB)
-[expo-cli] _expo/static/js/ios/entry-e8d3f6f84ce86bf607971aacc4cef6ae.hbc.map (6 MB)
+[expo-cli] _expo/static/js/ios/entry-ceaca0c375f519d883ace0bc4fbdfc74.hbc (1.66 MB)
+[expo-cli] _expo/static/js/ios/entry-ceaca0c375f519d883ace0bc4fbdfc74.hbc.map (6.43 MB)
+[expo-cli] 
+[expo-cli] › android bundles (2):
+[expo-cli] _expo/static/js/android/entry-67c5b0d4fc86bb7db6e3116b8b5deb6b.hbc (1.66 MB)
+[expo-cli] _expo/static/js/android/entry-67c5b0d4fc86bb7db6e3116b8b5deb6b.hbc.map (6.43 MB)
 [expo-cli] 
 [expo-cli] › Files (2):
 [expo-cli] assetmap.json (10.3 kB)
@@ -40,23 +36,23 @@
 [expo-cli] 
 [expo-cli] Exported: dist
 ✔ Uploaded 2 app bundles
-✔ Uploaded 2 assets (reused 33 assets)
+✔ Uploading assets skipped - no new assets found
 ℹ 29 iOS assets, 29 Android assets (maximum: 2000 total per update). Learn more about asset limits: https://expo.fyi/eas-update-asset-limits
 
 Branch             preview
 Runtime version    1.0.0
 Platform           android, ios
-Update group ID    ad76f49f-5e14-49ef-9c4b-f754e89bd230
-Android update ID  7a45cedd-b039-4336-8145-83ca7b4ca519
-iOS update ID      fb954468-f129-4957-bcfe-78a51f574c96
-Message            preview
-Commit             23a7a272a2775a4bb4dc1d13e693338769e959d8*
-EAS Dashboard      https://expo.dev/accounts/jappmaster/projects/fotbollstranaren/updates/ad76f49f-5e14-49ef-9c4b-f754e89bd230
+Update group ID    7afe6145-0e0b-4998-b2ea-17a0f1ae5ed8
+Android update ID  8c290233-4c75-418c-ab36-56b9222556de
+iOS update ID      0edc152d-c7d6-47c0-b13d-0ce79454c872
+Message            themed UI + tactics
+Commit             1dea3be9f880999f9fba7154b5724f058a74065a*
+EAS Dashboard      https://expo.dev/accounts/jappmaster/projects/fotbollstranaren/updates/7afe6145-0e0b-4998-b2ea-17a0f1ae5ed8
 
 No compatible builds found for the following fingerprints:
-    iOS fingerprint:  37d36b8121de226942c0df1a962e4606bbdd87d4
-    URL            :  https://expo.dev/accounts/jappmaster/projects/fotbollstranaren/fingerprints/37d36b8121de226942c0df1a962e4606bbdd87d4
+    iOS fingerprint:  b31ccb05232f058bdc1491da3a0dd8ebb4f10dfe
+    URL            :  https://expo.dev/accounts/jappmaster/projects/fotbollstranaren/fingerprints/b31ccb05232f058bdc1491da3a0dd8ebb4f10dfe
 
-    Android fingerprint:  e8bd23260c23ed17ff70465602ce515510fe4ae8
-    URL                :  https://expo.dev/accounts/jappmaster/projects/fotbollstranaren/fingerprints/e8bd23260c23ed17ff70465602ce515510fe4ae8
+    Android fingerprint:  c41278b0e7171eaf86b8479d7cba6745590df319
+    URL                :  https://expo.dev/accounts/jappmaster/projects/fotbollstranaren/fingerprints/c41278b0e7171eaf86b8479d7cba6745590df319
 
