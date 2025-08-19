@@ -112,7 +112,7 @@ export default function DragDropQuestionView({ question, onAnswer }: Props) {
           position.setValue({ x: 0, y: 0 });
         }}
       >
-        <FullPitch width={pitchSize.width} height={pitchSize.height} />
+        <FullPitch width={pitchSize.width || 1} height={pitchSize.height || 1} />
         {'targetRect' in question && (
           <View
             style={{
@@ -188,7 +188,7 @@ export default function DragDropQuestionView({ question, onAnswer }: Props) {
             </>
           );
         })}
-        <ArrowsLayer width={pitchSize.width} height={pitchSize.height} onArrowsChanged={setArrows} />
+        <ArrowsLayer width={pitchSize.width || 1} height={pitchSize.height || 1} onArrowsChanged={setArrows} interactive={'players' in question ? true : false} />
       </View>
     </View>
   );
