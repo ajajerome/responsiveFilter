@@ -1,4 +1,4 @@
-import type { Level, Position, Question, OneXTwoQuestion, DragDropQuestion, QuizQuestion, TacticsQuestion } from '@/types/content';
+import type { Level, Position, Question, OneXTwoQuestion, DragDropQuestion, QuizQuestion, TacticsQuestion, MatchFreezeQuestion, PassQuestion } from '@/types/content';
 import { sample, uid } from '@/engine/random';
 
 const LEVEL_FORMATIONS: Record<Level, Array<{ name: string; target: { x: number; y: number; width: number; height: number } }>> = {
@@ -122,10 +122,49 @@ export function generateQuiz(level: Level, position?: Position): QuizQuestion {
 }
 
 export function getRandomQuestion(level: Level, position?: Position): Question {
-  const pick = sample(['one_x_two', 'drag_drop', 'quiz', 'tactics'] as const);
+  const pick = sample(['one_x_two', 'drag_drop', 'quiz', 'tactics', 'freeze', 'pass'] as const);
   if (pick === 'one_x_two') return generateOneXTwo(level, position);
   if (pick === 'drag_drop') return generateDragDrop(level, position);
   if (pick === 'tactics') return generateTactics(level, position);
+  if (pick === 'freeze') return generateMatchFreeze(level, position);
+  if (pick === 'pass') return generatePass(level, position);
   return generateQuiz(level, position);
+}
+
+export function generateMatchFreeze(level: Level, position?: Position): MatchFreezeQuestion {
+  return {
+    id: uid('freeze'),
+    type: 'matchscenario',
+    level,
+    position,
+    question: 'Vem borde få bollen här?',
+    players: [
+      { id: 'a1', x: 0.3, y: 0.6, team: 'home' },
+      { id: 'a2', x: 0.55, y: 0.5, team: 'home' },
+      { id: 'a3', x: 0.7, y: 0.4, team: 'home' },
+      { id: 'b1', x: 0.5, y: 0.6, team: 'away' },
+    ],
+    ball: { x: 0.48, y: 0.62 },
+    correctPlayerIds: ['a3'],
+    explanation: 'Spelare a3 har bäst vinkel och yta för att hota framåt.',
+  };
+}
+
+export function generatePass(level: Level, position?: Position): PassQuestion {
+  return {
+    id: uid('pass'),
+    type: 'matchscenario',
+    level,
+    position,
+    question: 'Välj rätt passning genom att dra från bollhållaren till medspelare',
+    players: [
+      { id: 'p1', x: 0.45, y: 0.6, team: 'home' },
+      { id: 'p2', x: 0.7, y: 0.45, team: 'home' },
+      { id: 'd1', x: 0.58, y: 0.55, team: 'away' },
+    ],
+    ballHolderId: 'p1',
+    correctTargetId: 'p2',
+    explanation: 'Passa spelbar medspelare i vinkel bort från press.',
+  };
 }
 

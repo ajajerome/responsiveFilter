@@ -53,6 +53,21 @@ export interface TacticsQuestion extends BaseQuestion {
   expectedVectors?: VectorSpec[];
 }
 
+export interface MatchFreezeQuestion extends BaseQuestion {
+  type: 'matchscenario';
+  players: Array<{ id: string; label?: string; x: number; y: number; team: 'home' | 'away' }>;
+  ball: { x: number; y: number };
+  correctPlayerIds?: string[];
+  correctZones?: Array<{ id: string; rect: { x: number; y: number; width: number; height: number } }>;
+}
+
+export interface PassQuestion extends BaseQuestion {
+  type: 'matchscenario';
+  players: Array<{ id: string; label?: string; x: number; y: number; team: 'home' | 'away' }>;
+  ballHolderId: string;
+  correctTargetId: string;
+}
+
 export interface OneXTwoQuestion extends BaseQuestion {
   type: 'one_x_two';
   // 0 -> '1', 1 -> 'X', 2 -> '2'
@@ -62,5 +77,5 @@ export interface OneXTwoQuestion extends BaseQuestion {
   explanation?: string;
 }
 
-export type Question = QuizQuestion | DragDropQuestion | OneXTwoQuestion | TacticsQuestion;
+export type Question = QuizQuestion | DragDropQuestion | OneXTwoQuestion | TacticsQuestion | MatchFreezeQuestion | PassQuestion;
 

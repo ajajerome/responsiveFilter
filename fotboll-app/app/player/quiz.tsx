@@ -5,6 +5,8 @@ import { getRandomQuestion } from "@/engine/generator";
 import OneXTwoQuestionView from "@/components/questions/OneXTwoQuestion";
 import DragDropQuestionView from "@/components/questions/DragDropQuestion";
 import MultipleChoiceQuestionView from "@/components/questions/MultipleChoiceQuestion";
+import MatchFreeze from "@/components/questions/MatchFreeze";
+import PassQuestionView from "@/components/questions/PassQuestion";
 import type { Level, Question } from "@/types/content";
 import AnswerResult from "@/components/AnswerResult";
 
@@ -36,6 +38,12 @@ export default function QuizScreen() {
         )}
         {question.type === 'quiz' && (
           <MultipleChoiceQuestionView question={question} onAnswer={handleAnswered} />
+        )}
+        {question.type === 'matchscenario' && 'ball' in question && 'correctPlayerIds' in question && (
+          <MatchFreeze question={question as any} onAnswer={handleAnswered} />
+        )}
+        {question.type === 'matchscenario' && 'ballHolderId' in question && (
+          <PassQuestionView question={question as any} onAnswer={handleAnswered} />
         )}
         {lastCorrect !== null && (
           <AnswerResult correct={lastCorrect} message={question.explanation} onNext={handleNext} />
