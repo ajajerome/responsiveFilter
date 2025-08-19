@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 import { View, Text, StyleSheet, Pressable } from 'react-native';
 import { Audio } from 'expo-av';
+import * as Haptics from 'expo-haptics';
 
 type Props = {
   correct: boolean;
@@ -13,13 +14,21 @@ export default function AnswerResult({ correct, message, onNext }: Props) {
     let sound: Audio.Sound | undefined;
     (async () => {
       try {
-        // Allow playback even if iPhone is in silent mode
         await Audio.setAudioModeAsync({ playsInSilentModeIOS: true });
         sound = new Audio.Sound();
-        const successUrl = 'https://cdn.pixabay.com/download/audio/2022/03/15/audio_5ff4b30f4b.mp3?filename=small-crowd-applause-6695.mp3';
+        const successUrl = 'https://cdn.pixabay.com/download/audio/2021/09/07/audio_99640e5b21.mp3?filename=small-crowd-cheer-6713.mp3';
         const failUrl = 'https://cdn.pixabay.com/download/audio/2022/03/15/audio_5ff4b30f4b.mp3?filename=small-crowd-applause-6695.mp3';
-        await sound.loadAsync({ uri: correct ? successUrl : failUrl }, { shouldPlay: true });
-      } catch {}
+        await sound.loadAsync({ uri: correct ? successUrl : failUrl });
+        await sound.playAsync();
+      } catch {
+        try {
+          if (correct) {
+            await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+          } else {
+            await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
+          }
+        } catch {}
+      }
     })();
     return () => {
       sound?.unloadAsync().catch(() => {});
