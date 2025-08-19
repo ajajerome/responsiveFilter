@@ -3,6 +3,7 @@ export type Position = 'målvakt' | 'back' | 'mittfält' | 'anfallare';
 
 export type QuestionType =
   | 'quiz'
+  | 'one_x_two'
   | 'drag_drop'
   | 'matchscenario'
   | 'bild'
@@ -26,9 +27,20 @@ export interface QuizQuestion extends BaseQuestion {
 
 export interface DragDropQuestion extends BaseQuestion {
   type: 'drag_drop';
-  correct_answer: string[];
-  variants?: Array<Record<string, unknown>>;
+  // Normalized (0..1) rectangle for correct drop zone relative to pitch view
+  targetRect: { x: number; y: number; width: number; height: number };
+  // Initial normalized position of the draggable marker
+  start: { x: number; y: number };
+  // Optional label for the draggable player marker
+  playerLabel?: string;
 }
 
-export type Question = QuizQuestion | DragDropQuestion; 
+export interface OneXTwoQuestion extends BaseQuestion {
+  type: 'one_x_two';
+  // 0 -> '1', 1 -> 'X', 2 -> '2'
+  correctIndex: 0 | 1 | 2;
+  explanation?: string;
+}
+
+export type Question = QuizQuestion | DragDropQuestion | OneXTwoQuestion;
 

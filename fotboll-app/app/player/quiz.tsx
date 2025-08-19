@@ -1,27 +1,39 @@
 import { useLocalSearchParams } from "expo-router";
-import { View, Text, StyleSheet, Pressable } from "react-native";
-import { useState } from "react";
-
-const sampleQuestions = [
-  { id: "q1", type: "mc", level: "5-manna", position: "mittfält", question: "Vilken yta ska mittfältaren täcka i försvar?", options: ["Centralt", "Ytterkant"], correct: 0 },
-  { id: "q2", type: "drag_drop", level: "7-manna", position: "back", question: "Placera backlinjen i 2-3-1", options: ["Höger", "Vänster"], correct: 1 }
-];
+import { View, Text, StyleSheet } from "react-native";
+import { useCallback, useMemo, useState } from "react";
+import { getRandomQuestion } from "@/engine/generator";
+import OneXTwoQuestionView from "@/components/questions/OneXTwoQuestion";
+import DragDropQuestionView from "@/components/questions/DragDropQuestion";
+import type { Level, Question } from "@/types/content";
 
 export default function QuizScreen() {
-  const { level } = useLocalSearchParams<{ level?: string }>();
-  const [index, setIndex] = useState(0);
-  const q = sampleQuestions[index % sampleQuestions.length];
+  const { level } = useLocalSearchParams<{ level?: Level }>();
+  const [counter, setCounter] = useState(0);
+  const question: Question = useMemo(() => getRandomQuestion(level ?? '5-manna'), [counter, level]);
+
+  const handleAnswered = useCallback((isCorrect: boolean) => {
+    // TODO: award XP, persist progress via store
+    setCounter((c) => c + 1);
+  }, []);
 
   return (
     <View style={styles.container}>
-      <Text style={styles.badge}>{level ?? q.level}</Text>
-      <Text style={styles.title}>{q.question}</Text>
-      {q.options?.map((opt, i) => (
-        <Pressable key={i} style={styles.option} onPress={() => setIndex(index + 1)}>
-          <Text>{opt}</Text>
-        </Pressable>
-      ))}
-      <Text style={styles.progress}>Fråga {index + 1}</Text>
+      <Text style={styles.badge}>{question.level}</Text>
+      <View style={{ gap: 12 }}>
+        {question.type === 'one_x_two' && (
+          <OneXTwoQuestionView question={question} onAnswer={handleAnswered} />
+        )}
+        {question.type === 'drag_drop' && (
+          <DragDropQuestionView question={question} onAnswer={handleAnswered} />
+        )}
+        {question.type === 'quiz' && (
+          // Fallback: rendera enkla flervalsfrågor
+          <View style={{ gap: 8 }}>
+            <Text style={styles.title}>{question.question}</Text>
+          </View>
+        )}
+      </View>
+      <Text style={styles.progress}>Fortsätter automatiskt vid svar</Text>
     </View>
   );
 }
