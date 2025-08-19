@@ -4,6 +4,7 @@ import { useCallback, useMemo, useState } from "react";
 import { getRandomQuestion } from "@/engine/generator";
 import OneXTwoQuestionView from "@/components/questions/OneXTwoQuestion";
 import DragDropQuestionView from "@/components/questions/DragDropQuestion";
+import MultipleChoiceQuestionView from "@/components/questions/MultipleChoiceQuestion";
 import type { Level, Question } from "@/types/content";
 
 export default function QuizScreen() {
@@ -27,10 +28,7 @@ export default function QuizScreen() {
           <DragDropQuestionView question={question} onAnswer={handleAnswered} />
         )}
         {question.type === 'quiz' && (
-          // Fallback: rendera enkla flervalsfrågor
-          <View style={{ gap: 8 }}>
-            <Text style={styles.title}>{question.question}</Text>
-          </View>
+          <MultipleChoiceQuestionView question={question} onAnswer={handleAnswered} />
         )}
       </View>
       <Text style={styles.progress}>Fortsätter automatiskt vid svar</Text>
