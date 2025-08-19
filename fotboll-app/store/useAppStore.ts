@@ -55,6 +55,7 @@ export const useAppStore = create<AppState>()(
               },
             };
           }),
+        // TODO: auto-unlock thresholds: 5->7 at 100 XP, 7->9 at 200 XP
         markQuestionCompleted: (level, questionId) =>
           set((s) => {
             const lv = s.progress[level] ?? { unlocked: level === '5-manna', xp: 0, completedQuestionIds: [] };
@@ -80,4 +81,3 @@ export const useAppStore = create<AppState>()(
     }
   )
 );
-

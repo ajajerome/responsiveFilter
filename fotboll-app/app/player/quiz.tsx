@@ -1,7 +1,7 @@
 import { useLocalSearchParams } from "expo-router";
 import { View, Text, StyleSheet } from "react-native";
-import { useCallback, useMemo, useState } from "react";
-import { getRandomQuestion } from "@/engine/generator";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { fetchQuestions } from "@/services/questionsApi";
 import OneXTwoQuestionView from "@/components/questions/OneXTwoQuestion";
 import DragDropQuestionView from "@/components/questions/DragDropQuestion";
 import MultipleChoiceQuestionView from "@/components/questions/MultipleChoiceQuestion";
@@ -13,8 +13,15 @@ import AnswerResult from "@/components/AnswerResult";
 export default function QuizScreen() {
   const { level } = useLocalSearchParams<{ level?: Level }>();
   const [counter, setCounter] = useState(0);
+  const [queue, setQueue] = useState<Question[] | null>(null);
   const [lastCorrect, setLastCorrect] = useState<boolean | null>(null);
-  const question: Question = useMemo(() => getRandomQuestion(level ?? '5-manna'), [counter, level]);
+  useEffect(() => {
+    (async () => {
+      const q = await fetchQuestions(level ?? '5-manna');
+      setQueue(q);
+    })();
+  }, [level, counter]);
+  const question: Question | null = queue && queue.length ? queue[0] : null;
 
   const handleAnswered = useCallback((isCorrect: boolean) => {
     setLastCorrect(isCorrect);
@@ -28,25 +35,25 @@ export default function QuizScreen() {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.badge}>{question.level}</Text>
+      <Text style={styles.badge}>{question?.level ?? ''}</Text>
       <View style={{ gap: 12 }}>
-        {question.type === 'one_x_two' && (
+        {question && question.type === 'one_x_two' && (
           <OneXTwoQuestionView question={question} onAnswer={handleAnswered} />
         )}
-        {question.type === 'drag_drop' && (
+        {question && question.type === 'drag_drop' && (
           <DragDropQuestionView question={question} onAnswer={handleAnswered} />
         )}
-        {question.type === 'quiz' && (
+        {question && question.type === 'quiz' && (
           <MultipleChoiceQuestionView question={question} onAnswer={handleAnswered} />
         )}
-        {question.type === 'matchscenario' && 'ball' in question && 'correctPlayerIds' in question && (
+        {question && question.type === 'matchscenario' && 'ball' in question && 'correctPlayerIds' in question && (
           <MatchFreeze question={question as any} onAnswer={handleAnswered} />
         )}
-        {question.type === 'matchscenario' && 'ballHolderId' in question && (
+        {question && question.type === 'matchscenario' && 'ballHolderId' in question && (
           <PassQuestionView question={question as any} onAnswer={handleAnswered} />
         )}
         {lastCorrect !== null && (
-          <AnswerResult correct={lastCorrect} message={question.explanation} onNext={handleNext} />
+          <AnswerResult correct={lastCorrect} message={question?.explanation} onNext={handleNext} />
         )}
       </View>
       <Text style={styles.progress}>Fortsätter automatiskt vid svar</Text>
