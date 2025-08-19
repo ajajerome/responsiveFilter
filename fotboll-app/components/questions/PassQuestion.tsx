@@ -29,8 +29,14 @@ export default function PassQuestionView({ question, onAnswer }: Props) {
         const tx = target.x * w, ty = target.y * h;
         const dx = locationX - tx, dy = locationY - ty;
         const ok = Math.hypot(dx, dy) < 24;
-        if (ok) playLocal(require('@/assets/sfx/kick.mp3'));
-        onAnswer(ok);
+        if (ok) {
+          playLocal(require('@/assets/sfx/kick.mp3'));
+          // enkel pass-"animation": dra en tunn vit linje redan, trigga rätt
+          onAnswer(true);
+        } else {
+          playLocal(require('@/assets/sfx/fail.mp3'));
+          onAnswer(false);
+        }
       },
     })
   ).current;

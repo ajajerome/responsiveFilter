@@ -39,12 +39,28 @@ export default function MatchFreeze({ question, onAnswer }: Props) {
             cx >= z.rect.x * w && cx <= (z.rect.x + z.rect.width) * w &&
             cy >= z.rect.y * h && cy <= (z.rect.y + z.rect.height) * h
           ));
-          onAnswer(ok);
+          if (ok) {
+            // animera bollen mot första zonens center
+            const z = question.correctZones[0];
+            const zx = (z.rect.x + z.rect.width / 2) * w;
+            const zy = (z.rect.y + z.rect.height / 2) * h;
+            playLocal(require('@/assets/sfx/success.mp3'));
+            Animated.timing(ballPos, { toValue: { x: zx - initialBall.x, y: zy - initialBall.y }, duration: 500, useNativeDriver: false }).start(() => onAnswer(true));
+          } else {
+            playLocal(require('@/assets/sfx/fail.mp3'));
+            onAnswer(false);
+          }
           return;
         }
         if (question.correctPlayerIds && question.correctPlayerIds.length > 0) {
-          const ok = question.players.some(p => question.correctPlayerIds!.includes(p.id) && Math.hypot(cx - p.x * w, cy - p.y * h) < 28);
-          onAnswer(ok);
+          const hitPlayer = question.players.find(p => question.correctPlayerIds!.includes(p.id) && Math.hypot(cx - p.x * w, cy - p.y * h) < 28);
+          if (hitPlayer) {
+            playLocal(require('@/assets/sfx/success.mp3'));
+            Animated.timing(ballPos, { toValue: { x: hitPlayer.x * w - initialBall.x, y: hitPlayer.y * h - initialBall.y }, duration: 500, useNativeDriver: false }).start(() => onAnswer(true));
+          } else {
+            playLocal(require('@/assets/sfx/fail.mp3'));
+            onAnswer(false);
+          }
           return;
         }
         onAnswer(false);

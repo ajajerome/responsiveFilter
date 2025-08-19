@@ -1,8 +1,8 @@
 [expo-cli] Starting Metro Bundler
 [expo-cli] iOS node_modules/expo-router/entry.js ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓░ 99.9% (1106/1106)
-[expo-cli] Android node_modules/expo-router/entry.js ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓░ 99.9% (1103/1103)
-[expo-cli] iOS Bundled 3911ms node_modules/expo-router/entry.js (1106 modules)
-[expo-cli] Android Bundled 6031ms node_modules/expo-router/entry.js (1103 modules)
+[expo-cli] Android node_modules/expo-router/entry.js ▓▓▓▓▓▓▓▓▓▓▓▓▓▓░░ 92.9% ( 895/1038)
+[expo-cli] Android Bundled 3422ms node_modules/expo-router/entry.js (1038 modules)
+[expo-cli] iOS Bundled 5561ms node_modules/expo-router/entry.js (1106 modules)
 [expo-cli] Creating asset map
 [expo-cli] 
 [expo-cli] › Assets (35):
@@ -23,13 +23,13 @@
 [expo-cli] node_modules/expo-router/assets/sitemap.png (465 B)
 [expo-cli] node_modules/expo-router/assets/unmatched.png (4.75 kB)
 [expo-cli] 
-[expo-cli] › ios bundles (2):
-[expo-cli] _expo/static/js/ios/entry-f62b1a399d49130b071ab0153f23ca79.hbc (1.67 MB)
-[expo-cli] _expo/static/js/ios/entry-f62b1a399d49130b071ab0153f23ca79.hbc.map (6.45 MB)
-[expo-cli] 
 [expo-cli] › android bundles (2):
-[expo-cli] _expo/static/js/android/entry-98dab675377c4a1d4ce97ecbea37598d.hbc (1.67 MB)
-[expo-cli] _expo/static/js/android/entry-98dab675377c4a1d4ce97ecbea37598d.hbc.map (6.45 MB)
+[expo-cli] _expo/static/js/android/entry-3ef298a8fecd228c467cd84b981b5f72.hbc (1.67 MB)
+[expo-cli] _expo/static/js/android/entry-3ef298a8fecd228c467cd84b981b5f72.hbc.map (6.45 MB)
+[expo-cli] 
+[expo-cli] › ios bundles (2):
+[expo-cli] _expo/static/js/ios/entry-09b1867449b875f8a02a29c11e8cf42f.hbc (1.67 MB)
+[expo-cli] _expo/static/js/ios/entry-09b1867449b875f8a02a29c11e8cf42f.hbc.map (6.45 MB)
 [expo-cli] 
 [expo-cli] › Files (2):
 [expo-cli] assetmap.json (11 kB)
@@ -43,12 +43,12 @@
 Branch             preview
 Runtime version    1.0.0
 Platform           android, ios
-Update group ID    97d4ef07-65ef-492c-8333-935861b53bc7
-Android update ID  24b885c0-2898-4bec-bf1d-21ade407312e
-iOS update ID      df2afd0f-df9b-4277-af31-1410fb569b56
-Message            draggable ball in match freeze + gesture fixes
-Commit             a708925a4be1a80b2fe55347972f3bc06acbd593*
-EAS Dashboard      https://expo.dev/accounts/jappmaster/projects/fotbollstranaren/updates/97d4ef07-65ef-492c-8333-935861b53bc7
+Update group ID    34b6543e-348d-4079-a383-84d77e0fbd1f
+Android update ID  7379ab55-a9fe-40e1-a140-a212d6a3bf8b
+iOS update ID      a0170588-357e-4fbd-aab3-36aaa36cb117
+Message            freeze/pass sfx + animations
+Commit             9fe3b13f1ffff4ece4ee4b1dd243c1d063c66270*
+EAS Dashboard      https://expo.dev/accounts/jappmaster/projects/fotbollstranaren/updates/34b6543e-348d-4079-a383-84d77e0fbd1f
 
 No compatible builds found for the following fingerprints:
     iOS fingerprint:  b31ccb05232f058bdc1491da3a0dd8ebb4f10dfe
