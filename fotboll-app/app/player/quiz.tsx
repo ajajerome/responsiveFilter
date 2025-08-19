@@ -6,15 +6,21 @@ import OneXTwoQuestionView from "@/components/questions/OneXTwoQuestion";
 import DragDropQuestionView from "@/components/questions/DragDropQuestion";
 import MultipleChoiceQuestionView from "@/components/questions/MultipleChoiceQuestion";
 import type { Level, Question } from "@/types/content";
+import AnswerResult from "@/components/AnswerResult";
 
 export default function QuizScreen() {
   const { level } = useLocalSearchParams<{ level?: Level }>();
   const [counter, setCounter] = useState(0);
+  const [lastCorrect, setLastCorrect] = useState<boolean | null>(null);
   const question: Question = useMemo(() => getRandomQuestion(level ?? '5-manna'), [counter, level]);
 
   const handleAnswered = useCallback((isCorrect: boolean) => {
-    // TODO: award XP, persist progress via store
-    setCounter((c) => c + 1);
+    setLastCorrect(isCorrect);
+    setTimeout(() => {
+      // TODO: award XP, persist progress via store
+      setLastCorrect(null);
+      setCounter((c) => c + 1);
+    }, 900);
   }, []);
 
   return (
@@ -29,6 +35,9 @@ export default function QuizScreen() {
         )}
         {question.type === 'quiz' && (
           <MultipleChoiceQuestionView question={question} onAnswer={handleAnswered} />
+        )}
+        {lastCorrect !== null && (
+          <AnswerResult correct={lastCorrect} />
         )}
       </View>
       <Text style={styles.progress}>Fortsätter automatiskt vid svar</Text>

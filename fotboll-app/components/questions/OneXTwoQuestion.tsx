@@ -11,7 +11,8 @@ export default function OneXTwoQuestionView({ question, onAnswer }: Props) {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>{question.question}</Text>
-      <View style={styles.row}>
+      <View style={styles.column}
+      >
         {labels.map((label, idx) => (
           <Pressable key={label} style={styles.choice} onPress={() => onAnswer(idx === question.correctIndex)}>
             <Text style={styles.choiceText}>{label}</Text>
@@ -27,8 +28,8 @@ export default function OneXTwoQuestionView({ question, onAnswer }: Props) {
 const styles = StyleSheet.create({
   container: { gap: 12 },
   title: { fontSize: 18, fontWeight: '700' },
-  row: { flexDirection: 'row', gap: 12, justifyContent: 'center' },
-  choice: { backgroundColor: '#1e90ff', paddingVertical: 12, paddingHorizontal: 16, borderRadius: 10, minWidth: 96, alignItems: 'center' },
+  column: { flexDirection: 'column', gap: 12 },
+  choice: { backgroundColor: '#1e90ff', paddingVertical: 12, paddingHorizontal: 16, borderRadius: 10, alignItems: 'center' },
   choiceText: { color: 'white', fontWeight: '700', fontSize: 18 },
   choiceSub: { color: 'white', marginTop: 4, textAlign: 'center' },
   hint: { marginTop: 8, color: '#444' },

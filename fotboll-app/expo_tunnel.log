@@ -56,3 +56,6 @@ iOS Bundled 47ms node_modules/expo-router/entry.js (1 module)
  WARN  [Layout children]: No route named "player" exists in nested children: ["index", "_sitemap", "+not-found", "(auth)/index", "(home)/index", "admin/index", "player/index", "player/quiz", "player/repetition", "player/level/[level]", "profile/index", "trainer/index"]
  WARN  [Layout children]: No route named "trainer" exists in nested children: ["index", "_sitemap", "+not-found", "(auth)/index", "(home)/index", "admin/index", "player/index", "player/quiz", "player/repetition", "player/level/[level]", "profile/index", "trainer/index"]
  WARN  [Layout children]: No route named "profile" exists in nested children: ["index", "_sitemap", "+not-found", "(auth)/index", "(home)/index", "admin/index", "player/index", "player/quiz", "player/repetition", "player/level/[level]", "profile/index", "trainer/index"]
+Tunnel connection has been closed. This is often related to intermittent connection problems with the Ngrok servers. Restart the dev server to try connecting to Ngrok again.
+Check the Ngrok status page for outages: https://status.ngrok.com/
+Tunnel connected.
