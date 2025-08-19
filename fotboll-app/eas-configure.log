@@ -1,2 +1,1 @@
-Invalid UUID appId
-Request ID: 5b5be375-0065-451f-9690-073c32778cb2
+Project config: Slug for project identified by "extra.eas.projectId" (fotbollstranaren) does not match the "slug" field (fotboll-app). Learn more: https://expo.fyi/eas-project-id
