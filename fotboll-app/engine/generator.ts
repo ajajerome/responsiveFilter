@@ -27,6 +27,11 @@ const ONE_X_TWO_TEMPLATES: Array<(level: Level, position?: Position) => OneXTwoQ
     question: 'Spelar du upp på fri ytter eller vänder hem under press?',
     // 0->1 (hem), 1->X (beror), 2->2 (upp)
     correctIndex: 2,
+    answers: [
+      '1: Vända hem till back/målvakt',
+      'X: Bedöma läge först',
+      '2: Spela upp på fri ytter',
+    ],
     explanation: 'Vid press kan snabb spelvändning ut mot fri ytter ge yta och tid.',
   }),
   (level) => ({
@@ -35,6 +40,11 @@ const ONE_X_TWO_TEMPLATES: Array<(level: Level, position?: Position) => OneXTwoQ
     level,
     question: 'Motståndaren pressar högt. Ska målvakten spela kort (1), bedöma läge (X) eller slå långt (2)?',
     correctIndex: 1,
+    answers: [
+      '1: Spela kort från målvakt',
+      'X: Lägesbedömning (kort om möjligt, annars långt)',
+      '2: Slå långt direkt',
+    ],
     explanation: 'Bedöm läget: kort om spelbart, annars långt – därför X.',
   }),
 ];
@@ -51,7 +61,16 @@ const QUIZ_TEMPLATES: Array<(level: Level, position?: Position) => QuizQuestion>
 ];
 
 export function generateOneXTwo(level: Level, position?: Position): OneXTwoQuestion {
-  return sample(ONE_X_TWO_TEMPLATES)(level, position);
+  const q = sample(ONE_X_TWO_TEMPLATES)(level, position);
+  // Nivåanpassning: justera texter lite per nivå
+  if (level === '5-manna') {
+    q.explanation ||= 'I 5-manna betonas enkel uppspelspunkt ut mot kanter.';
+  } else if (level === '7-manna') {
+    q.explanation ||= 'I 7-manna börjar rollerna tydliggöras – värdera bredd och spelbarhet.';
+  } else {
+    q.explanation ||= 'I 9-manna krävs mer positionsspel och snabbare beslutsfattande.';
+  }
+  return q;
 }
 
 export function generateDragDrop(level: Level, position?: Position): DragDropQuestion {

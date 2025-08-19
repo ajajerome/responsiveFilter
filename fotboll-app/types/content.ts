@@ -39,6 +39,8 @@ export interface OneXTwoQuestion extends BaseQuestion {
   type: 'one_x_two';
   // 0 -> '1', 1 -> 'X', 2 -> '2'
   correctIndex: 0 | 1 | 2;
+  // Descriptive texts for 1, X, 2 in that order
+  answers: [string, string, string];
   explanation?: string;
 }
 
