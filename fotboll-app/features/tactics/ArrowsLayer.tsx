@@ -8,9 +8,10 @@ type Props = {
   width: number;
   height: number;
   onArrowsChanged?: (arrows: Arrow[]) => void;
+  interactive?: boolean;
 };
 
-export default function ArrowsLayer({ width, height, onArrowsChanged }: Props) {
+export default function ArrowsLayer({ width, height, onArrowsChanged, interactive = true }: Props) {
   const [arrows, setArrows] = useState<Arrow[]>([]);
   const [start, setStart] = useState<{ x: number; y: number } | null>(null);
 
@@ -33,7 +34,7 @@ export default function ArrowsLayer({ width, height, onArrowsChanged }: Props) {
   ).current;
 
   return (
-    <View {...pan.panHandlers} style={{ position: 'absolute', left: 0, top: 0, width, height }}>
+    <View {...(interactive ? pan.panHandlers : ({} as any))} style={{ position: 'absolute', left: 0, top: 0, width, height }} pointerEvents={interactive ? 'auto' : 'none'}>
       <Svg width={width} height={height}>
         {arrows.map((a, i) => {
           const color = a.kind === 'attack' ? '#1e90ff' : '#ff3b30';
