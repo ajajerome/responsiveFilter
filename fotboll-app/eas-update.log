@@ -1,8 +1,8 @@
 [expo-cli] Starting Metro Bundler
-[expo-cli] iOS node_modules/expo-router/entry.js ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓░ 99.9% (1106/1106)
+[expo-cli] iOS node_modules/expo-router/entry.js ▓▓▓▓▓▓▓▓▓▓▓▓▓░░░ 84.1% (764/833)
 [expo-cli] Android node_modules/expo-router/entry.js ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓░ 99.9% (1103/1103)
-[expo-cli] iOS Bundled 4046ms node_modules/expo-router/entry.js (1106 modules)
-[expo-cli] Android Bundled 6255ms node_modules/expo-router/entry.js (1103 modules)
+[expo-cli] iOS Bundled 3345ms node_modules/expo-router/entry.js (833 modules)
+[expo-cli] Android Bundled 5367ms node_modules/expo-router/entry.js (1103 modules)
 [expo-cli] Creating asset map
 [expo-cli] 
 [expo-cli] › Assets (35):
@@ -24,12 +24,12 @@
 [expo-cli] node_modules/expo-router/assets/unmatched.png (4.75 kB)
 [expo-cli] 
 [expo-cli] › ios bundles (2):
-[expo-cli] _expo/static/js/ios/entry-6791e00bb49be5f38e1003cba7e895a1.hbc (1.67 MB)
-[expo-cli] _expo/static/js/ios/entry-6791e00bb49be5f38e1003cba7e895a1.hbc.map (6.45 MB)
+[expo-cli] _expo/static/js/ios/entry-178151d8d75c403ac9e2703095c530ae.hbc (1.67 MB)
+[expo-cli] _expo/static/js/ios/entry-178151d8d75c403ac9e2703095c530ae.hbc.map (6.45 MB)
 [expo-cli] 
 [expo-cli] › android bundles (2):
-[expo-cli] _expo/static/js/android/entry-81c8ea5722ffdf669de1c57977fe4356.hbc (1.67 MB)
-[expo-cli] _expo/static/js/android/entry-81c8ea5722ffdf669de1c57977fe4356.hbc.map (6.44 MB)
+[expo-cli] _expo/static/js/android/entry-120f6502cdae2e5f2fee2e65f75c21ed.hbc (1.67 MB)
+[expo-cli] _expo/static/js/android/entry-120f6502cdae2e5f2fee2e65f75c21ed.hbc.map (6.44 MB)
 [expo-cli] 
 [expo-cli] › Files (2):
 [expo-cli] assetmap.json (11 kB)
@@ -37,18 +37,18 @@
 [expo-cli] 
 [expo-cli] Exported: dist
 ✔ Uploaded 2 app bundles
-✔ Uploaded 2 assets (reused 35 assets)
+✔ Uploading assets skipped - no new assets found
 ℹ 31 iOS assets, 31 Android assets (maximum: 2000 total per update). Learn more about asset limits: https://expo.fyi/eas-update-asset-limits
 
 Branch             preview
 Runtime version    1.0.0
 Platform           android, ios
-Update group ID    115fd09a-998d-4537-b44a-8c4b344a23a9
-Android update ID  dc6a2556-d7c9-4692-8590-9d0de8d3b7bf
-iOS update ID      841e42a8-237e-4475-ba5b-e30df709558e
-Message            match freeze + pass + sfx
-Commit             ecc81dea2bba00a0dc3caaf91f32610c77828985*
-EAS Dashboard      https://expo.dev/accounts/jappmaster/projects/fotbollstranaren/updates/115fd09a-998d-4537-b44a-8c4b344a23a9
+Update group ID    ce0491d2-8892-47db-8945-719b02196a9c
+Android update ID  208ab935-8553-4168-958c-4cadcf614a36
+iOS update ID      20324296-f342-4cf4-b5c1-7b5af45179f7
+Message            fix match freeze tap targets
+Commit             4702ca842c81b54da98175766ae77e9393289fc8*
+EAS Dashboard      https://expo.dev/accounts/jappmaster/projects/fotbollstranaren/updates/ce0491d2-8892-47db-8945-719b02196a9c
 
 No compatible builds found for the following fingerprints:
     iOS fingerprint:  b31ccb05232f058bdc1491da3a0dd8ebb4f10dfe
