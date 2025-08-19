@@ -16,11 +16,12 @@ export default function QuizScreen() {
 
   const handleAnswered = useCallback((isCorrect: boolean) => {
     setLastCorrect(isCorrect);
-    setTimeout(() => {
-      // TODO: award XP, persist progress via store
-      setLastCorrect(null);
-      setCounter((c) => c + 1);
-    }, 900);
+  }, []);
+
+  const handleNext = useCallback(() => {
+    // TODO: award XP, persist progress via store
+    setLastCorrect(null);
+    setCounter((c) => c + 1);
   }, []);
 
   return (
@@ -37,7 +38,7 @@ export default function QuizScreen() {
           <MultipleChoiceQuestionView question={question} onAnswer={handleAnswered} />
         )}
         {lastCorrect !== null && (
-          <AnswerResult correct={lastCorrect} />
+          <AnswerResult correct={lastCorrect} onNext={handleNext} />
         )}
       </View>
       <Text style={styles.progress}>Fortsätter automatiskt vid svar</Text>
