@@ -7,3 +7,20 @@ The following packages should be updated for best compatibility with the install
 Your project may not work correctly until you install the expected versions of the packages.
 Waiting on http://localhost:8090
 Logs for your project will appear below.
+iOS node_modules/expo-router/entry.js ░░░░░░░░░░░░░░░░  0.0% (0/1)
+iOS node_modules/expo-router/entry.js ▓▓▓▓▓▓▓▓░░░░░░░░ 51.7% (525/730)
+iOS Bundled 6312ms node_modules/expo-router/entry.js (1080 modules)
+ WARN  [Layout children]: No route named "(auth)" exists in nested children: ["index", "_sitemap", "+not-found", "(auth)/index", "(home)/index", "admin/index", "player/index", "player/quiz", "player/repetition", "player/level/[level]", "profile/index", "trainer/index"]
+ WARN  [Layout children]: No route named "(home)" exists in nested children: ["index", "_sitemap", "+not-found", "(auth)/index", "(home)/index", "admin/index", "player/index", "player/quiz", "player/repetition", "player/level/[level]", "profile/index", "trainer/index"]
+ WARN  [Layout children]: No route named "admin" exists in nested children: ["index", "_sitemap", "+not-found", "(auth)/index", "(home)/index", "admin/index", "player/index", "player/quiz", "player/repetition", "player/level/[level]", "profile/index", "trainer/index"]
+ WARN  [Layout children]: No route named "player" exists in nested children: ["index", "_sitemap", "+not-found", "(auth)/index", "(home)/index", "admin/index", "player/index", "player/quiz", "player/repetition", "player/level/[level]", "profile/index", "trainer/index"]
+ WARN  [Layout children]: No route named "trainer" exists in nested children: ["index", "_sitemap", "+not-found", "(auth)/index", "(home)/index", "admin/index", "player/index", "player/quiz", "player/repetition", "player/level/[level]", "profile/index", "trainer/index"]
+ WARN  [Layout children]: No route named "profile" exists in nested children: ["index", "_sitemap", "+not-found", "(auth)/index", "(home)/index", "admin/index", "player/index", "player/quiz", "player/repetition", "player/level/[level]", "profile/index", "trainer/index"]
+iOS node_modules/expo-router/entry.js ░░░░░░░░░░░░░░░░  0.0% (0/1)
+iOS Bundled 45ms node_modules/expo-router/entry.js (1 module)
+ WARN  [Layout children]: No route named "(auth)" exists in nested children: ["index", "_sitemap", "+not-found", "(auth)/index", "(home)/index", "admin/index", "player/index", "player/quiz", "player/repetition", "player/level/[level]", "profile/index", "trainer/index"]
+ WARN  [Layout children]: No route named "(home)" exists in nested children: ["index", "_sitemap", "+not-found", "(auth)/index", "(home)/index", "admin/index", "player/index", "player/quiz", "player/repetition", "player/level/[level]", "profile/index", "trainer/index"]
+ WARN  [Layout children]: No route named "admin" exists in nested children: ["index", "_sitemap", "+not-found", "(auth)/index", "(home)/index", "admin/index", "player/index", "player/quiz", "player/repetition", "player/level/[level]", "profile/index", "trainer/index"]
+ WARN  [Layout children]: No route named "player" exists in nested children: ["index", "_sitemap", "+not-found", "(auth)/index", "(home)/index", "admin/index", "player/index", "player/quiz", "player/repetition", "player/level/[level]", "profile/index", "trainer/index"]
+ WARN  [Layout children]: No route named "trainer" exists in nested children: ["index", "_sitemap", "+not-found", "(auth)/index", "(home)/index", "admin/index", "player/index", "player/quiz", "player/repetition", "player/level/[level]", "profile/index", "trainer/index"]
+ WARN  [Layout children]: No route named "profile" exists in nested children: ["index", "_sitemap", "+not-found", "(auth)/index", "(home)/index", "admin/index", "player/index", "player/quiz", "player/repetition", "player/level/[level]", "profile/index", "trainer/index"]
