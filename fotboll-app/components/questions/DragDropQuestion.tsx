@@ -70,6 +70,37 @@ export default function DragDropQuestionView({ question, onAnswer }: Props) {
     })
   ).current;
 
+  function validateAllPlayersAndArrows(): boolean {
+    if (!('players' in question)) return false;
+    const q = question as TacticsQuestion;
+    // all players with targetId must be inside their target rects
+    const allPlayersOk = (q.players || []).every(p => {
+      if (!p.targetId) return true;
+      const target = q.targets?.find(t => t.id === p.targetId);
+      if (!target) return false;
+      const pos = playersPos[p.id];
+      if (!pos) return false;
+      const cx = (pos as any).x._value + p.start.x * pitchSize.width;
+      const cy = (pos as any).y._value + p.start.y * pitchSize.height;
+      return (
+        cx >= target.rect.x * pitchSize.width &&
+        cx <= (target.rect.x + target.rect.width) * pitchSize.width &&
+        cy >= target.rect.y * pitchSize.height &&
+        cy <= (target.rect.y + target.rect.height) * pitchSize.height
+      );
+    });
+    let arrowsOk = true;
+    if (q.expectedVectors && q.expectedVectors.length > 0) {
+      const normArrows = arrows.map(a => ({
+        from: { x: a.from.x / (pitchSize.width || 1), y: a.from.y / (pitchSize.height || 1) },
+        to: { x: a.to.x / (pitchSize.width || 1), y: a.to.y / (pitchSize.height || 1) },
+        kind: a.kind,
+      }));
+      arrowsOk = arrowsSatisfy(normArrows as any, q.expectedVectors as any);
+    }
+    return allPlayersOk && arrowsOk;
+  }
+
   return (
     <View style={styles.container}>
       <Text style={styles.title}>{question.question}</Text>
