@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 import { View, Text, StyleSheet, Pressable } from 'react-native';
 import { Audio } from 'expo-av';
 import * as Haptics from 'expo-haptics';
-import { ENABLE_AUDIO, AUDIO_SUCCESS_URL, AUDIO_FAIL_URL } from '@/config/appConfig';
+import { ENABLE_AUDIO } from '@/config/appConfig';
 
 type Props = {
   correct: boolean;
@@ -18,7 +18,10 @@ export default function AnswerResult({ correct, message, onNext }: Props) {
         if (ENABLE_AUDIO) {
           await Audio.setAudioModeAsync({ playsInSilentModeIOS: true });
           sound = new Audio.Sound();
-          await sound.loadAsync({ uri: correct ? AUDIO_SUCCESS_URL : AUDIO_FAIL_URL });
+          const src = correct
+            ? require('@/assets/sfx/success.mp3')
+            : require('@/assets/sfx/fail.mp3');
+          await sound.loadAsync(src);
           await sound.playAsync();
         }
       } catch {
