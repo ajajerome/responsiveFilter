@@ -1,1 +1,20 @@
-Project config: Slug for project identified by "extra.eas.projectId" (fotbollstranaren) does not match the "slug" field (fotboll-app). Learn more: https://expo.fyi/eas-project-id
+💡 The following process will configure your project to use EAS Update. These changes only apply to your local project files and you can safely revert them at any time.
+> npx expo install expo-updates
+[expo-cli] › Installing 1 SDK 53.0.0 compatible native module using npm
+[expo-cli] > npm install
+[expo-cli] added 7 packages, and audited 1022 packages in 7s
+[expo-cli] 
+[expo-cli] 88 packages are looking for funding
+[expo-cli]   run `npm fund` for details
+[expo-cli] found 0 vulnerabilities
+✔ Installed expo-updates
+✔ Configured updates.url to "https://u.expo.dev/7cae0243-bae5-4dee-b10d-11a4169cbac0"
+✔ Configured runtimeVersion for Android and iOS with "{"policy":"appVersion"}"
+
+All builds of your app going forward will be eligible to receive updates published with EAS Update.
+
+✔ Configured eas.json.
+
+🎉 Your app is configured to use EAS Update!
+
+- Learn more about other capabilities of EAS Update: https://docs.expo.dev/eas-update/introduction/
