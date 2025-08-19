@@ -1,0 +1,21 @@
+{
+  "cli": {
+    "version": ">= 14.0.0"
+  },
+  "build": {
+    "ios": {
+      "workflow": "managed",
+      "distribution": "internal",
+      "cache": { "clear": true }
+    }
+  },
+  "submit": {
+    "ios": {
+      "appleId": "",
+      "ascAppId": "",
+      "companyName": "",
+      "sku": "fotboll-app"
+    }
+  }
+}
+

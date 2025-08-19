@@ -1,0 +1,7 @@
+eas.json is not valid.
+- "build.ios.cache.clear" is not allowed
+- "build.ios.workflow" is not allowed
+- "submit.ios.appleId" is not allowed
+- "submit.ios.ascAppId" is not allowed
+- "submit.ios.companyName" is not allowed
+- "submit.ios.sku" is not allowed
