@@ -2,6 +2,7 @@ import { useRef, useState } from 'react';
 import { View, Text, StyleSheet, PanResponder } from 'react-native';
 import Svg, { Circle, Line } from 'react-native-svg';
 import type { PassQuestion } from '@/types/content';
+import { playLocal } from '@/utils/sound';
 
 type Props = { question: PassQuestion; onAnswer: (isCorrect: boolean) => void };
 
@@ -28,6 +29,7 @@ export default function PassQuestionView({ question, onAnswer }: Props) {
         const tx = target.x * w, ty = target.y * h;
         const dx = locationX - tx, dy = locationY - ty;
         const ok = Math.hypot(dx, dy) < 24;
+        if (ok) playLocal(require('@/assets/sfx/kick.mp3'));
         onAnswer(ok);
       },
     })
