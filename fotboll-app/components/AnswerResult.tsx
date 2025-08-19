@@ -13,8 +13,12 @@ export default function AnswerResult({ correct, message, onNext }: Props) {
     let sound: Audio.Sound | undefined;
     (async () => {
       try {
+        // Allow playback even if iPhone is in silent mode
+        await Audio.setAudioModeAsync({ playsInSilentModeIOS: true });
         sound = new Audio.Sound();
-        await sound.loadAsync({ uri: 'https://cdn.pixabay.com/download/audio/2022/03/15/audio_5ff4b30f4b.mp3?filename=small-crowd-applause-6695.mp3' }, { shouldPlay: true });
+        const successUrl = 'https://cdn.pixabay.com/download/audio/2022/03/15/audio_5ff4b30f4b.mp3?filename=small-crowd-applause-6695.mp3';
+        const failUrl = 'https://cdn.pixabay.com/download/audio/2022/03/15/audio_5ff4b30f4b.mp3?filename=small-crowd-applause-6695.mp3';
+        await sound.loadAsync({ uri: correct ? successUrl : failUrl }, { shouldPlay: true });
       } catch {}
     })();
     return () => {
