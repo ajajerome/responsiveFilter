@@ -3,6 +3,7 @@ import { View, Text, StyleSheet, PanResponder } from 'react-native';
 import Svg, { Circle, Line } from 'react-native-svg';
 import type { PassQuestion } from '@/types/content';
 import { playLocal } from '@/utils/sound';
+import MatchPitch from '@/features/pitch/MatchPitch';
 
 type Props = { question: PassQuestion; onAnswer: (isCorrect: boolean) => void };
 
@@ -45,11 +46,12 @@ export default function PassQuestionView({ question, onAnswer }: Props) {
     <View style={styles.container}>
       <Text style={styles.title}>{question.question}</Text>
       <View {...pan.panHandlers}>
-        <Svg width={w} height={h} style={{ backgroundColor: '#0a7d2a', borderRadius: 12 }}>
+        <MatchPitch width={w} height={h} />
+        <Svg width={w} height={h} style={{ position: 'absolute', left: 0, top: 0 }}>
           {question.players.map(p => (
-            <Circle key={p.id} cx={p.x * w} cy={p.y * h} r={12} fill={p.team === 'home' ? '#7a7cff' : '#ff3b30'} />
+            <Circle key={p.id} cx={p.x * w} cy={p.y * h} r={12} fill={p.team === 'home' ? '#4da3ff' : '#ff3b30'} />
           ))}
-          <Circle cx={holder.x * w} cy={holder.y * h} r={6} fill="#fff" />
+          <Circle cx={holder.x * w} cy={holder.y * h} r={6} fill="#ffd400" />
           {line && <Line x1={line.x1} y1={line.y1} x2={line.x2} y2={line.y2} stroke="#fff" strokeWidth={2} />}
         </Svg>
       </View>
@@ -61,4 +63,3 @@ const styles = StyleSheet.create({
   container: { gap: 12 },
   title: { fontSize: 18, fontWeight: '700' },
 });
-

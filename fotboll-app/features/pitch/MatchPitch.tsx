@@ -1,13 +1,15 @@
 import Svg, { Rect, Line, Circle } from 'react-native-svg';
+import type { Level } from '@/types/content';
 
-type Props = { width: number; height: number };
+type Props = { width: number; height: number; level?: Level };
 
-export default function MatchPitch({ width, height }: Props) {
+export default function MatchPitch({ width, height, level = '7-manna' }: Props) {
   const line = '#e6f5e9';
-  const boxW = width * 0.18;
-  const boxH = height * 0.28;
-  const smallBoxW = width * 0.1;
-  const smallBoxH = height * 0.14;
+  const scale = level === '5-manna' ? 0.8 : level === '7-manna' ? 1 : 1.1;
+  const boxW = width * 0.18 * scale;
+  const boxH = height * 0.28 * scale;
+  const smallBoxW = width * 0.1 * scale;
+  const smallBoxH = height * 0.14 * scale;
   return (
     <Svg width={width} height={height}>
       <Rect x={0} y={0} width={width} height={height} fill="#0a7d2a" rx={12} />

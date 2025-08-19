@@ -132,18 +132,35 @@ export function getRandomQuestion(level: Level, position?: Position): Question {
 }
 
 export function generateMatchFreeze(level: Level, position?: Position): MatchFreezeQuestion {
+  const players = level === '5-manna'
+    ? [
+        { id: 'a1', x: 0.3, y: 0.6, team: 'home' as const },
+        { id: 'a2', x: 0.55, y: 0.5, team: 'home' as const },
+        { id: 'b1', x: 0.5, y: 0.6, team: 'away' as const },
+      ]
+    : level === '7-manna'
+    ? [
+        { id: 'a1', x: 0.28, y: 0.65, team: 'home' as const },
+        { id: 'a2', x: 0.52, y: 0.52, team: 'home' as const },
+        { id: 'a3', x: 0.7, y: 0.4, team: 'home' as const },
+        { id: 'b1', x: 0.5, y: 0.6, team: 'away' as const },
+        { id: 'b2', x: 0.62, y: 0.45, team: 'away' as const },
+      ]
+    : [
+        { id: 'a1', x: 0.25, y: 0.68, team: 'home' as const },
+        { id: 'a2', x: 0.45, y: 0.58, team: 'home' as const },
+        { id: 'a3', x: 0.62, y: 0.42, team: 'home' as const },
+        { id: 'a4', x: 0.4, y: 0.4, team: 'home' as const },
+        { id: 'b1', x: 0.5, y: 0.6, team: 'away' as const },
+        { id: 'b2', x: 0.68, y: 0.48, team: 'away' as const },
+      ];
   return {
     id: uid('freeze'),
     type: 'matchscenario',
     level,
     position,
     question: 'Vem borde få bollen här?',
-    players: [
-      { id: 'a1', x: 0.3, y: 0.6, team: 'home' },
-      { id: 'a2', x: 0.55, y: 0.5, team: 'home' },
-      { id: 'a3', x: 0.7, y: 0.4, team: 'home' },
-      { id: 'b1', x: 0.5, y: 0.6, team: 'away' },
-    ],
+    players,
     ball: { x: 0.48, y: 0.62 },
     correctPlayerIds: ['a3'],
     explanation: 'Spelare a3 har bäst vinkel och yta för att hota framåt.',
