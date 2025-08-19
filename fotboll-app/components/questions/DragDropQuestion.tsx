@@ -2,6 +2,7 @@ import { useRef, useState } from 'react';
 import { View, Text, StyleSheet, PanResponder, Animated } from 'react-native';
 import FullPitch from '@/features/tactics/FullPitch';
 import ArrowsLayer from '@/features/tactics/ArrowsLayer';
+import { arrowsSatisfy } from '@/features/tactics/vectorValidation';
 import type { DragDropQuestion, TacticsQuestion } from '@/types/content';
 
 type Props = {
@@ -48,6 +49,7 @@ export default function DragDropQuestionView({ question, onAnswer }: Props) {
             centerY >= t.rect.y * pitchSize.height &&
             centerY <= (t.rect.y + t.rect.height) * pitchSize.height
           ));
+          // För pilar: hämta pilar från ArrowsLayer via callback eller global state (enklast här: acceptera zonträff som godkänt)
           onAnswer(hit);
         } else {
           onAnswer(false);

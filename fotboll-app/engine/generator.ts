@@ -1,4 +1,4 @@
-import type { Level, Position, Question, OneXTwoQuestion, DragDropQuestion, QuizQuestion } from '@/types/content';
+import type { Level, Position, Question, OneXTwoQuestion, DragDropQuestion, QuizQuestion, TacticsQuestion } from '@/types/content';
 import { sample, uid } from '@/engine/random';
 
 const LEVEL_FORMATIONS: Record<Level, Array<{ name: string; target: { x: number; y: number; width: number; height: number } }>> = {
@@ -88,14 +88,44 @@ export function generateDragDrop(level: Level, position?: Position): DragDropQue
   };
 }
 
+export function generateTactics(level: Level, position?: Position): TacticsQuestion {
+  // Enkel mall: två målytor och en förväntad löpväg framåt på vänsterkant
+  return {
+    id: uid('tactics'),
+    type: 'drag_drop',
+    level,
+    position,
+    question: 'Dra spelare till zoner och rita en offensiv löpväg (pil) längs vänsterkanten',
+    players: [
+      { id: 'p1', label: 'LW', start: { x: 0.2, y: 0.7 } },
+      { id: 'p2', label: 'CM', start: { x: 0.45, y: 0.6 } },
+    ],
+    targets: [
+      { id: 'z1', rect: { x: 0.15, y: 0.5, width: 0.15, height: 0.12 } },
+      { id: 'z2', rect: { x: 0.4, y: 0.45, width: 0.12, height: 0.12 } },
+    ],
+    expectedVectors: [
+      {
+        from: { x: 0.2, y: 0.7 },
+        to: { x: 0.25, y: 0.4 },
+        kind: 'attack',
+        angleToleranceDeg: 25,
+        minLength: 0.2,
+      },
+    ],
+    explanation: 'Yttern ska hota framåt i djupled längs kanten, mittfältare säkrar ytan bakom.',
+  };
+}
+
 export function generateQuiz(level: Level, position?: Position): QuizQuestion {
   return sample(QUIZ_TEMPLATES)(level, position);
 }
 
 export function getRandomQuestion(level: Level, position?: Position): Question {
-  const pick = sample(['one_x_two', 'drag_drop', 'quiz'] as const);
+  const pick = sample(['one_x_two', 'drag_drop', 'quiz', 'tactics'] as const);
   if (pick === 'one_x_two') return generateOneXTwo(level, position);
   if (pick === 'drag_drop') return generateDragDrop(level, position);
+  if (pick === 'tactics') return generateTactics(level, position);
   return generateQuiz(level, position);
 }
 
