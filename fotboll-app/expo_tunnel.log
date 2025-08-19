@@ -1,9 +1,7 @@
 Starting project at /workspace/fotboll-app
-Metro is running in CI mode, reloads are disabled. Remove CI=true to enable watch mode.
 Starting Metro Bundler
 Tunnel connected.
 Tunnel ready.
-TypeScript: The tsconfig.json#include property has been updated
 The following packages should be updated for best compatibility with the installed expo version:
   @react-native-async-storage/async-storage@2.2.0 - expected version: 2.1.2
 Your project may not work correctly until you install the expected versions of the packages.
