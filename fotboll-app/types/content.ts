@@ -48,7 +48,7 @@ export interface VectorSpec {
 export interface TacticsQuestion extends BaseQuestion {
   type: 'drag_drop';
   // Full plan: flera spelare, flera målzoner och förväntade pilar
-  players: Array<{ id: string; label: string; start: { x: number; y: number } }>;
+  players: Array<{ id: string; label: string; start: { x: number; y: number }; targetId?: string }>;
   targets?: Array<{ id: string; rect: { x: number; y: number; width: number; height: number } }>;
   expectedVectors?: VectorSpec[];
 }

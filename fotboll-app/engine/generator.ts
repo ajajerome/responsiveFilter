@@ -95,10 +95,10 @@ export function generateTactics(level: Level, position?: Position): TacticsQuest
     type: 'drag_drop',
     level,
     position,
-    question: 'Dra spelare till zoner och rita en offensiv löpväg (pil) längs vänsterkanten',
+    question: 'Dra spelare till sina zoner och rita en offensiv löpväg (pil) längs vänsterkanten',
     players: [
-      { id: 'p1', label: 'LW', start: { x: 0.2, y: 0.7 } },
-      { id: 'p2', label: 'CM', start: { x: 0.45, y: 0.6 } },
+      { id: 'p1', label: 'LW', start: { x: 0.2, y: 0.7 }, targetId: 'z1' },
+      { id: 'p2', label: 'CM', start: { x: 0.45, y: 0.6 }, targetId: 'z2' },
     ],
     targets: [
       { id: 'z1', rect: { x: 0.15, y: 0.5, width: 0.15, height: 0.12 } },

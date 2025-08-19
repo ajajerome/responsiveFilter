@@ -17,6 +17,8 @@ export default function DragDropQuestionView({ question, onAnswer }: Props) {
     x: 0,
     y: 0,
   })).current;
+  // För taktik: fler spelare
+  const [playersPos, setPlayersPos] = useState<Record<string, Animated.ValueXY>>({});
 
   const startPx = 'start' in question
     ? { x: question.start.x * pitchSize.width, y: question.start.y * pitchSize.height }
@@ -109,7 +111,7 @@ export default function DragDropQuestionView({ question, onAnswer }: Props) {
             }}
           />
         ))}
-        {/* Draggable marker */}
+        {/* Enkel-läge: en spelare */}
         <Animated.View
           {...panResponder.panHandlers}
           style={{
@@ -123,6 +125,38 @@ export default function DragDropQuestionView({ question, onAnswer }: Props) {
             <Text style={styles.playerText}>{'playerLabel' in question ? (question.playerLabel ?? 'P') : 'P'}</Text>
           </View>
         </Animated.View>
+        {/* Taktik-läge: flera spelare */}
+        {'players' in question && question.players.map(p => {
+          const key = p.id;
+          if (!playersPos[key]) {
+            playersPos[key] = new Animated.ValueXY({ x: p.start.x * pitchSize.width, y: p.start.y * pitchSize.height });
+            setPlayersPos({ ...playersPos });
+          }
+          const pan = PanResponder.create({
+            onStartShouldSetPanResponder: () => true,
+            onPanResponderGrant: () => {
+              playersPos[key].setOffset({ x: (playersPos[key] as any).x._value, y: (playersPos[key] as any).y._value });
+              playersPos[key].setValue({ x: 0, y: 0 });
+            },
+            onPanResponderMove: Animated.event([null, { dx: playersPos[key].x, dy: playersPos[key].y }], { useNativeDriver: false }),
+            onPanResponderRelease: () => {
+              playersPos[key].flattenOffset();
+            },
+          });
+          const target = question.targets?.find(t => t.id === p.targetId);
+          return (
+            <>
+              {target && (
+                <View key={`z-${key}`} style={{ position: 'absolute', left: target.rect.x * pitchSize.width, top: target.rect.y * pitchSize.height, width: target.rect.width * pitchSize.width, height: target.rect.height * pitchSize.height, borderWidth: 2, borderColor: '#34c759', backgroundColor: 'rgba(52,199,89,0.12)' }} />
+              )}
+              <Animated.View key={`p-${key}`} {...pan.panHandlers} style={{ position: 'absolute', transform: playersPos[key].getTranslateTransform(), left: p.start.x * pitchSize.width - 18, top: p.start.y * pitchSize.height - 18 }}>
+                <View style={[styles.player, { backgroundColor: '#7a7cff' }]}>
+                  <Text style={styles.playerText}>{p.label}</Text>
+                </View>
+              </Animated.View>
+            </>
+          );
+        })}
         <ArrowsLayer width={pitchSize.width} height={pitchSize.height} onArrowsChanged={setArrows} />
       </View>
     </View>
