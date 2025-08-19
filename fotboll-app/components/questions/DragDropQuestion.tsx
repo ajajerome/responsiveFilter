@@ -1,7 +1,7 @@
 import { useRef, useState } from 'react';
 import { View, Text, StyleSheet, PanResponder, Animated } from 'react-native';
 import FullPitch from '@/features/tactics/FullPitch';
-import ArrowsLayer from '@/features/tactics/ArrowsLayer';
+import ArrowsLayer, { Arrow as DrawnArrow } from '@/features/tactics/ArrowsLayer';
 import { arrowsSatisfy } from '@/features/tactics/vectorValidation';
 import type { DragDropQuestion, TacticsQuestion } from '@/types/content';
 
@@ -12,6 +12,7 @@ type Props = {
 
 export default function DragDropQuestionView({ question, onAnswer }: Props) {
   const [pitchSize, setPitchSize] = useState({ width: 0, height: 0 });
+  const [arrows, setArrows] = useState<DrawnArrow[]>([]);
   const position = useRef(new Animated.ValueXY({
     x: 0,
     y: 0,
@@ -49,8 +50,17 @@ export default function DragDropQuestionView({ question, onAnswer }: Props) {
             centerY >= t.rect.y * pitchSize.height &&
             centerY <= (t.rect.y + t.rect.height) * pitchSize.height
           ));
-          // För pilar: hämta pilar från ArrowsLayer via callback eller global state (enklast här: acceptera zonträff som godkänt)
-          onAnswer(hit);
+          // Validera pilar mot expectedVectors om de finns
+          let arrowsOk = true;
+          if ('expectedVectors' in question && question.expectedVectors && question.expectedVectors.length > 0) {
+            const normArrows = arrows.map(a => ({
+              from: { x: a.from.x / (pitchSize.width || 1), y: a.from.y / (pitchSize.height || 1) },
+              to: { x: a.to.x / (pitchSize.width || 1), y: a.to.y / (pitchSize.height || 1) },
+              kind: a.kind,
+            }));
+            arrowsOk = arrowsSatisfy(normArrows as any, question.expectedVectors as any);
+          }
+          onAnswer(hit && arrowsOk);
         } else {
           onAnswer(false);
         }
@@ -113,7 +123,7 @@ export default function DragDropQuestionView({ question, onAnswer }: Props) {
             <Text style={styles.playerText}>{'playerLabel' in question ? (question.playerLabel ?? 'P') : 'P'}</Text>
           </View>
         </Animated.View>
-        <ArrowsLayer width={pitchSize.width} height={pitchSize.height} />
+        <ArrowsLayer width={pitchSize.width} height={pitchSize.height} onArrowsChanged={setArrows} />
       </View>
     </View>
   );

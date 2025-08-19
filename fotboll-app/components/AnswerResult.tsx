@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
 import { View, Text, StyleSheet, Pressable } from 'react-native';
+import { colors, radii, spacing } from '@/theme';
 import { Audio } from 'expo-av';
 import * as Haptics from 'expo-haptics';
 import { ENABLE_AUDIO } from '@/config/appConfig';
@@ -52,9 +53,9 @@ export default function AnswerResult({ correct, message, onNext }: Props) {
 }
 
 const styles = StyleSheet.create({
-  container: { padding: 12, borderWidth: 2, borderRadius: 12, alignItems: 'center', gap: 4 },
-  title: { fontSize: 18, fontWeight: '800' },
-  msg: { textAlign: 'center', color: '#333' },
-  nextBtn: { marginTop: 8, backgroundColor: '#1e90ff', paddingVertical: 10, paddingHorizontal: 16, borderRadius: 10 },
-  nextTxt: { color: 'white', fontWeight: '700' },
+  container: { padding: spacing.md, borderWidth: 2, borderRadius: radii.lg, alignItems: 'center', gap: spacing.xs },
+  title: { fontSize: 18, fontWeight: '800', color: colors.text },
+  msg: { textAlign: 'center', color: colors.muted },
+  nextBtn: { marginTop: spacing.sm, backgroundColor: colors.secondary, paddingVertical: 10, paddingHorizontal: 16, borderRadius: radii.md },
+  nextTxt: { color: colors.text, fontWeight: '700' },
 });

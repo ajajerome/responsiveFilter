@@ -2,7 +2,7 @@ import { useRef, useState } from 'react';
 import Svg, { Line, Polygon } from 'react-native-svg';
 import { PanResponder, View } from 'react-native';
 
-type Arrow = { from: { x: number; y: number }; to: { x: number; y: number }; kind: 'attack' | 'defense' };
+export type Arrow = { from: { x: number; y: number }; to: { x: number; y: number }; kind: 'attack' | 'defense' };
 
 type Props = {
   width: number;
