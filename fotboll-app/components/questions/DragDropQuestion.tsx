@@ -1,9 +1,11 @@
 import { useRef, useState } from 'react';
 import { View, Text, StyleSheet, PanResponder, Animated } from 'react-native';
-import type { DragDropQuestion } from '@/types/content';
+import FullPitch from '@/features/tactics/FullPitch';
+import ArrowsLayer from '@/features/tactics/ArrowsLayer';
+import type { DragDropQuestion, TacticsQuestion } from '@/types/content';
 
 type Props = {
-  question: DragDropQuestion;
+  question: DragDropQuestion | TacticsQuestion;
   onAnswer: (isCorrect: boolean) => void;
 };
 
@@ -14,10 +16,9 @@ export default function DragDropQuestionView({ question, onAnswer }: Props) {
     y: 0,
   })).current;
 
-  const startPx = {
-    x: question.start.x * pitchSize.width,
-    y: question.start.y * pitchSize.height,
-  };
+  const startPx = 'start' in question
+    ? { x: question.start.x * pitchSize.width, y: question.start.y * pitchSize.height }
+    : { x: pitchSize.width * 0.5, y: pitchSize.height * 0.85 };
 
   const panResponder = useRef(
     PanResponder.create({
@@ -32,13 +33,25 @@ export default function DragDropQuestionView({ question, onAnswer }: Props) {
         const { x, y } = { x: (position as any).x._value, y: (position as any).y._value };
         const centerX = (startPx.x + x);
         const centerY = (startPx.y + y);
-        const target = question.targetRect;
-        const inRect =
-          centerX >= target.x * pitchSize.width &&
-          centerX <= (target.x + target.width) * pitchSize.width &&
-          centerY >= target.y * pitchSize.height &&
-          centerY <= (target.y + target.height) * pitchSize.height;
-        onAnswer(inRect);
+        if ('targetRect' in question) {
+          const target = question.targetRect;
+          const inRect =
+            centerX >= target.x * pitchSize.width &&
+            centerX <= (target.x + target.width) * pitchSize.width &&
+            centerY >= target.y * pitchSize.height &&
+            centerY <= (target.y + target.height) * pitchSize.height;
+          onAnswer(inRect);
+        } else if ('targets' in question && question.targets?.length) {
+          const hit = question.targets.some(t => (
+            centerX >= t.rect.x * pitchSize.width &&
+            centerX <= (t.rect.x + t.rect.width) * pitchSize.width &&
+            centerY >= t.rect.y * pitchSize.height &&
+            centerY <= (t.rect.y + t.rect.height) * pitchSize.height
+          ));
+          onAnswer(hit);
+        } else {
+          onAnswer(false);
+        }
       },
     })
   ).current;
@@ -54,19 +67,36 @@ export default function DragDropQuestionView({ question, onAnswer }: Props) {
           position.setValue({ x: 0, y: 0 });
         }}
       >
-        {/* Target area */}
-        <View
-          style={{
-            position: 'absolute',
-            left: question.targetRect.x * pitchSize.width,
-            top: question.targetRect.y * pitchSize.height,
-            width: question.targetRect.width * pitchSize.width,
-            height: question.targetRect.height * pitchSize.height,
-            borderWidth: 2,
-            borderColor: '#34c759',
-            backgroundColor: 'rgba(52,199,89,0.12)',
-          }}
-        />
+        <FullPitch width={pitchSize.width} height={pitchSize.height} />
+        {'targetRect' in question && (
+          <View
+            style={{
+              position: 'absolute',
+              left: question.targetRect.x * pitchSize.width,
+              top: question.targetRect.y * pitchSize.height,
+              width: question.targetRect.width * pitchSize.width,
+              height: question.targetRect.height * pitchSize.height,
+              borderWidth: 2,
+              borderColor: '#34c759',
+              backgroundColor: 'rgba(52,199,89,0.12)',
+            }}
+          />
+        )}
+        {'targets' in question && question.targets?.map(t => (
+          <View
+            key={t.id}
+            style={{
+              position: 'absolute',
+              left: t.rect.x * pitchSize.width,
+              top: t.rect.y * pitchSize.height,
+              width: t.rect.width * pitchSize.width,
+              height: t.rect.height * pitchSize.height,
+              borderWidth: 2,
+              borderColor: '#34c759',
+              backgroundColor: 'rgba(52,199,89,0.12)',
+            }}
+          />
+        ))}
         {/* Draggable marker */}
         <Animated.View
           {...panResponder.panHandlers}
@@ -78,9 +108,10 @@ export default function DragDropQuestionView({ question, onAnswer }: Props) {
           }}
         >
           <View style={styles.player}>
-            <Text style={styles.playerText}>{question.playerLabel ?? 'P'}</Text>
+            <Text style={styles.playerText}>{'playerLabel' in question ? (question.playerLabel ?? 'P') : 'P'}</Text>
           </View>
         </Animated.View>
+        <ArrowsLayer width={pitchSize.width} height={pitchSize.height} />
       </View>
     </View>
   );

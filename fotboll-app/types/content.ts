@@ -36,6 +36,23 @@ export interface DragDropQuestion extends BaseQuestion {
   playerLabel?: string;
 }
 
+export interface VectorSpec {
+  from: { x: number; y: number };
+  to: { x: number; y: number };
+  kind: 'attack' | 'defense';
+  angleToleranceDeg?: number;
+  minLength?: number;
+  maxLength?: number;
+}
+
+export interface TacticsQuestion extends BaseQuestion {
+  type: 'drag_drop';
+  // Full plan: flera spelare, flera målzoner och förväntade pilar
+  players: Array<{ id: string; label: string; start: { x: number; y: number } }>;
+  targets?: Array<{ id: string; rect: { x: number; y: number; width: number; height: number } }>;
+  expectedVectors?: VectorSpec[];
+}
+
 export interface OneXTwoQuestion extends BaseQuestion {
   type: 'one_x_two';
   // 0 -> '1', 1 -> 'X', 2 -> '2'
@@ -45,5 +62,5 @@ export interface OneXTwoQuestion extends BaseQuestion {
   explanation?: string;
 }
 
-export type Question = QuizQuestion | DragDropQuestion | OneXTwoQuestion;
+export type Question = QuizQuestion | DragDropQuestion | OneXTwoQuestion | TacticsQuestion;
 

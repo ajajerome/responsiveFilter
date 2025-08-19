@@ -18,7 +18,9 @@
     "react": "19.0.0",
     "react-native": "0.79.5",
     "zustand": "^5.0.7",
-    "expo-updates": "~0.28.17"
+    "expo-updates": "~0.28.17",
+    "react-native-svg": "15.11.2",
+    "react-native-gesture-handler": "~2.24.0"
   },
   "devDependencies": {
     "@babel/core": "^7.25.2",
