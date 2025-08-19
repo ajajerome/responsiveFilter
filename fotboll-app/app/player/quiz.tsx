@@ -38,7 +38,7 @@ export default function QuizScreen() {
           <MultipleChoiceQuestionView question={question} onAnswer={handleAnswered} />
         )}
         {lastCorrect !== null && (
-          <AnswerResult correct={lastCorrect} onNext={handleNext} />
+          <AnswerResult correct={lastCorrect} message={question.explanation} onNext={handleNext} />
         )}
       </View>
       <Text style={styles.progress}>Fortsätter automatiskt vid svar</Text>

@@ -59,3 +59,6 @@ iOS Bundled 47ms node_modules/expo-router/entry.js (1 module)
 Tunnel connection has been closed. This is often related to intermittent connection problems with the Ngrok servers. Restart the dev server to try connecting to Ngrok again.
 Check the Ngrok status page for outages: https://status.ngrok.com/
 Tunnel connected.
+iOS node_modules/expo-router/entry.js ░░░░░░░░░░░░░░░░  0.0% (0/1)
+iOS Bundling failed 880ms node_modules/expo-router/entry.js (1 module)
+Unable to resolve "./Audio/Recording" from "node_modules/expo-av/build/Audio.js"

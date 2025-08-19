@@ -57,6 +57,7 @@ const QUIZ_TEMPLATES: Array<(level: Level, position?: Position) => QuizQuestion>
     question: 'Vem täcker ytan bakom ytterback vid offensiv löpning?',
     options: ['Mittfältare', 'Mittback'],
     correctIndex: 0,
+    explanation: 'Mittfältaren faller ned och täcker bakom ytterbacken vid överlapp eller offensiv löpning.'
   }),
 ];
 
