@@ -1,16 +1,14 @@
-import { View, StyleSheet, ImageBackground } from 'react-native';
+import { View, StyleSheet } from 'react-native';
+import { LinearGradient } from 'expo-linear-gradient';
 import { colors, spacing } from '@/theme';
-// use a static require path
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-const bg = require('../../assets/bg/football.png');
 
 type Props = { children: React.ReactNode };
 
 export default function Screen({ children }: Props) {
   return (
-    <ImageBackground source={bg} resizeMode="cover" style={styles.container} imageStyle={{ opacity: 0.12 }}>
+    <LinearGradient colors={[colors.background, '#0f1220']} style={styles.container}>
       {children}
-    </ImageBackground>
+    </LinearGradient>
   );
 }
 
