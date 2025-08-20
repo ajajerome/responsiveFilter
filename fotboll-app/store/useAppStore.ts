@@ -28,6 +28,7 @@ type AppState = {
     addXp: (level: Level, amount: number) => void;
     markQuestionCompleted: (level: Level, questionId: string) => void;
     unlockLevel: (level: Level) => void;
+    incrementCategory: (level: Level, category: string, delta?: number, totalHint?: number) => void;
   };
 };
 
@@ -81,6 +82,20 @@ export const useAppStore = create<AppState>()(
           set((s) => {
             const lv = s.progress[level] ?? { unlocked: false, xp: 0, completedQuestionIds: [] };
             return { progress: { ...s.progress, [level]: { ...lv, unlocked: true } } };
+          }),
+        incrementCategory: (level, category, delta = 1, totalHint) =>
+          set((s) => {
+            const lv = s.progress[level] ?? { unlocked: level === '5-manna', xp: 0, completedQuestionIds: [], categoryProgress: {} };
+            const cp = lv.categoryProgress ?? {};
+            const entry = cp[category] ?? { completed: 0, total: totalHint ?? 10 } as any;
+            const total = totalHint ?? entry.total ?? 10;
+            const completed = Math.max(0, Math.min(total, (entry.completed ?? 0) + delta));
+            return {
+              progress: {
+                ...s.progress,
+                [level]: { ...lv, categoryProgress: { ...cp, [category]: { completed, total } } },
+              },
+            };
           }),
       },
     }),

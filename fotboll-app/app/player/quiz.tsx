@@ -19,6 +19,7 @@ export default function QuizScreen() {
   const { level, category } = useLocalSearchParams<{ level?: Level, category?: string }>();
   const addXp = useAppStore((s) => s.actions.addXp);
   const markCompleted = useAppStore((s) => s.actions.markQuestionCompleted);
+  const incCat = useAppStore((s) => s.actions.incrementCategory);
   const [counter, setCounter] = useState(0);
   const [queue, setQueue] = useState<Question[] | null>(null);
   const [lastCorrect, setLastCorrect] = useState<boolean | null>(null);
@@ -42,6 +43,7 @@ export default function QuizScreen() {
     if (question) {
       if (lastCorrect) addXp(question.level, 10);
       markCompleted(question.level, question.id);
+      if (category) incCat(question.level, String(category), 1);
       const updated = new Set(seenIds);
       updated.add(question.id);
       setSeenIds(updated);
@@ -63,7 +65,7 @@ export default function QuizScreen() {
       }
       return next;
     });
-  }, [question, lastCorrect, addXp, markCompleted, level, seenIds]);
+  }, [question, lastCorrect, addXp, markCompleted, level, seenIds, category, incCat]);
 
   return (
     <Screen>
