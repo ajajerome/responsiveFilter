@@ -1,18 +1,18 @@
-import { Pressable, Text, StyleSheet, ViewStyle } from 'react-native';
+import { Pressable, Text, StyleSheet, ViewStyle, PressableProps } from 'react-native';
 import { colors, radii, spacing } from '@/theme';
 
-type Props = {
+type Props = Omit<PressableProps, 'children'> & {
   title: string;
-  onPress: () => void;
   variant?: 'primary' | 'secondary';
   style?: ViewStyle;
 };
 
-export default function Button({ title, onPress, variant = 'primary', style }: Props) {
+export default function Button({ title, onPress, variant = 'primary', style, ...rest }: Props) {
   const bg = variant === 'primary' ? colors.secondary : colors.card;
   const fg = variant === 'primary' ? colors.text : colors.text;
+  const injectedOnPress = rest.onPress ?? onPress;
   return (
-    <Pressable onPress={onPress} style={[styles.base, { backgroundColor: bg }, style]}
+    <Pressable {...rest} onPress={injectedOnPress} style={[styles.base, { backgroundColor: bg }, style]}
       accessibilityRole="button"
     >
       <Text style={[styles.text, { color: fg }]}>{title}</Text>
