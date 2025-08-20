@@ -39,7 +39,31 @@ export async function fetchQuestions(level: Level, position?: Position, count = 
   const pass = PASS_QUESTIONS.filter(q => q.level === level).filter(cat).filter(notSeen);
   const formation = FORMATION_QUESTIONS.filter(q => q.level === level).filter(cat).filter(notSeen);
   const attackDrag = ATTACK_DRAG_QUESTIONS.filter(q => q.level === level).filter(cat).filter(notSeen);
+
+  // Kategorispecifik vikting: säkerställ att underkategorin prioriteras
+  const prioritized: Question[] = [];
+  if (category === 'fasta') {
+    // Fasta situationer: favorera freeze/pass med fasta-taggar om tillgängligt
+    prioritized.push(
+      ...pick(freeze.filter(q => q.category === 'fasta'), Math.min(2, freeze.length)),
+      ...pick(pass.filter(q => q.category === 'fasta'), Math.min(2, pass.length)),
+    );
+  } else if (category === 'forsvar') {
+    prioritized.push(
+      ...pick(freeze.filter(q => q.category === 'forsvar'), Math.min(3, freeze.length)),
+    );
+  } else if (category === 'anfall') {
+    prioritized.push(
+      ...pick(pass.filter(q => q.category === 'anfall'), Math.min(2, pass.length)),
+      ...pick(attackDrag.filter(q => q.category === 'anfall'), Math.min(2, attackDrag.length)),
+    );
+  } else if (category === 'spelforstaelse') {
+    prioritized.push(...pick(spel, Math.min(3, spel.length)));
+  } else if (category === 'spelregler') {
+    prioritized.push(...pick(regler, Math.min(3, regler.length)));
+  }
   const base: Question[] = [
+    ...prioritized,
     ...pick(regler, Math.min(2, regler.length)),
     ...pick(spel, Math.min(2, spel.length)),
     ...pick(freeze, Math.min(1, freeze.length)),
