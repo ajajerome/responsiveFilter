@@ -1,8 +1,9 @@
 [expo-cli] Starting Metro Bundler
-[expo-cli] iOS node_modules/expo-router/entry.js ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓░ 99.8% (1106/1107)
-[expo-cli] Android node_modules/expo-router/entry.js ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓░ 99.9% (1115/1115)
-[expo-cli] iOS Bundled 3657ms node_modules/expo-router/entry.js (1107 modules)
-[expo-cli] Android Bundled 5765ms node_modules/expo-router/entry.js (1115 modules)
+[expo-cli] iOS node_modules/expo-router/entry.js ▓▓▓▓▓▓▓▓▓▓▓▓▓▓░░ 90.2% (926/975)
+[expo-cli] Android node_modules/expo-router/entry.js ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓░ 99.9% (1117/1117)
+[expo-cli] iOS Bundled 4232ms node_modules/expo-router/entry.js (975 modules)
+[expo-cli] Android Bundled 6457ms node_modules/expo-router/entry.js (1117 modules)
+[expo-cli] Android node_modules/expo-router/entry.js ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓░ 99.9% (1117/1117)
 [expo-cli] Creating asset map
 [expo-cli] 
 [expo-cli] › Assets (35):
@@ -24,17 +25,36 @@
 [expo-cli] node_modules/expo-router/assets/unmatched.png (4.75 kB)
 [expo-cli] 
 [expo-cli] › ios bundles (2):
-[expo-cli] _expo/static/js/ios/entry-884ac7aa55346a11971ab975d92e9e26.hbc (1.69 MB)
-[expo-cli] _expo/static/js/ios/entry-884ac7aa55346a11971ab975d92e9e26.hbc.map (6.49 MB)
+[expo-cli] _expo/static/js/ios/entry-281a718b8f70d4735a349b6a4109de51.hbc (1.7 MB)
+[expo-cli] _expo/static/js/ios/entry-281a718b8f70d4735a349b6a4109de51.hbc.map (6.51 MB)
 [expo-cli] 
 [expo-cli] › android bundles (2):
-[expo-cli] _expo/static/js/android/entry-cf23016171d22f9a58d0ad8765cf3d05.hbc (1.68 MB)
-[expo-cli] _expo/static/js/android/entry-cf23016171d22f9a58d0ad8765cf3d05.hbc.map (6.48 MB)
+[expo-cli] _expo/static/js/android/entry-524899cb06d08203fc5eaec2c885ce69.hbc (1.7 MB)
+[expo-cli] _expo/static/js/android/entry-524899cb06d08203fc5eaec2c885ce69.hbc.map (6.51 MB)
 [expo-cli] 
 [expo-cli] › Files (2):
 [expo-cli] assetmap.json (11 kB)
 [expo-cli] metadata.json (4.02 kB)
 [expo-cli] 
 [expo-cli] Exported: dist
+✔ Uploaded 2 app bundles
+✔ Uploading assets skipped - no new assets found
+ℹ 31 iOS assets, 31 Android assets (maximum: 2000 total per update). Learn more about asset limits: https://expo.fyi/eas-update-asset-limits
 
-request to https://api.expo.dev/graphql failed, reason: 
+Branch             production
+Runtime version    1.0.0
+Platform           android, ios
+Update group ID    b7985276-b317-49d4-8f1b-ee2f3fda7202
+Android update ID  426f0ac3-7d14-4a8f-989d-fb0d4015f507
+iOS update ID      53bebda3-84e6-40da-b91f-dfc4e6147069
+Message            production channel sync
+Commit             1816cd38abf18e4f6257e236759a376db7455097*
+EAS Dashboard      https://expo.dev/accounts/jappmaster/projects/fotbollstranaren/updates/b7985276-b317-49d4-8f1b-ee2f3fda7202
+
+No compatible builds found for the following fingerprints:
+    iOS fingerprint:  72f5d15645b71d1a7efe0c2bb2533a3b51fda49e
+    URL            :  https://expo.dev/accounts/jappmaster/projects/fotbollstranaren/fingerprints/72f5d15645b71d1a7efe0c2bb2533a3b51fda49e
+
+    Android fingerprint:  87f7b35453caee3e12e1e4a184b918faf061a017
+    URL                :  https://expo.dev/accounts/jappmaster/projects/fotbollstranaren/fingerprints/87f7b35453caee3e12e1e4a184b918faf061a017
+
