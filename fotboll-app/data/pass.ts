@@ -5,6 +5,7 @@ export const PASS_QUESTIONS: PassQuestion[] = [
     id: 'ps-7-1',
     type: 'matchscenario',
     level: '7-manna',
+    category: 'anfall',
     question: 'Dra en passning till spelbar medspelare',
     players: [
       { id: 'p1', team: 'home', x: 0.45, y: 0.6 },

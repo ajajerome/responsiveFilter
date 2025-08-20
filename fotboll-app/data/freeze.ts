@@ -5,6 +5,7 @@ export const FREEZE_QUESTIONS: MatchFreezeQuestion[] = [
     id: 'fz-5-1',
     type: 'matchscenario',
     level: '5-manna',
+    category: 'spelforstaelse',
     question: 'Vem borde få bollen här?',
     players: [
       { id: 'a1', team: 'home', x: 0.28, y: 0.62 },
@@ -20,6 +21,7 @@ export const FREEZE_QUESTIONS: MatchFreezeQuestion[] = [
     id: 'fz-7-1',
     type: 'matchscenario',
     level: '7-manna',
+    category: 'spelforstaelse',
     question: 'Vem borde få bollen här?',
     players: [
       { id: 'a1', team: 'home', x: 0.25, y: 0.68 },

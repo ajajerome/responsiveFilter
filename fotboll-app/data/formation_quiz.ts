@@ -5,6 +5,7 @@ export const FORMATION_QUESTIONS: FormationQuizQuestion[] = [
     id: 'fq-5-231',
     type: 'formation_quiz',
     level: '5-manna',
+    category: 'anfall',
     question: 'Vilken formation visas?',
     players: [
       { x: 0.5, y: 0.85 }, // MV
@@ -20,6 +21,7 @@ export const FORMATION_QUESTIONS: FormationQuizQuestion[] = [
     id: 'fq-7-321',
     type: 'formation_quiz',
     level: '7-manna',
+    category: 'forsvar',
     question: 'Vilken formation visas?',
     players: [
       { x: 0.5, y: 0.9 },

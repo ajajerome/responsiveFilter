@@ -27,7 +27,7 @@ export default function QuizScreen() {
     (async () => {
       // Reset session when level changes
       setSeenIds(new Set());
-      const q = await fetchQuestions(level ?? '5-manna', undefined, 5, undefined);
+      const q = await fetchQuestions(level ?? '5-manna', undefined, 5, undefined, category);
       setQueue(q);
     })();
   }, [level]);
@@ -51,12 +51,12 @@ export default function QuizScreen() {
       const next = prev && prev.length ? prev.slice(1) : prev;
       if (!next || next.length === 0) {
         const filter = question ? new Set(seenIds).add(question.id) : seenIds;
-        fetchQuestions(level ?? '5-manna', undefined, 5, filter).then((q) => {
+        fetchQuestions(level ?? '5-manna', undefined, 5, filter, category).then((q) => {
           if (q && q.length > 0) setQueue(q);
           else {
             // fallback: try without filter after small delay
             setTimeout(() => {
-              fetchQuestions(level ?? '5-manna', undefined, 5, undefined).then(setQueue);
+              fetchQuestions(level ?? '5-manna', undefined, 5, undefined, category).then(setQueue);
             }, 200);
           }
         });
