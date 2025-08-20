@@ -51,7 +51,7 @@ export default function PassQuestionView({ question, onAnswer }: Props) {
           {question.players.map(p => (
             <Circle key={p.id} cx={p.x * w} cy={p.y * h} r={12} fill={p.team === 'home' ? '#4da3ff' : '#ff3b30'} />
           ))}
-          <Circle cx={holder.x * w} cy={holder.y * h} r={6} fill="#ffd400" />
+          <Circle cx={holder.x * w} cy={holder.y * h} r={6} fill="#ffffff" />
           {line && <Line x1={line.x1} y1={line.y1} x2={line.x2} y2={line.y2} stroke="#fff" strokeWidth={2} />}
         </Svg>
       </View>

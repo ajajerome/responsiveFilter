@@ -161,7 +161,7 @@ export default function DragDropQuestionView({ question, onAnswer }: Props) {
           />
         )}
         {'opponents' in question && (question as any).opponents?.map((o: any, i: number) => (
-          <View key={`opp-${i}`} style={{ position: 'absolute', left: o.x * pitchSize.width - 10, top: o.y * pitchSize.height - 10, width: 20, height: 20, borderRadius: 10, backgroundColor: '#ff3b30', borderWidth: 2, borderColor: '#111' }} />
+          <View key={`opp-${i}`} style={{ position: 'absolute', left: o.x * pitchSize.width - 12, top: o.y * pitchSize.height - 18, width: 24, height: 36, borderRadius: 6, backgroundColor: '#ff3b30', borderWidth: 2, borderColor: '#111' }} />
         ))}
         {'targets' in question && question.targets?.map(t => (
           <View
@@ -188,7 +188,7 @@ export default function DragDropQuestionView({ question, onAnswer }: Props) {
             top: startPx.y - 18,
           }}
         >
-          <View style={[styles.player, { backgroundColor: '#ffd400', borderColor: '#111' }]}>
+          <View style={[styles.player, { backgroundColor: '#4da3ff', borderColor: '#e7ebf3' }]}>
             <Text style={styles.playerText}>{'playerLabel' in question ? (question.playerLabel ?? 'P') : 'P'}</Text>
           </View>
         </Animated.View>
@@ -216,8 +216,8 @@ export default function DragDropQuestionView({ question, onAnswer }: Props) {
               {target && (
                 <View key={`z-${key}`} style={{ position: 'absolute', left: target.rect.x * pitchSize.width, top: target.rect.y * pitchSize.height, width: target.rect.width * pitchSize.width, height: target.rect.height * pitchSize.height, borderWidth: 2, borderColor: '#34c759', backgroundColor: 'rgba(52,199,89,0.12)' }} />
               )}
-              <Animated.View key={`p-${key}`} {...pan.panHandlers} style={{ position: 'absolute', transform: playersPos[key].getTranslateTransform(), left: p.start.x * pitchSize.width - 18, top: p.start.y * pitchSize.height - 18 }}>
-                <View style={[styles.player, { backgroundColor: '#7a7cff' }]}>
+              <Animated.View key={`p-${key}`} {...pan.panHandlers} style={{ position: 'absolute', transform: playersPos[key].getTranslateTransform(), left: p.start.x * pitchSize.width - 12, top: p.start.y * pitchSize.height - 18 }}>
+                <View style={{ width: 24, height: 36, borderRadius: 6, backgroundColor: '#4da3ff', borderWidth: 2, borderColor: '#e7ebf3', alignItems: 'center', justifyContent: 'center' }}>
                   <Text style={styles.playerText}>{p.label}</Text>
                 </View>
               </Animated.View>
