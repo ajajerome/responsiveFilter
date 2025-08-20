@@ -1,4 +1,5 @@
 import type { Level, Position, Question } from '@/types/content';
+import { useAppStore } from '@/store/useAppStore';
 import { REGELFRAGOR } from '@/data/regler';
 import { SPELFORSTAELSE } from '@/data/spelforstaelse';
 import { FREEZE_QUESTIONS } from '@/data/freeze';
@@ -18,6 +19,15 @@ function pick<T>(arr: T[], n: number): T[] {
 }
 
 export async function fetchQuestions(level: Level, position?: Position, count = 5, excludeIds?: Set<string>, category?: string): Promise<Question[]> {
+  // Åldersanpassning: enkel mappning (7-9 -> 5/7-manna), (10-11 -> 7-manna), (12-13 -> 9-manna)
+  try {
+    const age = (useAppStore.getState()?.profile?.age as number) || undefined;
+    if (age) {
+      if (age >= 12) level = '9-manna';
+      else if (age >= 10) level = '7-manna';
+      else level = '5-manna';
+    }
+  } catch {}
   // Blanda riktiga dataset (regler/spelförståelse) med genererade
   const notSeen = (q: { id: string }) => !excludeIds || !excludeIds.has(q.id);
   const cat = (q: any) => !category || q.category === category;

@@ -17,6 +17,7 @@ type Profile = {
     shirtColor?: string;
   };
   favoritePosition?: Position;
+  age?: number;
 };
 
 type AppState = {
