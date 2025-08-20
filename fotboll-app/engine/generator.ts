@@ -74,12 +74,13 @@ export function generateOneXTwo(level: Level, position?: Position): OneXTwoQuest
   return q;
 }
 
-export function generateDragDrop(level: Level, position?: Position): DragDropQuestion {
+export function generateDragDrop(level: Level, position?: Position, category?: string): DragDropQuestion {
   const f = sample(LEVEL_FORMATIONS[level]);
   return {
     id: uid('dragDrop'),
     type: 'drag_drop',
     level,
+    category,
     position,
     question: `Dra spelaren till rätt yta: ${f.name}`,
     targetRect: f.target,
@@ -117,18 +118,20 @@ export function generateTactics(level: Level, position?: Position): TacticsQuest
   };
 }
 
-export function generateQuiz(level: Level, position?: Position): QuizQuestion {
-  return sample(QUIZ_TEMPLATES)(level, position);
+export function generateQuiz(level: Level, position?: Position, category?: string): QuizQuestion {
+  const q = sample(QUIZ_TEMPLATES)(level, position);
+  (q as any).category = category;
+  return q;
 }
 
-export function getRandomQuestion(level: Level, position?: Position): Question {
+export function getRandomQuestion(level: Level, position?: Position, category?: string): Question {
   const pick = sample(['one_x_two', 'drag_drop', 'quiz', 'tactics', 'freeze', 'pass'] as const);
   if (pick === 'one_x_two') return generateOneXTwo(level, position);
-  if (pick === 'drag_drop') return generateDragDrop(level, position);
+  if (pick === 'drag_drop') return generateDragDrop(level, position, category);
   if (pick === 'tactics') return generateTactics(level, position);
   if (pick === 'freeze') return generateMatchFreeze(level, position);
   if (pick === 'pass') return generatePass(level, position);
-  return generateQuiz(level, position);
+  return generateQuiz(level, position, category);
 }
 
 export function generateMatchFreeze(level: Level, position?: Position): MatchFreezeQuestion {

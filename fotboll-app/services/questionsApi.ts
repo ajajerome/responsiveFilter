@@ -103,7 +103,7 @@ export async function fetchQuestions(level: Level, position?: Position, count = 
     base.push(...extra);
   }
   // Sista utväg: generera
-  while (base.length < count) base.push(getRandomQuestion(level === '5-manna' ? '7-manna' : level, position));
+  while (base.length < count) base.push(getRandomQuestion(level === '5-manna' ? '7-manna' : level, position, category));
   const result = base.slice(0, count);
   // Om vi av någon anledning filtrerat bort allt, försök utan excludeIds en gång
   if (result.length === 0 && excludeIds && excludeIds.size > 0) {
