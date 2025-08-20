@@ -4,6 +4,7 @@ import { SPELFORSTAELSE } from '@/data/spelforstaelse';
 import { FREEZE_QUESTIONS } from '@/data/freeze';
 import { PASS_QUESTIONS } from '@/data/pass';
 import { getRandomQuestion } from '@/engine/generator';
+import { FORMATION_QUESTIONS } from '@/data/formation_quiz';
 
 function pick<T>(arr: T[], n: number): T[] {
   const a = [...arr];
@@ -21,11 +22,13 @@ export async function fetchQuestions(level: Level, position?: Position, count = 
   const spel = SPELFORSTAELSE.filter(q => q.level === level && (!position || q.position === position));
   const freeze = FREEZE_QUESTIONS.filter(q => q.level === level);
   const pass = PASS_QUESTIONS.filter(q => q.level === level);
+  const formation = FORMATION_QUESTIONS.filter(q => q.level === level);
   const base: Question[] = [
     ...pick(regler, Math.min(2, regler.length)),
     ...pick(spel, Math.min(2, spel.length)),
     ...pick(freeze, Math.min(1, freeze.length)),
     ...pick(pass, Math.min(1, pass.length)),
+    ...pick(formation, Math.min(1, formation.length)),
   ];
   while (base.length < count) base.push(getRandomQuestion(level, position));
   return base.slice(0, count);

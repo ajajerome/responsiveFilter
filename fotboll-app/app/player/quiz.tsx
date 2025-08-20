@@ -7,6 +7,7 @@ import DragDropQuestionView from "@/components/questions/DragDropQuestion";
 import MultipleChoiceQuestionView from "@/components/questions/MultipleChoiceQuestion";
 import MatchFreeze from "@/components/questions/MatchFreeze";
 import PassQuestionView from "@/components/questions/PassQuestion";
+import FormationQuiz from "@/components/questions/FormationQuiz";
 import type { Level, Question } from "@/types/content";
 import AnswerResult from "@/components/AnswerResult";
 
@@ -48,6 +49,9 @@ export default function QuizScreen() {
         )}
         {question && question.type === 'quiz' && (
           <MultipleChoiceQuestionView question={question} onAnswer={handleAnswered} />
+        )}
+        {question && question.type === 'formation_quiz' && (
+          <FormationQuiz question={question as any} onAnswer={handleAnswered} />
         )}
         {question && question.type === 'matchscenario' && 'ball' in question && 'correctPlayerIds' in question && (
           <MatchFreeze question={question as any} onAnswer={handleAnswered} />

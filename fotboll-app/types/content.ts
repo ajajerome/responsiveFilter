@@ -6,6 +6,7 @@ export type QuestionType =
   | 'one_x_two'
   | 'drag_drop'
   | 'matchscenario'
+  | 'formation_quiz'
   | 'bild'
   | 'taktikpussel'
   | 'fast_situation';
@@ -68,6 +69,14 @@ export interface PassQuestion extends BaseQuestion {
   correctTargetId: string;
 }
 
+export interface FormationQuizQuestion extends BaseQuestion {
+  type: 'formation_quiz';
+  // Normalized player positions to render the shown formation
+  players: Array<{ x: number; y: number }>;
+  options: string[];
+  correctIndex: number;
+}
+
 export interface OneXTwoQuestion extends BaseQuestion {
   type: 'one_x_two';
   // 0 -> '1', 1 -> 'X', 2 -> '2'
@@ -77,5 +86,5 @@ export interface OneXTwoQuestion extends BaseQuestion {
   explanation?: string;
 }
 
-export type Question = QuizQuestion | DragDropQuestion | OneXTwoQuestion | TacticsQuestion | MatchFreezeQuestion | PassQuestion;
+export type Question = QuizQuestion | DragDropQuestion | OneXTwoQuestion | TacticsQuestion | MatchFreezeQuestion | PassQuestion | FormationQuizQuestion;
 
