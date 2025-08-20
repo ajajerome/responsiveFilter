@@ -1,9 +1,8 @@
 [expo-cli] Starting Metro Bundler
-[expo-cli] iOS node_modules/expo-router/entry.js ▓▓▓▓▓▓▓▓▓▓▓▓▓▓░░ 90.2% (926/975)
+[expo-cli] iOS node_modules/expo-router/entry.js ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓░ 99.9% (1120/1120)
 [expo-cli] Android node_modules/expo-router/entry.js ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓░ 99.9% (1117/1117)
-[expo-cli] iOS Bundled 4232ms node_modules/expo-router/entry.js (975 modules)
-[expo-cli] Android Bundled 6457ms node_modules/expo-router/entry.js (1117 modules)
-[expo-cli] Android node_modules/expo-router/entry.js ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓░ 99.9% (1117/1117)
+[expo-cli] iOS Bundled 3716ms node_modules/expo-router/entry.js (1120 modules)
+[expo-cli] Android Bundled 5896ms node_modules/expo-router/entry.js (1117 modules)
 [expo-cli] Creating asset map
 [expo-cli] 
 [expo-cli] › Assets (35):
@@ -25,12 +24,12 @@
 [expo-cli] node_modules/expo-router/assets/unmatched.png (4.75 kB)
 [expo-cli] 
 [expo-cli] › ios bundles (2):
-[expo-cli] _expo/static/js/ios/entry-281a718b8f70d4735a349b6a4109de51.hbc (1.7 MB)
-[expo-cli] _expo/static/js/ios/entry-281a718b8f70d4735a349b6a4109de51.hbc.map (6.51 MB)
+[expo-cli] _expo/static/js/ios/entry-ad64929fdeb1c56cff53d09b1e0ce4fd.hbc (1.7 MB)
+[expo-cli] _expo/static/js/ios/entry-ad64929fdeb1c56cff53d09b1e0ce4fd.hbc.map (6.51 MB)
 [expo-cli] 
 [expo-cli] › android bundles (2):
-[expo-cli] _expo/static/js/android/entry-524899cb06d08203fc5eaec2c885ce69.hbc (1.7 MB)
-[expo-cli] _expo/static/js/android/entry-524899cb06d08203fc5eaec2c885ce69.hbc.map (6.51 MB)
+[expo-cli] _expo/static/js/android/entry-65910a271a3f8dc6f9f009c029f7d810.hbc (1.7 MB)
+[expo-cli] _expo/static/js/android/entry-65910a271a3f8dc6f9f009c029f7d810.hbc.map (6.51 MB)
 [expo-cli] 
 [expo-cli] › Files (2):
 [expo-cli] assetmap.json (11 kB)
@@ -44,12 +43,12 @@
 Branch             production
 Runtime version    1.0.0
 Platform           android, ios
-Update group ID    b7985276-b317-49d4-8f1b-ee2f3fda7202
-Android update ID  426f0ac3-7d14-4a8f-989d-fb0d4015f507
-iOS update ID      53bebda3-84e6-40da-b91f-dfc4e6147069
-Message            production channel sync
-Commit             1816cd38abf18e4f6257e236759a376db7455097*
-EAS Dashboard      https://expo.dev/accounts/jappmaster/projects/fotbollstranaren/updates/b7985276-b317-49d4-8f1b-ee2f3fda7202
+Update group ID    19b1f745-2a36-4d03-832b-24ea8cb9aa1b
+Android update ID  029f7768-629a-4a5a-8a39-71dd1d0ebb18
+iOS update ID      dd9dabdb-8a3a-4a35-890d-6a8929f005ed
+Message            UI: Next flow fix, centered layouts, MatchFreeze hint
+Commit             47976e663c99c9d5bbe630553a9619c98420d0b7*
+EAS Dashboard      https://expo.dev/accounts/jappmaster/projects/fotbollstranaren/updates/19b1f745-2a36-4d03-832b-24ea8cb9aa1b
 
 No compatible builds found for the following fingerprints:
     iOS fingerprint:  72f5d15645b71d1a7efe0c2bb2533a3b51fda49e
