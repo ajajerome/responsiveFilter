@@ -1,5 +1,5 @@
 import { Link } from "expo-router";
-import { Text, StyleSheet } from "react-native";
+import { Text, StyleSheet, View } from "react-native";
 import Screen from "@/components/ui/Screen";
 import Card from "@/components/ui/Card";
 import Button from "@/components/ui/Button";
