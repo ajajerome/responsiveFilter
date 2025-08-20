@@ -26,6 +26,7 @@ type AppState = {
   badges: string[];
   actions: {
     setFavoritePosition: (pos: Position) => void;
+    setTeamColor: (hex: string) => void;
     addXp: (level: Level, amount: number) => void;
     markQuestionCompleted: (level: Level, questionId: string) => void;
     unlockLevel: (level: Level) => void;
@@ -48,6 +49,8 @@ export const useAppStore = create<AppState>()(
       actions: {
         setFavoritePosition: (pos) =>
           set((s) => ({ profile: { ...s.profile, favoritePosition: pos } })),
+        setTeamColor: (hex) =>
+          set((s) => ({ profile: { ...s.profile, avatar: { ...(s.profile.avatar || {}), shirtColor: hex } } })),
         addXp: (level, amount) =>
           set((s) => {
             const lv = s.progress[level] ?? { unlocked: level === '5-manna', xp: 0, completedQuestionIds: [] };

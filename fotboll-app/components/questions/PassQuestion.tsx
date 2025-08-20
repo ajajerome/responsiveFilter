@@ -4,11 +4,13 @@ import Svg, { Circle, Line } from 'react-native-svg';
 import type { PassQuestion } from '@/types/content';
 import { playLocal } from '@/utils/sound';
 import MatchPitch from '@/features/pitch/MatchPitch';
+import { useAppStore } from '@/store/useAppStore';
 
 type Props = { question: PassQuestion; onAnswer: (isCorrect: boolean) => void };
 
 export default function PassQuestionView({ question, onAnswer }: Props) {
   const w = 320, h = 220;
+  const teamColor = useAppStore((s) => s.profile.avatar?.shirtColor) || '#4da3ff';
   const [line, setLine] = useState<{ x1: number; y1: number; x2: number; y2: number } | null>(null);
   const pan = useRef(
     PanResponder.create({
@@ -47,9 +49,12 @@ export default function PassQuestionView({ question, onAnswer }: Props) {
       <Text style={styles.title}>{question.question}</Text>
       <View {...pan.panHandlers}>
         <MatchPitch width={w} height={h} />
+        {/* Goalkeepers direction */}
+        <View style={{ position: 'absolute', left: w * 0.48, top: 4, width: 24, height: 36, borderRadius: 6, backgroundColor: '#ff3b30', borderWidth: 2, borderColor: '#111' }} />
+        <View style={{ position: 'absolute', left: w * 0.48, bottom: 4, width: 24, height: 36, borderRadius: 6, backgroundColor: teamColor, borderWidth: 2, borderColor: '#e7ebf3' }} />
         <Svg width={w} height={h} style={{ position: 'absolute', left: 0, top: 0 }}>
           {question.players.map(p => (
-            <Circle key={p.id} cx={p.x * w} cy={p.y * h} r={12} fill={p.team === 'home' ? '#4da3ff' : '#ff3b30'} />
+            <Circle key={p.id} cx={p.x * w} cy={p.y * h} r={12} fill={p.team === 'home' ? teamColor : '#ff3b30'} />
           ))}
           <Circle cx={holder.x * w} cy={holder.y * h} r={6} fill="#ffffff" />
           {line && <Line x1={line.x1} y1={line.y1} x2={line.x2} y2={line.y2} stroke="#fff" strokeWidth={2} />}

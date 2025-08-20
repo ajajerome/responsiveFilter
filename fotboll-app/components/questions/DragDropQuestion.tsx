@@ -6,6 +6,7 @@ import { arrowsSatisfy } from '@/features/tactics/vectorValidation';
 import Button from '@/components/ui/Button';
 import * as Haptics from 'expo-haptics';
 import { playLocal } from '@/utils/sound';
+import { useAppStore } from '@/store/useAppStore';
 import type { DragDropQuestion, TacticsQuestion } from '@/types/content';
 
 type Props = {
@@ -16,6 +17,7 @@ type Props = {
 export default function DragDropQuestionView({ question, onAnswer }: Props) {
   const w = 320, h = 220;
   const [pitchSize, setPitchSize] = useState({ width: w, height: h });
+  const teamColor = useAppStore((s) => s.profile.avatar?.shirtColor) || '#4da3ff';
   const [arrows, setArrows] = useState<DrawnArrow[]>([]);
   const position = useRef(new Animated.ValueXY({
     x: 0,
@@ -146,6 +148,9 @@ export default function DragDropQuestionView({ question, onAnswer }: Props) {
         }}
       >
         <MatchPitch width={w} height={h} />
+        {/* Goalkeepers direction */}
+        <View style={{ position: 'absolute', left: w * 0.48, top: 4, width: 24, height: 36, borderRadius: 6, backgroundColor: '#ff3b30', borderWidth: 2, borderColor: '#111' }} />
+        <View style={{ position: 'absolute', left: w * 0.48, bottom: 4, width: 24, height: 36, borderRadius: 6, backgroundColor: teamColor, borderWidth: 2, borderColor: '#e7ebf3' }} />
         {'targetRect' in question && (
           <View
             style={{
@@ -188,7 +193,7 @@ export default function DragDropQuestionView({ question, onAnswer }: Props) {
             top: startPx.y - 18,
           }}
         >
-          <View style={[styles.player, { backgroundColor: '#4da3ff', borderColor: '#e7ebf3' }]}>
+          <View style={[styles.player, { backgroundColor: teamColor, borderColor: '#e7ebf3' }]}>
             <Text style={styles.playerText}>{'playerLabel' in question ? (question.playerLabel ?? 'P') : 'P'}</Text>
           </View>
         </Animated.View>

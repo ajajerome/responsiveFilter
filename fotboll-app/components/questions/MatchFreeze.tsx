@@ -4,11 +4,13 @@ import type { MatchFreezeQuestion } from '@/types/content';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { playLocal } from '@/utils/sound';
 import MatchPitch from '@/features/pitch/MatchPitch';
+import { useAppStore } from '@/store/useAppStore';
 
 type Props = { question: MatchFreezeQuestion; onAnswer: (isCorrect: boolean) => void };
 
 export default function MatchFreeze({ question, onAnswer }: Props) {
 	const w = 320, h = 220;
+	const teamColor = useAppStore((s) => s.profile.avatar?.shirtColor) || '#4da3ff';
 	useEffect(() => {
 		playLocal(require('@/assets/sfx/whistle.mp3'));
 	}, []);
@@ -77,6 +79,9 @@ export default function MatchFreeze({ question, onAnswer }: Props) {
 			</Text>
 			<View style={{ width: w, height: h, position: 'relative' }}>
 				<MatchPitch width={w} height={h} />
+				{/* Goalkeepers to indicate direction */}
+				<View style={{ position: 'absolute', left: w * 0.48, top: 4, width: 24, height: 36, borderRadius: 6, backgroundColor: '#ff3b30', borderWidth: 2, borderColor: '#111' }} />
+				<View style={{ position: 'absolute', left: w * 0.48, bottom: 4, width: 24, height: 36, borderRadius: 6, backgroundColor: teamColor, borderWidth: 2, borderColor: '#e7ebf3' }} />
 				<Svg width={w} height={h} style={{ position: 'absolute', left: 0, top: 0 }}>
 					<Circle cx={question.ball.x * w} cy={question.ball.y * h} r={5} fill="#ffffff" />
 				</Svg>
@@ -85,7 +90,7 @@ export default function MatchFreeze({ question, onAnswer }: Props) {
 						key={p.id}
 						onPress={() => check(p.id)}
 						hitSlop={12}
-						style={{ position: 'absolute', left: p.x * w - 18, top: p.y * h - 18, width: 36, height: 36, borderRadius: 18, backgroundColor: p.team === 'home' ? '#4da3ff' : '#ff3b30', alignItems: 'center', justifyContent: 'center', borderWidth: 2, borderColor: p.team === 'home' ? '#e7ebf3' : '#111' }}
+						style={{ position: 'absolute', left: p.x * w - 12, top: p.y * h - 18, width: 24, height: 36, borderRadius: 6, backgroundColor: p.team === 'home' ? teamColor : '#ff3b30', alignItems: 'center', justifyContent: 'center', borderWidth: 2, borderColor: p.team === 'home' ? '#e7ebf3' : '#111' }}
 					/>
 				))}
 				<View style={{ position: 'absolute', right: 6, top: 6, backgroundColor: 'rgba(0,0,0,0.35)', paddingHorizontal: 6, paddingVertical: 4, borderRadius: 8 }}>
