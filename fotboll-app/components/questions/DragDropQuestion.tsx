@@ -12,7 +12,8 @@ type Props = {
 };
 
 export default function DragDropQuestionView({ question, onAnswer }: Props) {
-  const [pitchSize, setPitchSize] = useState({ width: 0, height: 0 });
+  const w = 320, h = 220;
+  const [pitchSize, setPitchSize] = useState({ width: w, height: h });
   const [arrows, setArrows] = useState<DrawnArrow[]>([]);
   const position = useRef(new Animated.ValueXY({
     x: 0,
@@ -107,16 +108,17 @@ export default function DragDropQuestionView({ question, onAnswer }: Props) {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>{question.question}</Text>
-      <Text style={styles.hint}>Dra spelaren till markerad yta. Tryck Kontrollera för fler spelare.</Text>
+      <Text style={styles.expl}>
+        Dra spelaren till markerad yta. {'explanation' in question && question.explanation ? `\n${question.explanation}` : ''}
+      </Text>
       <View
-        style={styles.pitch}
-        onLayout={(e) => {
-          const { width, height } = e.nativeEvent.layout;
-          setPitchSize({ width, height });
+        style={[styles.pitch, { width: w, height: h }]}
+        onLayout={() => {
+          setPitchSize({ width: w, height: h });
           position.setValue({ x: 0, y: 0 });
         }}
       >
-        <MatchPitch width={pitchSize.width || 1} height={pitchSize.height || 1} />
+        <MatchPitch width={w} height={h} />
         {'targetRect' in question && (
           <View
             style={{
@@ -193,7 +195,20 @@ export default function DragDropQuestionView({ question, onAnswer }: Props) {
           );
         })}
         {/* Pilar av – förenklat läge */}
-        <ArrowsLayer width={pitchSize.width || 1} height={pitchSize.height || 1} onArrowsChanged={setArrows} interactive={false} />
+        <ArrowsLayer width={w} height={h} onArrowsChanged={setArrows} interactive={false} />
+
+        {/* Legend overlay */}
+        <View style={{ position: 'absolute', right: 6, top: 6, backgroundColor: 'rgba(0,0,0,0.35)', paddingHorizontal: 6, paddingVertical: 4, borderRadius: 8 }}>
+          <Text style={{ color: 'white', fontWeight: '700' }}>Legend</Text>
+          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
+            <View style={{ width: 10, height: 10, borderRadius: 5, backgroundColor: '#ff9f0a' }} />
+            <Text style={{ color: 'white' }}>Spelare</Text>
+          </View>
+          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
+            <View style={{ width: 10, height: 10, borderRadius: 5, backgroundColor: '#34c759' }} />
+            <Text style={{ color: 'white' }}>Målzon</Text>
+          </View>
+        </View>
       </View>
       {isMulti && (
         <Button title="Kontrollera" onPress={() => onAnswer(validateAllPlayersAndArrows())} />
@@ -206,7 +221,6 @@ const styles = StyleSheet.create({
   container: { gap: 12 },
   title: { fontSize: 18, fontWeight: '700' },
   pitch: {
-    height: 260,
     borderRadius: 12,
     backgroundColor: '#0a7d2a',
     overflow: 'hidden',
@@ -224,6 +238,6 @@ const styles = StyleSheet.create({
     borderColor: '#c87f08',
   },
   playerText: { color: 'white', fontWeight: '700' },
-  hint: { color: '#e7ebf3' },
+  expl: { color: '#e7ebf3', backgroundColor: 'rgba(0,0,0,0.25)', padding: 8, borderRadius: 8 },
 });
 
