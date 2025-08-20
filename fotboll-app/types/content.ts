@@ -36,6 +36,8 @@ export interface DragDropQuestion extends BaseQuestion {
   start: { x: number; y: number };
   // Optional label for the draggable player marker
   playerLabel?: string;
+  // Optional opponent markers (normalized positions)
+  opponents?: Array<{ x: number; y: number }>;
 }
 
 export interface VectorSpec {
@@ -53,6 +55,7 @@ export interface TacticsQuestion extends BaseQuestion {
   players: Array<{ id: string; label: string; start: { x: number; y: number }; targetId?: string }>;
   targets?: Array<{ id: string; rect: { x: number; y: number; width: number; height: number } }>;
   expectedVectors?: VectorSpec[];
+  opponents?: Array<{ x: number; y: number }>;
 }
 
 export interface MatchFreezeQuestion extends BaseQuestion {

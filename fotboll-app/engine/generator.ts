@@ -76,17 +76,26 @@ export function generateOneXTwo(level: Level, position?: Position): OneXTwoQuest
 
 export function generateDragDrop(level: Level, position?: Position, category?: string): DragDropQuestion {
   const f = sample(LEVEL_FORMATIONS[level]);
-  return {
+  const base: DragDropQuestion = {
     id: uid('dragDrop'),
     type: 'drag_drop',
     level,
     category,
     position,
-    question: `Dra spelaren till rätt yta: ${f.name}`,
+    question: category === 'forsvar' || category === 'fasta'
+      ? `Flytta spelaren så den täcker rätt yta (${f.name}). Motståndare hotar i närheten.`
+      : `Dra spelaren till rätt yta: ${f.name}`,
     targetRect: f.target,
     start: { x: 0.5, y: 0.85 },
     playerLabel: 'P',
   };
+  if (category === 'forsvar') {
+    base.opponents = [ { x: f.target.x + f.target.width + 0.08, y: f.target.y + 0.02 } ];
+  }
+  if (category === 'fasta') {
+    base.opponents = [ { x: 0.92, y: 0.22 } ];
+  }
+  return base;
 }
 
 export function generateTactics(level: Level, position?: Position): TacticsQuestion {

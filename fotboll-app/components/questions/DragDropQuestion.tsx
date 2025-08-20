@@ -160,6 +160,9 @@ export default function DragDropQuestionView({ question, onAnswer }: Props) {
             }}
           />
         )}
+        {'opponents' in question && (question as any).opponents?.map((o: any, i: number) => (
+          <View key={`opp-${i}`} style={{ position: 'absolute', left: o.x * pitchSize.width - 10, top: o.y * pitchSize.height - 10, width: 20, height: 20, borderRadius: 10, backgroundColor: '#ff3b30', borderWidth: 2, borderColor: '#111' }} />
+        ))}
         {'targets' in question && question.targets?.map(t => (
           <View
             key={t.id}
