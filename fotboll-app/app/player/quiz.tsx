@@ -192,7 +192,7 @@ export default function QuizScreen() {
             {question && question.type === 'formation_quiz' && (
               <FormationQuiz question={question as any} onAnswer={handleAnswered} />
             )}
-            {question && question.type === 'matchscenario' && 'ball' in question && 'correctPlayerIds' in question && (
+            {question && question.type === 'matchscenario' && !('ballHolderId' in question) && (
               <MatchFreeze question={question as any} onAnswer={handleAnswered} />
             )}
             {question && question.type === 'matchscenario' && 'ballHolderId' in question && (
