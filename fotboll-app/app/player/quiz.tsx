@@ -16,7 +16,7 @@ import Tag from "@/components/ui/Tag";
 import Screen from "@/components/ui/Screen";
 
 export default function QuizScreen() {
-  const { level } = useLocalSearchParams<{ level?: Level }>();
+  const { level, category } = useLocalSearchParams<{ level?: Level, category?: string }>();
   const addXp = useAppStore((s) => s.actions.addXp);
   const markCompleted = useAppStore((s) => s.actions.markQuestionCompleted);
   const [counter, setCounter] = useState(0);

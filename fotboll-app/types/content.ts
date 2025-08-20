@@ -18,6 +18,7 @@ export interface BaseQuestion {
   position?: Position;
   question: string;
   imageUrl?: string;
+  category?: string;
   explanation?: string;
 }
 

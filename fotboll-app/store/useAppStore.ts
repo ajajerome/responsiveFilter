@@ -7,6 +7,7 @@ type LevelProgress = {
   unlocked: boolean;
   xp: number;
   completedQuestionIds: string[];
+  categoryProgress?: Record<string, { completed: number; total: number }>;
 };
 
 type Profile = {
