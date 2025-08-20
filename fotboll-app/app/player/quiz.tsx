@@ -43,10 +43,7 @@ export default function QuizScreen() {
   const question: Question | null = queue && queue.length ? queue[0] : null;
   const loadingNext = fetching;
 
-  const remaining = Math.max(0, SESSION_TARGET - servedCount - (queue?.length || 0));
-
   const getMore = useCallback(async () => {
-    // Fetch up to remaining questions, in batches
     if (servedCount >= SESSION_TARGET) return;
     setFetching(true);
     try {
@@ -78,47 +75,47 @@ export default function QuizScreen() {
   }, [level, category]);
 
   useEffect(() => {
-    // Top-up if our queue is running low and session not done
     if ((queue?.length || 0) <= 2 && servedCount < SESSION_TARGET && !fetching) {
       getMore();
     }
   }, [queue?.length, servedCount, fetching, getMore]);
 
+  const advanceNow = useCallback(() => {
+    setLastCorrect(null);
+    setQueue((prev) => {
+      const next = prev && prev.length ? prev.slice(1) : prev;
+      setServedCount((c) => c + 1);
+      return next;
+    });
+  }, []);
+
   const handleAnswered = useCallback((isCorrect: boolean) => {
     setLastCorrect(isCorrect);
-    // Award 1 XP per correct immediately
-    if (question && isCorrect) {
-      addXp(question.level, 1);
-    }
-    // Update category progress immediately
-    if (question && category) incCat(question.level, String(category), 1);
-
-    // Mark completed and update seen
     if (question) {
+      // live XP per correct
+      if (isCorrect) {
+        addXp(question.level, 1);
+        setCorrectCount((c) => c + 1);
+      }
+      // progress by category
+      if (category) incCat(question.level, String(category), 1);
+      // mark completed and record seen
       markCompleted(question.level, question.id);
       setSeenIds((prev) => new Set(prev).add(question.id));
     }
-
-    // Auto-advance after short delay
+    // auto-advance with short delay and bounce incoming
     setTimeout(() => {
-      setLastCorrect(null);
-      setQueue((prev) => {
-        const next = prev && prev.length ? prev.slice(1) : prev;
-        setServedCount((c) => c + 1);
-        return next;
-      });
+      advanceNow();
     }, 700);
-  }, [question, addXp, category, incCat, markCompleted]);
+  }, [question, addXp, category, incCat, markCompleted, advanceNow]);
 
   // When session completes, grant bonus if perfect and restart next session automatically
   useEffect(() => {
     if (servedCount >= SESSION_TARGET) {
       if (correctCount === SESSION_TARGET) {
-        // Use current level fallback if no current question
         const lvl = (question?.level as Level) || (level as Level) || '5-manna';
         addXp(lvl, 5);
       }
-      // Restart session
       (async () => {
         setSeenIds(new Set());
         setServedCount(0);
@@ -134,16 +131,11 @@ export default function QuizScreen() {
     }
   }, [servedCount]);
 
-  // Track correctCount based on lastCorrect transitions
-  useEffect(() => {
-    if (lastCorrect === true) setCorrectCount((c) => c + 1);
-  }, [lastCorrect]);
-
   return (
     <Screen>
       <View style={{ flex: 1 }}>
         <ScrollView ref={scrollRef} contentContainerStyle={{ flexGrow: 1, justifyContent: 'center', paddingBottom: 96 }} keyboardShouldPersistTaps="handled">
-          <View style={{ alignItems: 'flex-start', marginBottom: 8 }}>
+          <View style={{ alignItems: 'flex-start', marginBottom: 5 }}>
             <XpBadge />
             <Tag label={question?.level ?? ''} />
           </View>
@@ -171,7 +163,7 @@ export default function QuizScreen() {
         </ScrollView>
         {lastCorrect !== null && (
           <View pointerEvents="box-none" style={{ position: 'absolute', left: 16, right: 16, bottom: 16 }}>
-            <AnswerResult correct={lastCorrect} message={question?.explanation} onNext={() => handleAnswered(lastCorrect)} disabled={loadingNext} />
+            <AnswerResult correct={lastCorrect} message={question?.explanation} onNext={advanceNow} disabled={loadingNext} />
           </View>
         )}
       </View>
