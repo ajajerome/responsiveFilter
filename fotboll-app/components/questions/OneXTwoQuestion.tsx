@@ -1,6 +1,8 @@
 import { View, Text, StyleSheet } from 'react-native';
 import type { OneXTwoQuestion } from '@/types/content';
 import Button from '@/components/ui/Button';
+import Card from '@/components/ui/Card';
+import { colors } from '@/theme';
 
 type Props = {
   question: OneXTwoQuestion;
@@ -8,28 +10,24 @@ type Props = {
 };
 
 export default function OneXTwoQuestionView({ question, onAnswer }: Props) {
-  const labels = ['1', 'X', '2'] as const;
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>{question.question}</Text>
-      <View style={styles.column}
-      >
-        {labels.map((label, idx) => (
-          <Button key={label} title={`${label}: ${question.answers[idx]}`} onPress={() => onAnswer(idx === question.correctIndex)} />
-        ))}
+    <Card>
+      <View style={styles.container}>
+        <Text style={styles.title}>{question.question}</Text>
+        {question.explanation ? <Text style={styles.expl}>{question.explanation}</Text> : null}
+        <View style={{ gap: 10 }}>
+          {question.answers.map((opt, idx) => (
+            <Button key={idx} title={opt} onPress={() => onAnswer(idx === question.correctIndex)} />
+          ))}
+        </View>
       </View>
-      {question.explanation ? <Text style={styles.hint}>Tips: {question.explanation}</Text> : null}
-    </View>
+    </Card>
   );
 }
 
 const styles = StyleSheet.create({
   container: { gap: 12 },
-  title: { fontSize: 18, fontWeight: '700' },
-  column: { flexDirection: 'column', gap: 12 },
-  choice: {},
-  choiceText: { },
-  choiceSub: { },
-  hint: { marginTop: 8, color: '#444' },
+  title: { fontSize: 18, fontWeight: '800', color: colors.text },
+  expl: { color: colors.muted },
 });
 
