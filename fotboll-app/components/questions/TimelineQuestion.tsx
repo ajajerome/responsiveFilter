@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { View, Text, StyleSheet, Animated } from 'react-native';
+import { View, Text, StyleSheet, Animated, Easing } from 'react-native';
 import Svg, { Circle } from 'react-native-svg';
 import type { TimelineQuestion } from '@/types/content';
 import MatchPitch from '@/features/pitch/MatchPitch';
@@ -9,14 +9,16 @@ type Props = { question: TimelineQuestion; onAnswer: (isCorrect: boolean) => voi
 
 export default function TimelineQuestionView({ question, onAnswer }: Props) {
   const w = 320, h = 220;
+  // Absolute position ball
   const ball = useRef(new Animated.ValueXY({ x: question.ball.x * w, y: question.ball.y * h })).current;
   const [paused, setPaused] = useState(false);
 
   useEffect(() => {
-    // start animation then pause halfway to simulate "utspark börjar slås"
     const toX = question.animTo.x * w;
     const toY = question.animTo.y * h;
-    Animated.timing(ball, { toValue: { x: (ball as any).x._value + (toX - (ball as any).x._value) * 0.35, y: (ball as any).y._value + (toY - (ball as any).y._value) * 0.35 }, duration: Math.max(200, question.animTo.durationMs * 0.35), useNativeDriver: false }).start(() => setPaused(true));
+    const midX = (question.ball.x * w) + (toX - (question.ball.x * w)) * 0.4;
+    const midY = (question.ball.y * h) + (toY - (question.ball.y * h)) * 0.4;
+    Animated.timing(ball, { toValue: { x: midX, y: midY }, duration: Math.max(250, question.animTo.durationMs * 0.4), easing: Easing.out(Easing.quad), useNativeDriver: false }).start(() => setPaused(true));
   }, [question.id]);
 
   return (
@@ -26,11 +28,11 @@ export default function TimelineQuestionView({ question, onAnswer }: Props) {
       <View style={{ width: w, height: h }}>
         <MatchPitch width={w} height={h} />
         <Svg width={w} height={h} style={{ position: 'absolute', left: 0, top: 0 }}>
-          <Circle cx={(ball as any).x._value} cy={(ball as any).y._value} r={5} fill="#ffffff" />
           {question.players?.map((p) => (
             <Circle key={p.id} cx={p.x * w} cy={p.y * h} r={12} fill={p.team === 'home' ? '#4da3ff' : '#ff3b30'} />
           ))}
         </Svg>
+        <Animated.View style={{ position: 'absolute', width: 10, height: 10, borderRadius: 5, backgroundColor: '#ffffff', transform: [{ translateX: ball.x }, { translateY: ball.y }] }} />
       </View>
       {paused && (
         <View style={{ gap: 8 }}>
