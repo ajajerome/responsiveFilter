@@ -25,10 +25,12 @@ export default function QuizScreen() {
   const [seenIds, setSeenIds] = useState<Set<string>>(new Set());
   useEffect(() => {
     (async () => {
-      const q = await fetchQuestions(level ?? '5-manna', undefined, 5, seenIds);
+      // Reset session when level changes
+      setSeenIds(new Set());
+      const q = await fetchQuestions(level ?? '5-manna', undefined, 5, undefined);
       setQueue(q);
     })();
-  }, [level, counter]);
+  }, [level]);
   const question: Question | null = queue && queue.length ? queue[0] : null;
   const loadingNext = !question;
 
@@ -48,8 +50,16 @@ export default function QuizScreen() {
     setQueue((prev) => {
       const next = prev && prev.length ? prev.slice(1) : prev;
       if (!next || next.length === 0) {
-        // Fetch a fresh batch immediately to avoid race
-        fetchQuestions(level ?? '5-manna', undefined, 5, question ? new Set(seenIds).add(question.id) : seenIds).then((q) => setQueue(q));
+        const filter = question ? new Set(seenIds).add(question.id) : seenIds;
+        fetchQuestions(level ?? '5-manna', undefined, 5, filter).then((q) => {
+          if (q && q.length > 0) setQueue(q);
+          else {
+            // fallback: try without filter after small delay
+            setTimeout(() => {
+              fetchQuestions(level ?? '5-manna', undefined, 5, undefined).then(setQueue);
+            }, 200);
+          }
+        });
       }
       return next;
     });

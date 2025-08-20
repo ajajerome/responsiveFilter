@@ -1,2 +1,40 @@
+[expo-cli] Starting Metro Bundler
+[expo-cli] iOS node_modules/expo-router/entry.js ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓░ 99.8% (1106/1107)
+[expo-cli] Android node_modules/expo-router/entry.js ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓░ 99.9% (1115/1115)
+[expo-cli] iOS Bundled 3657ms node_modules/expo-router/entry.js (1107 modules)
+[expo-cli] Android Bundled 5765ms node_modules/expo-router/entry.js (1115 modules)
+[expo-cli] Creating asset map
+[expo-cli] 
+[expo-cli] › Assets (35):
+[expo-cli] assets/sfx/fail.mp3 (275 B)
+[expo-cli] assets/sfx/kick.mp3 (243 B)
+[expo-cli] assets/sfx/success.mp3 (243 B)
+[expo-cli] assets/sfx/whistle.mp3 (243 B)
+[expo-cli] node_modules/@react-navigation/elements/lib/module/assets/back-icon-mask.png (653 B)
+[expo-cli] node_modules/@react-navigation/elements/lib/module/assets/back-icon.png (8 variations | 359 B)
+[expo-cli] node_modules/@react-navigation/elements/lib/module/assets/clear-icon.png (4 variations | 425 B)
+[expo-cli] node_modules/@react-navigation/elements/lib/module/assets/close-icon.png (4 variations | 235 B)
+[expo-cli] node_modules/@react-navigation/elements/lib/module/assets/search-icon.png (7 variations | 592 B)
+[expo-cli] node_modules/expo-router/assets/arrow_down.png (9.46 kB)
+[expo-cli] node_modules/expo-router/assets/error.png (469 B)
+[expo-cli] node_modules/expo-router/assets/file.png (138 B)
+[expo-cli] node_modules/expo-router/assets/forward.png (188 B)
+[expo-cli] node_modules/expo-router/assets/pkg.png (364 B)
+[expo-cli] node_modules/expo-router/assets/sitemap.png (465 B)
+[expo-cli] node_modules/expo-router/assets/unmatched.png (4.75 kB)
+[expo-cli] 
+[expo-cli] › ios bundles (2):
+[expo-cli] _expo/static/js/ios/entry-884ac7aa55346a11971ab975d92e9e26.hbc (1.69 MB)
+[expo-cli] _expo/static/js/ios/entry-884ac7aa55346a11971ab975d92e9e26.hbc.map (6.49 MB)
+[expo-cli] 
+[expo-cli] › android bundles (2):
+[expo-cli] _expo/static/js/android/entry-cf23016171d22f9a58d0ad8765cf3d05.hbc (1.68 MB)
+[expo-cli] _expo/static/js/android/entry-cf23016171d22f9a58d0ad8765cf3d05.hbc.map (6.48 MB)
+[expo-cli] 
+[expo-cli] › Files (2):
+[expo-cli] assetmap.json (11 kB)
+[expo-cli] metadata.json (4.02 kB)
+[expo-cli] 
+[expo-cli] Exported: dist
 
 request to https://api.expo.dev/graphql failed, reason: 
