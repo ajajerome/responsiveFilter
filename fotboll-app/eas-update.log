@@ -293,3 +293,121 @@ No compatible builds found for the following fingerprints:
     Android fingerprint:  87f7b35453caee3e12e1e4a184b918faf061a017
     URL                :  https://expo.dev/accounts/jappmaster/projects/fotbollstranaren/fingerprints/87f7b35453caee3e12e1e4a184b918faf061a017
 
+[expo-cli] Starting Metro Bundler
+[expo-cli] iOS node_modules/expo-router/entry.js ▓▓▓▓▓▓▓▓▓▓▓▓▓▓░░ 88.7% ( 963/1044)
+[expo-cli] Android node_modules/expo-router/entry.js ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓░ 99.9% (1117/1117)
+[expo-cli] iOS Bundled 3642ms node_modules/expo-router/entry.js (1044 modules)
+[expo-cli] Android Bundled 5755ms node_modules/expo-router/entry.js (1117 modules)
+[expo-cli] Creating asset map
+[expo-cli] 
+[expo-cli] › Assets (35):
+[expo-cli] assets/sfx/fail.mp3 (275 B)
+[expo-cli] assets/sfx/kick.mp3 (243 B)
+[expo-cli] assets/sfx/success.mp3 (243 B)
+[expo-cli] assets/sfx/whistle.mp3 (243 B)
+[expo-cli] node_modules/@react-navigation/elements/lib/module/assets/back-icon-mask.png (653 B)
+[expo-cli] node_modules/@react-navigation/elements/lib/module/assets/back-icon.png (8 variations | 359 B)
+[expo-cli] node_modules/@react-navigation/elements/lib/module/assets/clear-icon.png (4 variations | 425 B)
+[expo-cli] node_modules/@react-navigation/elements/lib/module/assets/close-icon.png (4 variations | 235 B)
+[expo-cli] node_modules/@react-navigation/elements/lib/module/assets/search-icon.png (7 variations | 592 B)
+[expo-cli] node_modules/expo-router/assets/arrow_down.png (9.46 kB)
+[expo-cli] node_modules/expo-router/assets/error.png (469 B)
+[expo-cli] node_modules/expo-router/assets/file.png (138 B)
+[expo-cli] node_modules/expo-router/assets/forward.png (188 B)
+[expo-cli] node_modules/expo-router/assets/pkg.png (364 B)
+[expo-cli] node_modules/expo-router/assets/sitemap.png (465 B)
+[expo-cli] node_modules/expo-router/assets/unmatched.png (4.75 kB)
+[expo-cli] 
+[expo-cli] › ios bundles (2):
+[expo-cli] _expo/static/js/ios/entry-aa5af5af069fda30737eedc7c45b8e55.hbc (1.71 MB)
+[expo-cli] _expo/static/js/ios/entry-aa5af5af069fda30737eedc7c45b8e55.hbc.map (6.52 MB)
+[expo-cli] 
+[expo-cli] › android bundles (2):
+[expo-cli] _expo/static/js/android/entry-e8a3810596febbf36f1d67a0196fdce2.hbc (1.7 MB)
+[expo-cli] _expo/static/js/android/entry-e8a3810596febbf36f1d67a0196fdce2.hbc.map (6.52 MB)
+[expo-cli] 
+[expo-cli] › Files (2):
+[expo-cli] assetmap.json (11 kB)
+[expo-cli] metadata.json (4.02 kB)
+[expo-cli] 
+[expo-cli] Exported: dist
+✔ Uploaded 2 app bundles
+✔ Uploading assets skipped - no new assets found
+ℹ 31 iOS assets, 31 Android assets (maximum: 2000 total per update). Learn more about asset limits: https://expo.fyi/eas-update-asset-limits
+
+Branch             production
+Runtime version    1.0.0
+Platform           android, ios
+Update group ID    3bd0c51e-a054-4eba-a034-9fd545467beb
+Android update ID  86d99505-c184-432e-a3aa-8cd52d27a67c
+iOS update ID      bf9701e7-9c5d-4b5e-9166-a7bf460ac110
+Message            Results overlay, top tags, centered home, session counter & back button
+Commit             8eb01355596e1e14dac6e29e1db9ca67981b5f35*
+EAS Dashboard      https://expo.dev/accounts/jappmaster/projects/fotbollstranaren/updates/3bd0c51e-a054-4eba-a034-9fd545467beb
+
+No compatible builds found for the following fingerprints:
+    iOS fingerprint:  72f5d15645b71d1a7efe0c2bb2533a3b51fda49e
+    URL            :  https://expo.dev/accounts/jappmaster/projects/fotbollstranaren/fingerprints/72f5d15645b71d1a7efe0c2bb2533a3b51fda49e
+
+    Android fingerprint:  87f7b35453caee3e12e1e4a184b918faf061a017
+    URL                :  https://expo.dev/accounts/jappmaster/projects/fotbollstranaren/fingerprints/87f7b35453caee3e12e1e4a184b918faf061a017
+
+[expo-cli] Starting Metro Bundler
+[expo-cli] iOS node_modules/expo-router/entry.js ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓░ 99.9% (1120/1120)
+[expo-cli] Android node_modules/expo-router/entry.js ▓▓▓▓▓▓▓▓▓▓▓▓▓▓░░ 90.6% (788/828)
+[expo-cli] Android Bundled 3275ms node_modules/expo-router/entry.js (828 modules)
+[expo-cli] iOS Bundled 5297ms node_modules/expo-router/entry.js (1120 modules)
+[expo-cli] Creating asset map
+[expo-cli] 
+[expo-cli] › Assets (35):
+[expo-cli] assets/sfx/fail.mp3 (275 B)
+[expo-cli] assets/sfx/kick.mp3 (243 B)
+[expo-cli] assets/sfx/success.mp3 (243 B)
+[expo-cli] assets/sfx/whistle.mp3 (243 B)
+[expo-cli] node_modules/@react-navigation/elements/lib/module/assets/back-icon-mask.png (653 B)
+[expo-cli] node_modules/@react-navigation/elements/lib/module/assets/back-icon.png (8 variations | 359 B)
+[expo-cli] node_modules/@react-navigation/elements/lib/module/assets/clear-icon.png (4 variations | 425 B)
+[expo-cli] node_modules/@react-navigation/elements/lib/module/assets/close-icon.png (4 variations | 235 B)
+[expo-cli] node_modules/@react-navigation/elements/lib/module/assets/search-icon.png (7 variations | 592 B)
+[expo-cli] node_modules/expo-router/assets/arrow_down.png (9.46 kB)
+[expo-cli] node_modules/expo-router/assets/error.png (469 B)
+[expo-cli] node_modules/expo-router/assets/file.png (138 B)
+[expo-cli] node_modules/expo-router/assets/forward.png (188 B)
+[expo-cli] node_modules/expo-router/assets/pkg.png (364 B)
+[expo-cli] node_modules/expo-router/assets/sitemap.png (465 B)
+[expo-cli] node_modules/expo-router/assets/unmatched.png (4.75 kB)
+[expo-cli] 
+[expo-cli] › android bundles (2):
+[expo-cli] _expo/static/js/android/entry-5c3f5e824af5912924a0d5c46ec7d631.hbc (1.7 MB)
+[expo-cli] _expo/static/js/android/entry-5c3f5e824af5912924a0d5c46ec7d631.hbc.map (6.52 MB)
+[expo-cli] 
+[expo-cli] › ios bundles (2):
+[expo-cli] _expo/static/js/ios/entry-22e7d0298d9279a6f8df07e5acd4f9ca.hbc (1.71 MB)
+[expo-cli] _expo/static/js/ios/entry-22e7d0298d9279a6f8df07e5acd4f9ca.hbc.map (6.52 MB)
+[expo-cli] 
+[expo-cli] › Files (2):
+[expo-cli] assetmap.json (11 kB)
+[expo-cli] metadata.json (4.02 kB)
+[expo-cli] 
+[expo-cli] Exported: dist
+✔ Uploaded 2 app bundles
+✔ Uploading assets skipped - no new assets found
+ℹ 31 iOS assets, 31 Android assets (maximum: 2000 total per update). Learn more about asset limits: https://expo.fyi/eas-update-asset-limits
+
+Branch             production
+Runtime version    1.0.0
+Platform           android, ios
+Update group ID    c2d89502-4366-4c58-997c-118bc62c925b
+Android update ID  578d3810-9197-4d11-99f5-0e4529c61475
+iOS update ID      b9cdd9e7-8521-4ea0-8279-3652534ce307
+Message            Refine results XP animation + top tags everywhere
+Commit             8eb01355596e1e14dac6e29e1db9ca67981b5f35*
+EAS Dashboard      https://expo.dev/accounts/jappmaster/projects/fotbollstranaren/updates/c2d89502-4366-4c58-997c-118bc62c925b
+
+No compatible builds found for the following fingerprints:
+    iOS fingerprint:  72f5d15645b71d1a7efe0c2bb2533a3b51fda49e
+    URL            :  https://expo.dev/accounts/jappmaster/projects/fotbollstranaren/fingerprints/72f5d15645b71d1a7efe0c2bb2533a3b51fda49e
+
+    Android fingerprint:  87f7b35453caee3e12e1e4a184b918faf061a017
+    URL                :  https://expo.dev/accounts/jappmaster/projects/fotbollstranaren/fingerprints/87f7b35453caee3e12e1e4a184b918faf061a017
+

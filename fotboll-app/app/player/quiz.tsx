@@ -1,4 +1,4 @@
-import { useLocalSearchParams } from "expo-router";
+import { useLocalSearchParams, useRouter } from "expo-router";
 import { View, Text, StyleSheet, ScrollView, Animated } from "react-native";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { fetchQuestions } from "@/services/questionsApi";
@@ -14,10 +14,24 @@ import AnswerResult from "@/components/AnswerResult";
 import XpBadge from "@/components/ui/XpBadge";
 import Tag from "@/components/ui/Tag";
 import Screen from "@/components/ui/Screen";
+import Card from "@/components/ui/Card";
+import Button from "@/components/ui/Button";
 
 const SESSION_TARGET = 10;
 
+const CATEGORY_LABELS: Record<string, string> = {
+  spelregler: '🧠 Spelregler',
+  forsvar: '🛡️ Försvarsspel',
+  anfall: '🚀 Anfallsspel',
+  fasta: '🎯 Fasta situationer',
+  teknik: '👟 Teknikträning',
+  spelforstaelse: '🧩 Spelförståelse',
+  lagarbete: '🤝 Lagarbete & kommunikation',
+  malvakt: '🧍‍♂️ Målvaktsspel',
+};
+
 export default function QuizScreen() {
+  const router = useRouter();
   const { level, category } = useLocalSearchParams<{ level?: Level, category?: string }>();
   const addXp = useAppStore((s) => s.actions.addXp);
   const markCompleted = useAppStore((s) => s.actions.markQuestionCompleted);
@@ -28,6 +42,7 @@ export default function QuizScreen() {
   const [fetching, setFetching] = useState(false);
   const [servedCount, setServedCount] = useState(0);
   const [correctCount, setCorrectCount] = useState(0);
+  const [showResults, setShowResults] = useState(false);
 
   // Animation: bounce-in on question change
   const bounce = useRef(new Animated.Value(0)).current;
@@ -64,6 +79,7 @@ export default function QuizScreen() {
       setSeenIds(new Set());
       setServedCount(0);
       setCorrectCount(0);
+      setShowResults(false);
       setFetching(true);
       try {
         const q = await fetchQuestions(level ?? '5-manna', undefined, Math.min(5, SESSION_TARGET), undefined, category);
@@ -109,29 +125,45 @@ export default function QuizScreen() {
     }, 700);
   }, [question, addXp, category, incCat, markCompleted, advanceNow]);
 
-  // When session completes, grant bonus if perfect and restart next session automatically
+  // Results overlay and bonus award
+  const sessionXp = correctCount + (correctCount === SESSION_TARGET ? 5 : 0);
+  const xpAnim = useRef(new Animated.Value(0)).current;
+  const [xpDisplay, setXpDisplay] = useState(0);
   useEffect(() => {
-    if (servedCount >= SESSION_TARGET) {
+    if (servedCount >= SESSION_TARGET && !showResults) {
       if (correctCount === SESSION_TARGET) {
         const lvl = (question?.level as Level) || (level as Level) || '5-manna';
         addXp(lvl, 5);
       }
-      (async () => {
-        setSeenIds(new Set());
-        setServedCount(0);
-        setCorrectCount(0);
-        setFetching(true);
-        try {
-          const q = await fetchQuestions(level ?? '5-manna', undefined, Math.min(5, SESSION_TARGET), undefined, category);
-          setQueue(q);
-        } finally {
-          setFetching(false);
-        }
-      })();
+      setShowResults(true);
+      xpAnim.setValue(0);
+      const id = xpAnim.addListener(({ value }) => setXpDisplay(Math.round(value as number)));
+      Animated.timing(xpAnim, { toValue: sessionXp, duration: 900, useNativeDriver: false }).start(() => {
+        xpAnim.removeListener(id);
+      });
     }
-  }, [servedCount]);
+  }, [servedCount, showResults, correctCount]);
 
   const isMatchScenario = !!(question && question.type === 'matchscenario');
+
+  const onRetry = useCallback(async () => {
+    setShowResults(false);
+    setSeenIds(new Set());
+    setServedCount(0);
+    setCorrectCount(0);
+    setFetching(true);
+    try {
+      const q = await fetchQuestions(level ?? '5-manna', undefined, Math.min(5, SESSION_TARGET), undefined, category);
+      setQueue(q);
+    } finally {
+      setFetching(false);
+    }
+  }, [level, category]);
+
+  const onBackToCategory = useCallback(() => {
+    if (level) router.replace(`/player/level/${level}`);
+    else router.replace('/player');
+  }, [level]);
 
   return (
     <Screen>
@@ -144,6 +176,7 @@ export default function QuizScreen() {
         >
           <View style={{ alignItems: 'flex-start', marginBottom: 5 }}>
             <XpBadge />
+            {category ? <Tag label={CATEGORY_LABELS[String(category)] || String(category)} /> : null}
             <Tag label={question?.level ?? ''} />
           </View>
           <Animated.View style={{ gap: 12, transform: [{ scale: bounce.interpolate({ inputRange: [0, 1], outputRange: [0.95, 1] }) }, { translateY: bounce.interpolate({ inputRange: [0, 1], outputRange: [14, 0] }) }] }}>
@@ -173,6 +206,22 @@ export default function QuizScreen() {
             <AnswerResult correct={lastCorrect} message={question?.explanation} onNext={advanceNow} disabled={loadingNext} />
           </View>
         )}
+        {showResults && (
+          <View style={styles.resultsOverlay}>
+            <Card>
+              <View style={{ gap: 10, alignItems: 'center' }}>
+                <Text style={{ fontSize: 20, fontWeight: '800' }}>Resultat</Text>
+                <Text>Rätt: {correctCount} / {SESSION_TARGET}</Text>
+                <Text>XP denna session:</Text>
+                <Text style={{ fontSize: 28, fontWeight: '900' }}>{xpDisplay}</Text>
+                <View style={{ flexDirection: 'row', gap: 12, marginTop: 8 }}>
+                  <Button title="Kör igen" onPress={onRetry} />
+                  <Button title="Återgå" onPress={onBackToCategory} variant="secondary" />
+                </View>
+              </View>
+            </Card>
+          </View>
+        )}
       </View>
     </Screen>
   );
@@ -183,5 +232,6 @@ const styles = StyleSheet.create({
   badge: { alignSelf: "flex-start", backgroundColor: "#eee", paddingHorizontal: 8, paddingVertical: 4, borderRadius: 6 },
   title: { fontSize: 20, fontWeight: "700" },
   option: { backgroundColor: "#f2f2f7", padding: 12, borderRadius: 8 },
-  progress: { marginTop: 16, color: "#ccc" }
+  progress: { marginTop: 16, color: "#ccc" },
+  resultsOverlay: { position: 'absolute', left: 16, right: 16, top: 0, bottom: 0, justifyContent: 'center' },
 });
