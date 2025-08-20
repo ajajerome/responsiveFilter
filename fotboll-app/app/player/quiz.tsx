@@ -40,11 +40,14 @@ export default function QuizScreen() {
       markCompleted(question.level, question.id);
     }
     setLastCorrect(null);
-    setQueue((q) => (q && q.length ? q.slice(1) : q));
-    if (!queue || queue.length <= 1) {
-      setCounter((c) => c + 1);
-    }
-  }, [queue, question, lastCorrect, addXp, markCompleted]);
+    setQueue((prev) => {
+      const next = prev && prev.length ? prev.slice(1) : prev;
+      if (!next || next.length === 0) {
+        setCounter((c) => c + 1);
+      }
+      return next;
+    });
+  }, [question, lastCorrect, addXp, markCompleted]);
 
   return (
     <Screen>
