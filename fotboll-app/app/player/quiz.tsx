@@ -24,16 +24,22 @@ export default function QuizScreen() {
   const [queue, setQueue] = useState<Question[] | null>(null);
   const [lastCorrect, setLastCorrect] = useState<boolean | null>(null);
   const [seenIds, setSeenIds] = useState<Set<string>>(new Set());
+  const [fetching, setFetching] = useState(false);
   useEffect(() => {
     (async () => {
-      // Reset session when level changes
+      // Reset session when level or category changes
       setSeenIds(new Set());
-      const q = await fetchQuestions(level ?? '5-manna', undefined, 5, undefined, category);
-      setQueue(q);
+      setFetching(true);
+      try {
+        const q = await fetchQuestions(level ?? '5-manna', undefined, 5, undefined, category);
+        setQueue(q);
+      } finally {
+        setFetching(false);
+      }
     })();
-  }, [level]);
+  }, [level, category]);
   const question: Question | null = queue && queue.length ? queue[0] : null;
-  const loadingNext = !question;
+  const loadingNext = fetching;
 
   const handleAnswered = useCallback((isCorrect: boolean) => {
     setLastCorrect(isCorrect);
@@ -53,15 +59,18 @@ export default function QuizScreen() {
       const next = prev && prev.length ? prev.slice(1) : prev;
       if (!next || next.length === 0) {
         const filter = question ? new Set(seenIds).add(question.id) : seenIds;
-        fetchQuestions(level ?? '5-manna', undefined, 5, filter, category).then((q) => {
-          if (q && q.length > 0) setQueue(q);
-          else {
-            // fallback: try without filter after small delay
-            setTimeout(() => {
-              fetchQuestions(level ?? '5-manna', undefined, 5, undefined, category).then(setQueue);
-            }, 200);
-          }
-        });
+        setFetching(true);
+        fetchQuestions(level ?? '5-manna', undefined, 5, filter, category)
+          .then((q) => {
+            if (q && q.length > 0) setQueue(q);
+            else {
+              // fallback: try without filter after small delay
+              setTimeout(() => {
+                fetchQuestions(level ?? '5-manna', undefined, 5, undefined, category).then((qq) => setQueue(qq));
+              }, 200);
+            }
+          })
+          .finally(() => setFetching(false));
       }
       return next;
     });
@@ -94,7 +103,7 @@ export default function QuizScreen() {
           <AnswerResult correct={lastCorrect} message={question?.explanation} onNext={handleNext} disabled={loadingNext} />
         )}
       </View>
-      <Text style={styles.progress}>Fortsätter automatiskt vid svar</Text>
+      <Text style={styles.progress}>{fetching ? 'Hämtar nästa fråga…' : 'Tryck Nästa för att fortsätta'}</Text>
     </Screen>
   );
 }

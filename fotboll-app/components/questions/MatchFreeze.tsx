@@ -71,7 +71,9 @@ export default function MatchFreeze({ question, onAnswer }: Props) {
 	return (
 		<View style={styles.container}>
 			<Text style={styles.title}>{question.question}</Text>
-			{question.explanation ? <Text style={styles.expl}>{question.explanation}</Text> : null}
+			<Text style={styles.expl}>
+				Dra bollen till rätt yta eller tryck på rätt spelare. Tänk: mellan boll och mål, vinkel och täcka yta.
+			</Text>
 			<View style={{ width: w, height: h, position: 'relative' }}>
 				<MatchPitch width={w} height={h} />
 				<Svg width={w} height={h} style={{ position: 'absolute', left: 0, top: 0 }}>

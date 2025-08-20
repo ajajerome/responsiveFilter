@@ -33,7 +33,7 @@ export default function LevelScreen() {
       <ScrollView contentContainerStyle={styles.scrollContent}>
         <Tag label={String(level)} />
         <Text style={styles.title}>{motivationalMessage(String(level))}</Text>
-        <View style={{ gap: 12, width: '100%' }}>
+        <View style={{ gap: 12, width: '100%', paddingBottom: 24 }}>
           {CATEGORIES.map((c) => {
             const total = (catProgress as any)?.[c.key]?.total ?? 10;
             const done = (catProgress as any)?.[c.key]?.completed ?? 0;
