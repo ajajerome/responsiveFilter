@@ -28,7 +28,7 @@ export default function QuizScreen() {
       const q = await fetchQuestions(level ?? '5-manna', undefined, 5, seenIds);
       setQueue(q);
     })();
-  }, [level, counter, seenIds]);
+  }, [level, counter]);
   const question: Question | null = queue && queue.length ? queue[0] : null;
 
   const handleAnswered = useCallback((isCorrect: boolean) => {
@@ -39,17 +39,20 @@ export default function QuizScreen() {
     if (question) {
       if (lastCorrect) addXp(question.level, 10);
       markCompleted(question.level, question.id);
-      setSeenIds((prev) => new Set(prev).add(question.id));
+      const updated = new Set(seenIds);
+      updated.add(question.id);
+      setSeenIds(updated);
     }
     setLastCorrect(null);
     setQueue((prev) => {
       const next = prev && prev.length ? prev.slice(1) : prev;
       if (!next || next.length === 0) {
-        setCounter((c) => c + 1);
+        // Fetch a fresh batch immediately to avoid race
+        fetchQuestions(level ?? '5-manna', undefined, 5, question ? new Set(seenIds).add(question.id) : seenIds).then((q) => setQueue(q));
       }
       return next;
     });
-  }, [question, lastCorrect, addXp, markCompleted]);
+  }, [question, lastCorrect, addXp, markCompleted, level, seenIds]);
 
   return (
     <Screen>
