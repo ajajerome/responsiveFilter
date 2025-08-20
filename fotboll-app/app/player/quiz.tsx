@@ -131,10 +131,17 @@ export default function QuizScreen() {
     }
   }, [servedCount]);
 
+  const isMatchScenario = !!(question && question.type === 'matchscenario');
+
   return (
     <Screen>
       <View style={{ flex: 1 }}>
-        <ScrollView ref={scrollRef} contentContainerStyle={{ flexGrow: 1, justifyContent: 'center', paddingBottom: 96 }} keyboardShouldPersistTaps="handled">
+        <ScrollView
+          ref={scrollRef}
+          contentContainerStyle={{ flexGrow: 1, justifyContent: 'center', paddingBottom: 96 }}
+          keyboardShouldPersistTaps="handled"
+          scrollEnabled={!isMatchScenario}
+        >
           <View style={{ alignItems: 'flex-start', marginBottom: 5 }}>
             <XpBadge />
             <Tag label={question?.level ?? ''} />
