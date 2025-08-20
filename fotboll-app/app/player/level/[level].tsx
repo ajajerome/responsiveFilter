@@ -4,6 +4,8 @@ import Screen from "@/components/ui/Screen";
 import Card from "@/components/ui/Card";
 import Button from "@/components/ui/Button";
 import Tag from "@/components/ui/Tag";
+import ProgressBar from "@/components/ui/ProgressBar";
+import { useAppStore } from "@/store/useAppStore";
 
 const CATEGORIES = [
   { key: 'spelregler', label: '🧠 Spelregler' },
@@ -24,6 +26,8 @@ function motivationalMessage(level: string) {
 
 export default function LevelScreen() {
   const { level } = useLocalSearchParams<{ level: string }>();
+  const progress = useAppStore((s) => s.progress);
+  const catProgress = progress?.[String(level) as any]?.categoryProgress || {};
   return (
     <Screen>
       <Tag label={String(level)} />
@@ -37,6 +41,19 @@ export default function LevelScreen() {
           ))}
         </View>
       </Card>
+      <View style={{ gap: 12, marginTop: 12 }}>
+        {CATEGORIES.map((c) => {
+          const total = (catProgress as any)?.[c.key]?.total ?? 10;
+          const done = (catProgress as any)?.[c.key]?.completed ?? 0;
+          const val = total > 0 ? done / total : 0;
+          return (
+            <View key={`p-${c.key}`} style={{ gap: 6 }}>
+              <Text>{c.label}</Text>
+              <ProgressBar value={val} />
+            </View>
+          );
+        })}
+      </View>
     </Screen>
   );
 }
