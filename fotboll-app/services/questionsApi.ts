@@ -1,4 +1,4 @@
-import type { Level, Position, Question } from '@/types/content';
+import type { Level, Position, Question, QuizQuestion, MatchFreezeQuestion } from '@/types/content';
 import { useAppStore } from '@/store/useAppStore';
 import { REGELFRAGOR } from '@/data/regler';
 import { SPELFORSTAELSE } from '@/data/spelforstaelse';
@@ -66,5 +66,90 @@ export async function fetchQuestions(level: Level, position?: Position, count = 
     return fetchQuestions(level, position, count, undefined);
   }
   return result;
+}
+
+// Lokal generator (mock) — skapar frågor utan backend
+export type GenerateOptions = {
+  type: 'quiz' | 'freeze';
+  level?: Level;
+  category?: string;
+  age?: number;
+  count?: number;
+};
+
+function mapAgeToLevel(age?: number): Level {
+  if (!age) return '7-manna';
+  if (age >= 12) return '9-manna';
+  if (age >= 10) return '7-manna';
+  return '5-manna';
+}
+
+function uid(prefix: string) {
+  return `${prefix}_${Date.now().toString(36)}_${Math.random().toString(36).slice(2, 7)}`;
+}
+
+function generateQuizOne(level: Level, category?: string): QuizQuestion {
+  const baseByCat: Record<string, { q: string; options: string[]; correctIndex: number; explanation: string }[]> = {
+    spelregler: [
+      { q: 'Vad gäller vid inspark?', options: ['Bollen i målområdet', 'Var som helst'], correctIndex: 0, explanation: 'Inspark slås i mål-/straffområdet beroende på spelform.' },
+      { q: 'Får målvakten ta upp tillbakapass?', options: ['Ja', 'Nej'], correctIndex: 1, explanation: 'Tillbakapass-regeln förbjuder det.' },
+    ],
+    spelforstaelse: [
+      { q: 'När ska du passa?', options: ['När medspelare är spelbar', 'När motståndaren pressar hårt'], correctIndex: 0, explanation: 'Passa en spelbar medspelare i rätt läge.' },
+    ],
+    anfall: [
+      { q: 'Vilket val skapar målchans?', options: ['Väggspel', 'Tillbaka till målvakt'], correctIndex: 0, explanation: 'Väggspel bryter linjer.' },
+    ],
+    forsvar: [
+      { q: 'Hur styr du i 1v1?', options: ['Stå upp och vinkla', 'Glidtackla direkt'], correctIndex: 0, explanation: 'Stå upp och styr bortåt.' },
+    ],
+  };
+  const pool = baseByCat[category || 'spelforstaelse'] || baseByCat.spelforstaelse;
+  const pick = pool[Math.floor(Math.random() * pool.length)];
+  return {
+    id: uid('qz'),
+    type: 'quiz',
+    level,
+    category,
+    question: pick.q,
+    options: pick.options,
+    correctIndex: pick.correctIndex,
+    explanation: pick.explanation,
+  };
+}
+
+function generateFreezeOne(level: Level, category?: string): MatchFreezeQuestion {
+  // Enkel mall: boll på kanten, korrekt zon centralt mellan boll och mål
+  const side = Math.random() > 0.5 ? 'right' : 'left';
+  const ball = side === 'right' ? { x: 0.88, y: 0.46 } : { x: 0.12, y: 0.46 };
+  const correctRect = side === 'right'
+    ? { x: 0.58, y: 0.46, width: 0.14, height: 0.16 }
+    : { x: 0.28, y: 0.46, width: 0.14, height: 0.16 };
+  return {
+    id: uid('fz'),
+    type: 'matchscenario',
+    level,
+    category,
+    question: 'Vart ska du stå i detta läge?',
+    players: [
+      { id: 'you', team: 'home', x: 0.48, y: 0.68 },
+      { id: 'opp', team: 'away', x: ball.x, y: ball.y },
+    ],
+    ball,
+    correctZones: [ { id: 'z', rect: correctRect } ],
+    explanation: 'Mellan boll och mål med rätt vinkel – täck yta och var spelbar.'
+  };
+}
+
+export async function generateQuestions(opts: GenerateOptions): Promise<Question[]> {
+  let level = opts.level ?? mapAgeToLevel(opts.age);
+  if (opts.age) level = mapAgeToLevel(opts.age);
+  const count = opts.count ?? 5;
+  const out: Question[] = [];
+  for (let i = 0; i < count; i++) {
+    if (opts.type === 'quiz') out.push(generateQuizOne(level, opts.category));
+    else out.push(generateFreezeOne(level, opts.category));
+  }
+  return out;
 }
 
