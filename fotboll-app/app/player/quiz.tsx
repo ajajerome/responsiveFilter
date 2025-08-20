@@ -8,6 +8,7 @@ import MultipleChoiceQuestionView from "@/components/questions/MultipleChoiceQue
 import MatchFreeze from "@/components/questions/MatchFreeze";
 import PassQuestionView from "@/components/questions/PassQuestion";
 import FormationQuiz from "@/components/questions/FormationQuiz";
+import TimelineQuestionView from "@/components/questions/TimelineQuestion";
 import type { Level, Question } from "@/types/content";
 import { useAppStore } from "@/store/useAppStore";
 import AnswerResult from "@/components/AnswerResult";
@@ -191,6 +192,9 @@ export default function QuizScreen() {
             )}
             {question && question.type === 'formation_quiz' && (
               <FormationQuiz question={question as any} onAnswer={handleAnswered} />
+            )}
+            {question && question.type === 'timeline' && (
+              <TimelineQuestionView question={question as any} onAnswer={handleAnswered} />
             )}
             {question && question.type === 'matchscenario' && !('ballHolderId' in question) && (
               <MatchFreeze question={question as any} onAnswer={handleAnswered} />

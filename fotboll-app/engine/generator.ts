@@ -1,4 +1,4 @@
-import type { Level, Position, Question, OneXTwoQuestion, DragDropQuestion, QuizQuestion, TacticsQuestion, MatchFreezeQuestion, PassQuestion } from '@/types/content';
+import type { Level, Position, Question, OneXTwoQuestion, DragDropQuestion, QuizQuestion, TacticsQuestion, MatchFreezeQuestion, PassQuestion, TimelineQuestion } from '@/types/content';
 import { sample, uid } from '@/engine/random';
 import { getZones } from '@/features/pitch/zones';
 
@@ -138,12 +138,13 @@ export function generateQuiz(level: Level, position?: Position, category?: strin
 }
 
 export function getRandomQuestion(level: Level, position?: Position, category?: string): Question {
-  const pick = sample(['drag_drop', 'quiz', 'tactics', 'freeze', 'pass', 'one_x_two'] as const);
+  const pick = sample(['drag_drop', 'quiz', 'tactics', 'freeze', 'pass', 'timeline', 'one_x_two'] as const);
   if (pick === 'one_x_two') return generateOneXTwo(level, position);
   if (pick === 'drag_drop') return generateDragDrop(level, position, category);
   if (pick === 'tactics') return generateTactics(level, position, category);
   if (pick === 'freeze') return generateMatchFreeze(level, position, category);
   if (pick === 'pass') return generatePass(level, position, category);
+  if (pick === 'timeline') return generateTimeline(level, position, category);
   return generateQuiz(level, position, category);
 }
 
@@ -201,5 +202,27 @@ export function generatePass(level: Level, position?: Position, category?: strin
     ballHolderId: 'p1',
     correctTargetId: 'p2',
     explanation: 'Passa spelbar medspelare i vinkel bort från press.',
+  };
+}
+
+export function generateTimeline(level: Level, position?: Position, category?: string): TimelineQuestion {
+  // Example: Opponent has goal kick; you are forward – press
+  const z = getZones(level);
+  return {
+    id: uid('tl'),
+    type: 'timeline',
+    level,
+    position,
+    category,
+    question: 'Motståndaren har inspark. Vad gör du som forward? Sekvensen pausas – gör ditt drag.',
+    ball: { x: z.centerX, y: 0.08 },
+    animTo: { x: z.centerX, y: z.halfY - 0.04, durationMs: 1000 },
+    players: [
+      { id: 'gk', x: z.centerX, y: 0.06, team: 'away' },
+      { id: 'fw', x: z.centerX, y: 0.72, team: 'home' },
+      { id: 'cb', x: z.centerX, y: 0.18, team: 'away' },
+    ],
+    options: ['Droppa ner och täck passningsväg', 'Sätta press på bollhållaren', 'Backa hem till mittlinjen'],
+    correctIndex: 1,
   };
 }

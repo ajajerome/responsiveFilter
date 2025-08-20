@@ -9,6 +9,7 @@ export type QuestionType =
   | 'formation_quiz'
   | 'bild'
   | 'taktikpussel'
+  | 'timeline'
   | 'fast_situation';
 
 export interface BaseQuestion {
@@ -88,6 +89,16 @@ export interface OneXTwoQuestion extends BaseQuestion {
   // Descriptive texts for 1, X, 2 in that order
   answers: [string, string, string];
   explanation?: string;
+}
+
+export interface TimelineQuestion extends BaseQuestion {
+  type: 'timeline';
+  // Minimal animation: ball moves from start to target (normalized)
+  ball: { x: number; y: number };
+  animTo: { x: number; y: number; durationMs: number };
+  players?: Array<{ id: string; x: number; y: number; team: 'home' | 'away'; label?: string }>;
+  options: string[];
+  correctIndex: number;
 }
 
 export type Question = QuizQuestion | DragDropQuestion | OneXTwoQuestion | TacticsQuestion | MatchFreezeQuestion | PassQuestion | FormationQuizQuestion;

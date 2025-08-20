@@ -1511,3 +1511,62 @@ No compatible builds found for the following fingerprints:
     Android fingerprint:  87f7b35453caee3e12e1e4a184b918faf061a017
     URL                :  https://expo.dev/accounts/jappmaster/projects/fotbollstranaren/fingerprints/87f7b35453caee3e12e1e4a184b918faf061a017
 
+[expo-cli] Starting Metro Bundler
+[expo-cli] iOS node_modules/expo-router/entry.js ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓░ 99.9% (1121/1121)
+[expo-cli] Android node_modules/expo-router/entry.js ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓░ 99.9% (1118/1118)
+[expo-cli] iOS Bundled 3610ms node_modules/expo-router/entry.js (1121 modules)
+[expo-cli] Android Bundled 5690ms node_modules/expo-router/entry.js (1118 modules)
+[expo-cli] Creating asset map
+[expo-cli] 
+[expo-cli] › Assets (35):
+[expo-cli] assets/sfx/fail.mp3 (275 B)
+[expo-cli] assets/sfx/kick.mp3 (243 B)
+[expo-cli] assets/sfx/success.mp3 (243 B)
+[expo-cli] assets/sfx/whistle.mp3 (243 B)
+[expo-cli] node_modules/@react-navigation/elements/lib/module/assets/back-icon-mask.png (653 B)
+[expo-cli] node_modules/@react-navigation/elements/lib/module/assets/back-icon.png (8 variations | 359 B)
+[expo-cli] node_modules/@react-navigation/elements/lib/module/assets/clear-icon.png (4 variations | 425 B)
+[expo-cli] node_modules/@react-navigation/elements/lib/module/assets/close-icon.png (4 variations | 235 B)
+[expo-cli] node_modules/@react-navigation/elements/lib/module/assets/search-icon.png (7 variations | 592 B)
+[expo-cli] node_modules/expo-router/assets/arrow_down.png (9.46 kB)
+[expo-cli] node_modules/expo-router/assets/error.png (469 B)
+[expo-cli] node_modules/expo-router/assets/file.png (138 B)
+[expo-cli] node_modules/expo-router/assets/forward.png (188 B)
+[expo-cli] node_modules/expo-router/assets/pkg.png (364 B)
+[expo-cli] node_modules/expo-router/assets/sitemap.png (465 B)
+[expo-cli] node_modules/expo-router/assets/unmatched.png (4.75 kB)
+[expo-cli] 
+[expo-cli] › ios bundles (2):
+[expo-cli] _expo/static/js/ios/entry-e9e09580748297e66d72d7cd3d639d1a.hbc (1.71 MB)
+[expo-cli] _expo/static/js/ios/entry-e9e09580748297e66d72d7cd3d639d1a.hbc.map (6.55 MB)
+[expo-cli] 
+[expo-cli] › android bundles (2):
+[expo-cli] _expo/static/js/android/entry-d57d12ae079924490a6d9762d5bbafb4.hbc (1.71 MB)
+[expo-cli] _expo/static/js/android/entry-d57d12ae079924490a6d9762d5bbafb4.hbc.map (6.55 MB)
+[expo-cli] 
+[expo-cli] › Files (2):
+[expo-cli] assetmap.json (11 kB)
+[expo-cli] metadata.json (4.02 kB)
+[expo-cli] 
+[expo-cli] Exported: dist
+✔ Uploaded 2 app bundles
+✔ Uploading assets skipped - no new assets found
+ℹ 31 iOS assets, 31 Android assets (maximum: 2000 total per update). Learn more about asset limits: https://expo.fyi/eas-update-asset-limits
+
+Branch             production
+Runtime version    1.0.0
+Platform           android, ios
+Update group ID    88f70413-a371-45d0-a053-00b49f2b46da
+Android update ID  5a042cb1-e767-4b78-b90c-4f425c80d8f1
+iOS update ID      3fadc3aa-cc4f-4a23-bf40-f858721c8c38
+Message            Add timeline module: goal-kick press scenario; updated pitch logic used by generators
+Commit             f605be4fc18f1321f3493ac7a047d30554574863*
+EAS Dashboard      https://expo.dev/accounts/jappmaster/projects/fotbollstranaren/updates/88f70413-a371-45d0-a053-00b49f2b46da
+
+No compatible builds found for the following fingerprints:
+    iOS fingerprint:  72f5d15645b71d1a7efe0c2bb2533a3b51fda49e
+    URL            :  https://expo.dev/accounts/jappmaster/projects/fotbollstranaren/fingerprints/72f5d15645b71d1a7efe0c2bb2533a3b51fda49e
+
+    Android fingerprint:  87f7b35453caee3e12e1e4a184b918faf061a017
+    URL                :  https://expo.dev/accounts/jappmaster/projects/fotbollstranaren/fingerprints/87f7b35453caee3e12e1e4a184b918faf061a017
+
