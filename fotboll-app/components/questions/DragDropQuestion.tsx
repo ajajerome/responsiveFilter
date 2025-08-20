@@ -1,8 +1,9 @@
 import { useRef, useState } from 'react';
 import { View, Text, StyleSheet, PanResponder, Animated } from 'react-native';
-import FullPitch from '@/features/tactics/FullPitch';
+import MatchPitch from '@/features/pitch/MatchPitch';
 import ArrowsLayer, { Arrow as DrawnArrow } from '@/features/tactics/ArrowsLayer';
 import { arrowsSatisfy } from '@/features/tactics/vectorValidation';
+import Button from '@/components/ui/Button';
 import type { DragDropQuestion, TacticsQuestion } from '@/types/content';
 
 type Props = {
@@ -101,9 +102,12 @@ export default function DragDropQuestionView({ question, onAnswer }: Props) {
     return allPlayersOk && arrowsOk;
   }
 
+  const isMulti = 'players' in question;
+
   return (
     <View style={styles.container}>
       <Text style={styles.title}>{question.question}</Text>
+      <Text style={styles.hint}>Dra spelaren till markerad yta. Tryck Kontrollera för fler spelare.</Text>
       <View
         style={styles.pitch}
         onLayout={(e) => {
@@ -112,7 +116,7 @@ export default function DragDropQuestionView({ question, onAnswer }: Props) {
           position.setValue({ x: 0, y: 0 });
         }}
       >
-        <FullPitch width={pitchSize.width || 1} height={pitchSize.height || 1} />
+        <MatchPitch width={pitchSize.width || 1} height={pitchSize.height || 1} />
         {'targetRect' in question && (
           <View
             style={{
@@ -188,8 +192,12 @@ export default function DragDropQuestionView({ question, onAnswer }: Props) {
             </>
           );
         })}
-        <ArrowsLayer width={pitchSize.width || 1} height={pitchSize.height || 1} onArrowsChanged={setArrows} interactive={'players' in question ? true : false} />
+        {/* Pilar av – förenklat läge */}
+        <ArrowsLayer width={pitchSize.width || 1} height={pitchSize.height || 1} onArrowsChanged={setArrows} interactive={false} />
       </View>
+      {isMulti && (
+        <Button title="Kontrollera" onPress={() => onAnswer(validateAllPlayersAndArrows())} />
+      )}
     </View>
   );
 }
@@ -198,7 +206,7 @@ const styles = StyleSheet.create({
   container: { gap: 12 },
   title: { fontSize: 18, fontWeight: '700' },
   pitch: {
-    height: 320,
+    height: 260,
     borderRadius: 12,
     backgroundColor: '#0a7d2a',
     overflow: 'hidden',
@@ -216,5 +224,6 @@ const styles = StyleSheet.create({
     borderColor: '#c87f08',
   },
   playerText: { color: 'white', fontWeight: '700' },
+  hint: { color: '#e7ebf3' },
 });
 
