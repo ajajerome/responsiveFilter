@@ -4,6 +4,8 @@ import MatchPitch from '@/features/pitch/MatchPitch';
 import ArrowsLayer, { Arrow as DrawnArrow } from '@/features/tactics/ArrowsLayer';
 import { arrowsSatisfy } from '@/features/tactics/vectorValidation';
 import Button from '@/components/ui/Button';
+import * as Haptics from 'expo-haptics';
+import { playLocal } from '@/utils/sound';
 import type { DragDropQuestion, TacticsQuestion } from '@/types/content';
 
 type Props = {
@@ -46,7 +48,25 @@ export default function DragDropQuestionView({ question, onAnswer }: Props) {
             centerX <= (target.x + target.width) * pitchSize.width &&
             centerY >= target.y * pitchSize.height &&
             centerY <= (target.y + target.height) * pitchSize.height;
-          onAnswer(inRect);
+          if (inRect) {
+            const tx = (target.x + target.width / 2) * pitchSize.width;
+            const ty = (target.y + target.height / 2) * pitchSize.height;
+            Animated.spring(position, { toValue: { x: tx - startPx.x, y: ty - startPx.y }, useNativeDriver: false }).start(() => {
+              playLocal(require('@/assets/sfx/success.mp3'));
+              Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success).catch(() => {});
+              onAnswer(true);
+            });
+          } else {
+            // shake
+            Animated.sequence([
+              Animated.timing(position, { toValue: { x: x + 10, y }, duration: 50, useNativeDriver: false }),
+              Animated.timing(position, { toValue: { x: x - 10, y }, duration: 50, useNativeDriver: false }),
+              Animated.timing(position, { toValue: { x, y }, duration: 50, useNativeDriver: false }),
+            ]).start();
+            playLocal(require('@/assets/sfx/fail.mp3'));
+            Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error).catch(() => {});
+            onAnswer(false);
+          }
         } else if ('targets' in question && question.targets?.length) {
           const hit = question.targets.some(t => (
             centerX >= t.rect.x * pitchSize.width &&
@@ -63,6 +83,13 @@ export default function DragDropQuestionView({ question, onAnswer }: Props) {
               kind: a.kind,
             }));
             arrowsOk = arrowsSatisfy(normArrows as any, question.expectedVectors as any);
+          }
+          if (hit && arrowsOk) {
+            playLocal(require('@/assets/sfx/success.mp3'));
+            Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success).catch(() => {});
+          } else {
+            playLocal(require('@/assets/sfx/fail.mp3'));
+            Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error).catch(() => {});
           }
           onAnswer(hit && arrowsOk);
         } else {
@@ -109,7 +136,7 @@ export default function DragDropQuestionView({ question, onAnswer }: Props) {
     <View style={styles.container}>
       <Text style={styles.title}>{question.question}</Text>
       <Text style={styles.expl}>
-        Dra spelaren till markerad yta. {'explanation' in question && question.explanation ? `\n${question.explanation}` : ''}
+        Flytta spelaren så den täcker rätt yta. {'explanation' in question && question.explanation ? `\n${question.explanation}` : ''}
       </Text>
       <View
         style={[styles.pitch, { width: w, height: h }]}
