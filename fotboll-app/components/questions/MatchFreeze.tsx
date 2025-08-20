@@ -71,6 +71,7 @@ export default function MatchFreeze({ question, onAnswer }: Props) {
 	return (
 		<View style={styles.container}>
 			<Text style={styles.title}>{question.question}</Text>
+			{question.explanation ? <Text style={styles.expl}>{question.explanation}</Text> : null}
 			<View style={{ width: w, height: h, position: 'relative' }}>
 				<MatchPitch width={w} height={h} />
 				<Svg width={w} height={h} style={{ position: 'absolute', left: 0, top: 0 }}>
@@ -112,4 +113,5 @@ export default function MatchFreeze({ question, onAnswer }: Props) {
 const styles = StyleSheet.create({
 	container: { gap: 12 },
 	title: { fontSize: 18, fontWeight: '700' },
+	expl: { color: '#bbb' },
 });

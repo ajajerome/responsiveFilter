@@ -1,5 +1,5 @@
 import { useLocalSearchParams, Link } from "expo-router";
-import { View, Text, StyleSheet } from "react-native";
+import { View, Text, StyleSheet, ScrollView } from "react-native";
 import Screen from "@/components/ui/Screen";
 import Card from "@/components/ui/Card";
 import Button from "@/components/ui/Button";
@@ -30,30 +30,27 @@ export default function LevelScreen() {
   const catProgress = progress?.[String(level)]?.categoryProgress || {};
   return (
     <Screen>
-      <Tag label={String(level)} />
-      <Text style={styles.title}>{motivationalMessage(String(level))}</Text>
-      <Card>
-        <View style={{ gap: 10 }}>
-          {CATEGORIES.map((c) => (
-            <Link key={c.key} href={{ pathname: '/player/quiz', params: { level, category: c.key } }} asChild>
-              <Button title={c.label} onPress={() => {}} />
-            </Link>
-          ))}
+      <ScrollView contentContainerStyle={styles.scrollContent}>
+        <Tag label={String(level)} />
+        <Text style={styles.title}>{motivationalMessage(String(level))}</Text>
+        <View style={{ gap: 12, width: '100%' }}>
+          {CATEGORIES.map((c) => {
+            const total = (catProgress as any)?.[c.key]?.total ?? 10;
+            const done = (catProgress as any)?.[c.key]?.completed ?? 0;
+            const val = total > 0 ? done / total : 0;
+            return (
+              <Card key={c.key}>
+                <View style={{ gap: 8 }}>
+                  <Link href={{ pathname: '/player/quiz', params: { level, category: c.key } }} asChild>
+                    <Button title={c.label} onPress={() => {}} />
+                  </Link>
+                  <ProgressBar value={val} />
+                </View>
+              </Card>
+            );
+          })}
         </View>
-      </Card>
-      <View style={{ gap: 12, marginTop: 12 }}>
-        {CATEGORIES.map((c) => {
-          const total = (catProgress as any)?.[c.key]?.total ?? 10;
-          const done = (catProgress as any)?.[c.key]?.completed ?? 0;
-          const val = total > 0 ? done / total : 0;
-          return (
-            <View key={`p-${c.key}`} style={{ gap: 6 }}>
-              <Text>{c.label}</Text>
-              <ProgressBar value={val} />
-            </View>
-          );
-        })}
-      </View>
+      </ScrollView>
     </Screen>
   );
 }
@@ -61,4 +58,5 @@ export default function LevelScreen() {
 const styles = StyleSheet.create({
   container: { flex: 1, alignItems: "center", justifyContent: "center", padding: 24, gap: 12 },
   title: { fontSize: 22, fontWeight: "700", marginBottom: 16, textTransform: "capitalize" },
+  scrollContent: { flexGrow: 1, justifyContent: 'center', gap: 12 },
 });
