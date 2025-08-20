@@ -19,13 +19,15 @@ function pick<T>(arr: T[], n: number): T[] {
 }
 
 export async function fetchQuestions(level: Level, position?: Position, count = 5, excludeIds?: Set<string>, category?: string): Promise<Question[]> {
-  // Åldersanpassning: enkel mappning (7-9 -> 5/7-manna), (10-11 -> 7-manna), (12-13 -> 9-manna)
+  // Tvinga bort 5-manna — endast 7- och 9-manna används
+  if (level === '5-manna') {
+    level = '7-manna';
+  }
   try {
     const age = (useAppStore.getState()?.profile?.age as number) || undefined;
     if (age) {
       if (age >= 12) level = '9-manna';
-      else if (age >= 10) level = '7-manna';
-      else level = '5-manna';
+      else level = '7-manna';
     }
   } catch {}
   // Blanda riktiga dataset (regler/spelförståelse) med genererade
@@ -59,7 +61,7 @@ export async function fetchQuestions(level: Level, position?: Position, count = 
     base.push(...extra);
   }
   // Sista utväg: generera
-  while (base.length < count) base.push(getRandomQuestion(level, position));
+  while (base.length < count) base.push(getRandomQuestion(level === '5-manna' ? '7-manna' : level, position));
   const result = base.slice(0, count);
   // Om vi av någon anledning filtrerat bort allt, försök utan excludeIds en gång
   if (result.length === 0 && excludeIds && excludeIds.size > 0) {

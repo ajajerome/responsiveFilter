@@ -12,9 +12,7 @@ export default function PlayerHome() {
       <XpBadge />
       <Text style={styles.title}>Välj nivå</Text>
       <Card>
-        <Link href="/player/level/5-manna" asChild>
-          <Button title="5-manna" onPress={() => {}} />
-        </Link>
+        {/* 5-manna borttagen */}
         <Link href="/player/level/7-manna" asChild>
           <Button title="7-manna" onPress={() => {}} style={{ marginTop: 12 }} />
         </Link>
