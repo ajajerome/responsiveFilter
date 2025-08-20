@@ -1,6 +1,6 @@
 import { useLocalSearchParams } from "expo-router";
-import { View, Text, StyleSheet } from "react-native";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { View, Text, StyleSheet, ScrollView } from "react-native";
+import { useCallback, useEffect, useMemo, useState, useRef } from "react";
 import { fetchQuestions } from "@/services/questionsApi";
 import OneXTwoQuestionView from "@/components/questions/OneXTwoQuestion";
 import DragDropQuestionView from "@/components/questions/DragDropQuestion";
@@ -76,34 +76,45 @@ export default function QuizScreen() {
     });
   }, [question, lastCorrect, addXp, markCompleted, level, seenIds, category, incCat]);
 
+  const scrollRef = useRef<ScrollView | null>(null);
+  useEffect(() => {
+    scrollRef.current?.scrollTo({ y: 0, animated: true });
+  }, [question?.id]);
+
   return (
     <Screen>
-      <XpBadge />
-      <Tag label={question?.level ?? ''} />
-      <View style={{ gap: 12 }}>
-        {question && question.type === 'one_x_two' && (
-          <OneXTwoQuestionView question={question} onAnswer={handleAnswered} />
-        )}
-        {question && question.type === 'drag_drop' && (
-          <DragDropQuestionView question={question} onAnswer={handleAnswered} />
-        )}
-        {question && question.type === 'quiz' && (
-          <MultipleChoiceQuestionView question={question} onAnswer={handleAnswered} />
-        )}
-        {question && question.type === 'formation_quiz' && (
-          <FormationQuiz question={question as any} onAnswer={handleAnswered} />
-        )}
-        {question && question.type === 'matchscenario' && 'ball' in question && 'correctPlayerIds' in question && (
-          <MatchFreeze question={question as any} onAnswer={handleAnswered} />
-        )}
-        {question && question.type === 'matchscenario' && 'ballHolderId' in question && (
-          <PassQuestionView question={question as any} onAnswer={handleAnswered} />
-        )}
+      <View style={{ flex: 1 }}>
+        <ScrollView ref={scrollRef} contentContainerStyle={{ paddingBottom: 96 }} keyboardShouldPersistTaps="handled">
+          <XpBadge />
+          <Tag label={question?.level ?? ''} />
+          <View style={{ gap: 12 }}>
+            {question && question.type === 'one_x_two' && (
+              <OneXTwoQuestionView question={question} onAnswer={handleAnswered} />
+            )}
+            {question && question.type === 'drag_drop' && (
+              <DragDropQuestionView question={question} onAnswer={handleAnswered} />
+            )}
+            {question && question.type === 'quiz' && (
+              <MultipleChoiceQuestionView question={question} onAnswer={handleAnswered} />
+            )}
+            {question && question.type === 'formation_quiz' && (
+              <FormationQuiz question={question as any} onAnswer={handleAnswered} />
+            )}
+            {question && question.type === 'matchscenario' && 'ball' in question && 'correctPlayerIds' in question && (
+              <MatchFreeze question={question as any} onAnswer={handleAnswered} />
+            )}
+            {question && question.type === 'matchscenario' && 'ballHolderId' in question && (
+              <PassQuestionView question={question as any} onAnswer={handleAnswered} />
+            )}
+            <Text style={styles.progress}>{fetching ? 'Hämtar nästa fråga…' : 'Tryck Nästa för att fortsätta'}</Text>
+          </View>
+        </ScrollView>
         {lastCorrect !== null && (
-          <AnswerResult correct={lastCorrect} message={question?.explanation} onNext={handleNext} disabled={loadingNext} />
+          <View pointerEvents="box-none" style={{ position: 'absolute', left: 16, right: 16, bottom: 16 }}>
+            <AnswerResult correct={lastCorrect} message={question?.explanation} onNext={handleNext} disabled={loadingNext} />
+          </View>
         )}
       </View>
-      <Text style={styles.progress}>{fetching ? 'Hämtar nästa fråga…' : 'Tryck Nästa för att fortsätta'}</Text>
     </Screen>
   );
 }
