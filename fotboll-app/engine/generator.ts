@@ -1,5 +1,6 @@
 import type { Level, Position, Question, OneXTwoQuestion, DragDropQuestion, QuizQuestion, TacticsQuestion, MatchFreezeQuestion, PassQuestion } from '@/types/content';
 import { sample, uid } from '@/engine/random';
+import { getZones } from '@/features/pitch/zones';
 
 const LEVEL_FORMATIONS: Record<Level, Array<{ name: string; target: { x: number; y: number; width: number; height: number } }>> = {
   '5-manna': [
@@ -88,10 +89,15 @@ export function generateDragDrop(level: Level, position?: Position, category?: s
     playerLabel: 'P',
   };
   if (category === 'forsvar') {
-    base.opponents = [ { x: f.target.x + f.target.width + 0.08, y: f.target.y + 0.02 } ];
+    const z = getZones(level);
+    base.targetRect = z.boxDef; // cover central box in defense
+    base.opponents = [ { x: z.attThirdY > z.defThirdY ? z.centerX : z.centerX + 0.1, y: z.attThirdY } ];
   }
   if (category === 'fasta') {
-    base.opponents = [ { x: 0.92, y: 0.22 } ];
+    const z = getZones(level);
+    // Opp corner top-right; target zone central box area
+    base.targetRect = z.boxDef;
+    base.opponents = [ { x: z.corners.topRight.x, y: z.corners.topRight.y } ];
   }
   return base;
 }
@@ -170,11 +176,12 @@ export function generateMatchFreeze(level: Level, position?: Position, category?
     level,
     position,
     category,
-    question: 'Vem borde få bollen här?',
+    question: category === 'forsvar' ? 'Var ska du stå för att täcka rätt yta?' : 'Vem borde få bollen här?',
     players,
-    ball: { x: 0.48, y: 0.62 },
-    correctPlayerIds: ['a3'],
-    explanation: 'Spelare a3 har bäst vinkel och yta för att hota framåt.',
+    ball: { x: getZones(level).rightX - 0.02, y: getZones(level).attThirdY },
+    correctZones: category === 'forsvar' ? [ { id: 'def', rect: getZones(level).boxDef } ] : undefined,
+    correctPlayerIds: category === 'forsvar' ? undefined : ['a3'],
+    explanation: category === 'forsvar' ? 'Täck centralt mellan boll och mål i försvarszon.' : 'Spelare a3 har bäst vinkel och yta för att hota framåt.',
   };
 }
 
