@@ -25,7 +25,6 @@ const ONE_X_TWO_TEMPLATES: Array<(level: Level, position?: Position) => OneXTwoQ
     type: 'one_x_two',
     level,
     question: 'Spelar du upp på fri ytter eller vänder hem under press?',
-    // 0->1 (hem), 1->X (beror), 2->2 (upp)
     correctIndex: 2,
     answers: [
       '1: Vända hem till back/målvakt',
@@ -63,7 +62,6 @@ const QUIZ_TEMPLATES: Array<(level: Level, position?: Position) => QuizQuestion>
 
 export function generateOneXTwo(level: Level, position?: Position): OneXTwoQuestion {
   const q = sample(ONE_X_TWO_TEMPLATES)(level, position);
-  // Nivåanpassning: justera texter lite per nivå
   if (level === '5-manna') {
     q.explanation ||= 'I 5-manna betonas enkel uppspelspunkt ut mot kanter.';
   } else if (level === '7-manna') {
@@ -98,13 +96,13 @@ export function generateDragDrop(level: Level, position?: Position, category?: s
   return base;
 }
 
-export function generateTactics(level: Level, position?: Position): TacticsQuestion {
-  // Enkel mall: två målytor och en förväntad löpväg framåt på vänsterkant
+export function generateTactics(level: Level, position?: Position, category?: string): TacticsQuestion {
   return {
     id: uid('tactics'),
     type: 'drag_drop',
     level,
     position,
+    category,
     question: 'Dra spelare till sina zoner och rita en offensiv löpväg (pil) längs vänsterkanten',
     players: [
       { id: 'p1', label: 'LW', start: { x: 0.2, y: 0.7 }, targetId: 'z1' },
@@ -134,16 +132,16 @@ export function generateQuiz(level: Level, position?: Position, category?: strin
 }
 
 export function getRandomQuestion(level: Level, position?: Position, category?: string): Question {
-  const pick = sample(['one_x_two', 'drag_drop', 'quiz', 'tactics', 'freeze', 'pass'] as const);
+  const pick = sample(['drag_drop', 'quiz', 'tactics', 'freeze', 'pass', 'one_x_two'] as const);
   if (pick === 'one_x_two') return generateOneXTwo(level, position);
   if (pick === 'drag_drop') return generateDragDrop(level, position, category);
-  if (pick === 'tactics') return generateTactics(level, position);
-  if (pick === 'freeze') return generateMatchFreeze(level, position);
-  if (pick === 'pass') return generatePass(level, position);
+  if (pick === 'tactics') return generateTactics(level, position, category);
+  if (pick === 'freeze') return generateMatchFreeze(level, position, category);
+  if (pick === 'pass') return generatePass(level, position, category);
   return generateQuiz(level, position, category);
 }
 
-export function generateMatchFreeze(level: Level, position?: Position): MatchFreezeQuestion {
+export function generateMatchFreeze(level: Level, position?: Position, category?: string): MatchFreezeQuestion {
   const players = level === '5-manna'
     ? [
         { id: 'a1', x: 0.3, y: 0.6, team: 'home' as const },
@@ -171,6 +169,7 @@ export function generateMatchFreeze(level: Level, position?: Position): MatchFre
     type: 'matchscenario',
     level,
     position,
+    category,
     question: 'Vem borde få bollen här?',
     players,
     ball: { x: 0.48, y: 0.62 },
@@ -179,12 +178,13 @@ export function generateMatchFreeze(level: Level, position?: Position): MatchFre
   };
 }
 
-export function generatePass(level: Level, position?: Position): PassQuestion {
+export function generatePass(level: Level, position?: Position, category?: string): PassQuestion {
   return {
     id: uid('pass'),
     type: 'matchscenario',
     level,
     position,
+    category,
     question: 'Välj rätt passning genom att dra från bollhållaren till medspelare',
     players: [
       { id: 'p1', x: 0.45, y: 0.6, team: 'home' },
@@ -196,4 +196,3 @@ export function generatePass(level: Level, position?: Position): PassQuestion {
     explanation: 'Passa spelbar medspelare i vinkel bort från press.',
   };
 }
-
