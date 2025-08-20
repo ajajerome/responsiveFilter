@@ -65,7 +65,7 @@ export default function QuizScreen() {
       const filter = new Set<string>(seenIds);
       const need = Math.max(0, Math.min(5, SESSION_TARGET - servedCount - (queue?.length || 0)));
       if (need > 0) {
-        const more = await fetchQuestions(level ?? '5-manna', undefined, need, filter, category);
+        const more = await fetchQuestions(level ?? '7-manna', undefined, need, filter, category);
         setQueue((prev) => (prev ? [...prev, ...more] : more));
       }
     } finally {
@@ -82,7 +82,7 @@ export default function QuizScreen() {
       setShowResults(false);
       setFetching(true);
       try {
-        const q = await fetchQuestions(level ?? '5-manna', undefined, Math.min(5, SESSION_TARGET), undefined, category);
+        const q = await fetchQuestions(level ?? '7-manna', undefined, Math.min(5, SESSION_TARGET), undefined, category);
         setQueue(q);
       } finally {
         setFetching(false);
@@ -132,7 +132,7 @@ export default function QuizScreen() {
   useEffect(() => {
     if (servedCount >= SESSION_TARGET && !showResults) {
       if (correctCount === SESSION_TARGET) {
-        const lvl = (question?.level as Level) || (level as Level) || '5-manna';
+        const lvl = (question?.level as Level) || (level as Level) || '7-manna';
         addXp(lvl, 5);
       }
       setShowResults(true);
@@ -144,7 +144,7 @@ export default function QuizScreen() {
     }
   }, [servedCount, showResults, correctCount]);
 
-  const isMatchScenario = !!(question && question.type === 'matchscenario');
+  const isInteractive = !!(question && (question.type === 'matchscenario' || question.type === 'drag_drop'));
 
   const onRetry = useCallback(async () => {
     setShowResults(false);
@@ -153,7 +153,7 @@ export default function QuizScreen() {
     setCorrectCount(0);
     setFetching(true);
     try {
-      const q = await fetchQuestions(level ?? '5-manna', undefined, Math.min(5, SESSION_TARGET), undefined, category);
+      const q = await fetchQuestions(level ?? '7-manna', undefined, Math.min(5, SESSION_TARGET), undefined, category);
       setQueue(q);
     } finally {
       setFetching(false);
@@ -172,7 +172,7 @@ export default function QuizScreen() {
           ref={scrollRef}
           contentContainerStyle={{ flexGrow: 1, justifyContent: 'center', paddingBottom: 96 }}
           keyboardShouldPersistTaps="handled"
-          scrollEnabled={!isMatchScenario}
+          scrollEnabled={!isInteractive}
         >
           <View style={{ alignItems: 'flex-start', marginBottom: 5 }}>
             <XpBadge />

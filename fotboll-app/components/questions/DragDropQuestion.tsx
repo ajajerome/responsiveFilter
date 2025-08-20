@@ -197,17 +197,9 @@ export default function DragDropQuestionView({ question, onAnswer }: Props) {
         {/* Pilar av – förenklat läge */}
         <ArrowsLayer width={w} height={h} onArrowsChanged={setArrows} interactive={false} />
 
-        {/* Legend overlay */}
-        <View style={{ position: 'absolute', right: 6, top: 6, backgroundColor: 'rgba(0,0,0,0.35)', paddingHorizontal: 6, paddingVertical: 4, borderRadius: 8 }}>
-          <Text style={{ color: 'white', fontWeight: '700' }}>Legend</Text>
-          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
-            <View style={{ width: 10, height: 10, borderRadius: 5, backgroundColor: '#ff9f0a' }} />
-            <Text style={{ color: 'white' }}>Spelare</Text>
-          </View>
-          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
-            <View style={{ width: 10, height: 10, borderRadius: 5, backgroundColor: '#34c759' }} />
-            <Text style={{ color: 'white' }}>Målzon</Text>
-          </View>
+        {/* Riktning/plan-indikator */}
+        <View style={{ position: 'absolute', left: 6, top: 6, backgroundColor: 'rgba(0,0,0,0.35)', paddingHorizontal: 6, paddingVertical: 4, borderRadius: 8 }}>
+          <Text style={{ color: 'white', fontWeight: '700' }}>Anfall →</Text>
         </View>
       </View>
       {isMulti && (
