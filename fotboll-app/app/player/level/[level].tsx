@@ -26,8 +26,8 @@ function motivationalMessage(level: string) {
 
 export default function LevelScreen() {
   const { level } = useLocalSearchParams<{ level: string }>();
-  const progress = useAppStore((s) => s.progress);
-  const catProgress = progress?.[String(level) as any]?.categoryProgress || {};
+  const progress = useAppStore((s) => s.progress as any);
+  const catProgress = progress?.[String(level)]?.categoryProgress || {};
   return (
     <Screen>
       <Tag label={String(level)} />

@@ -5,6 +5,7 @@ import { FREEZE_QUESTIONS } from '@/data/freeze';
 import { PASS_QUESTIONS } from '@/data/pass';
 import { getRandomQuestion } from '@/engine/generator';
 import { FORMATION_QUESTIONS } from '@/data/formation_quiz';
+import { ATTACK_DRAG_QUESTIONS } from '@/data/attack_drag';
 
 function pick<T>(arr: T[], n: number): T[] {
   const a = [...arr];
@@ -25,12 +26,14 @@ export async function fetchQuestions(level: Level, position?: Position, count = 
   const freeze = FREEZE_QUESTIONS.filter(q => q.level === level).filter(cat).filter(notSeen);
   const pass = PASS_QUESTIONS.filter(q => q.level === level).filter(cat).filter(notSeen);
   const formation = FORMATION_QUESTIONS.filter(q => q.level === level).filter(cat).filter(notSeen);
+  const attackDrag = ATTACK_DRAG_QUESTIONS.filter(q => q.level === level).filter(cat).filter(notSeen);
   const base: Question[] = [
     ...pick(regler, Math.min(2, regler.length)),
     ...pick(spel, Math.min(2, spel.length)),
     ...pick(freeze, Math.min(1, freeze.length)),
     ...pick(pass, Math.min(1, pass.length)),
     ...pick(formation, Math.min(1, formation.length)),
+    ...pick(attackDrag, Math.min(2, attackDrag.length)),
   ];
   // Fyll upp från kvarvarande pooler (utan drag_drop) utan dubbletter
   const pool: Question[] = [
@@ -39,6 +42,7 @@ export async function fetchQuestions(level: Level, position?: Position, count = 
     ...freeze,
     ...pass,
     ...formation,
+    ...attackDrag,
   ].filter((q) => !base.some((b) => b.id === q.id));
   while (base.length < count && pool.length) {
     const extra = pick(pool, 1);
