@@ -22,12 +22,13 @@ export default function QuizScreen() {
   const [counter, setCounter] = useState(0);
   const [queue, setQueue] = useState<Question[] | null>(null);
   const [lastCorrect, setLastCorrect] = useState<boolean | null>(null);
+  const [seenIds, setSeenIds] = useState<Set<string>>(new Set());
   useEffect(() => {
     (async () => {
-      const q = await fetchQuestions(level ?? '5-manna');
+      const q = await fetchQuestions(level ?? '5-manna', undefined, 5, seenIds);
       setQueue(q);
     })();
-  }, [level, counter]);
+  }, [level, counter, seenIds]);
   const question: Question | null = queue && queue.length ? queue[0] : null;
 
   const handleAnswered = useCallback((isCorrect: boolean) => {
@@ -38,6 +39,7 @@ export default function QuizScreen() {
     if (question) {
       if (lastCorrect) addXp(question.level, 10);
       markCompleted(question.level, question.id);
+      setSeenIds((prev) => new Set(prev).add(question.id));
     }
     setLastCorrect(null);
     setQueue((prev) => {
