@@ -101,5 +101,5 @@ export interface TimelineQuestion extends BaseQuestion {
   correctIndex: number;
 }
 
-export type Question = QuizQuestion | DragDropQuestion | OneXTwoQuestion | TacticsQuestion | MatchFreezeQuestion | PassQuestion | FormationQuizQuestion;
+export type Question = QuizQuestion | DragDropQuestion | OneXTwoQuestion | TacticsQuestion | MatchFreezeQuestion | PassQuestion | FormationQuizQuestion | TimelineQuestion;
 

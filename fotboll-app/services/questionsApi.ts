@@ -80,7 +80,7 @@ export async function fetchQuestions(level: Level, position?: Position, count = 
   } else if (category === 'spelregler') {
     prioritized.push(...pick(regler, Math.min(3, regler.length)));
   }
-  const base: Question[] = [
+  let base: Question[] = [
     ...prioritized,
     ...pick(regler, Math.min(2, regler.length)),
     ...pick(spel, Math.min(2, spel.length)),
@@ -89,6 +89,11 @@ export async function fetchQuestions(level: Level, position?: Position, count = 
     ...pick(formation, Math.min(1, formation.length)),
     ...pick(attackDrag, Math.min(2, attackDrag.length)),
   ];
+  // Force a specific first test question for 7-manna anfall: timeline goal-kick press
+  if (level === '7-manna' && category === 'anfall') {
+    const tl = (await import('@/engine/generator')).generateTimeline(level, undefined, 'anfall');
+    base = [tl, ...base.filter(q => q.id !== tl.id)];
+  }
   // Fyll upp från kvarvarande pooler (utan drag_drop) utan dubbletter
   const pool: Question[] = [
     ...regler,
