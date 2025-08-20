@@ -44,10 +44,28 @@ export async function fetchQuestions(level: Level, position?: Position, count = 
   const prioritized: Question[] = [];
   if (category === 'fasta') {
     // Fasta situationer: favorera freeze/pass med fasta-taggar om tillgängligt
-    prioritized.push(
-      ...pick(freeze.filter(q => q.category === 'fasta'), Math.min(2, freeze.length)),
-      ...pick(pass.filter(q => q.category === 'fasta'), Math.min(2, pass.length)),
-    );
+    const fz = freeze.filter(q => q.category === 'fasta');
+    const ps = pass.filter(q => q.category === 'fasta');
+    if (fz.length + ps.length === 0) {
+      // fallback: skapa prototyp-fråga för fasta: "Motståndaren har hörna, du är back – var ställer du dig?"
+      const templ: MatchFreezeQuestion = {
+        id: `fz-fasta-${Date.now()}`,
+        type: 'matchscenario',
+        level,
+        category: 'fasta',
+        question: 'Motståndarna har hörna. Du är back – var ställer du dig? Dra bollen till rätt zon.',
+        players: [ { id: 'oppC', team: 'away', x: 0.95, y: 0.20 } ],
+        ball: { x: 0.95, y: 0.20 },
+        correctZones: [ { id: 'z', rect: { x: 0.55, y: 0.35, width: 0.10, height: 0.20 } } ],
+        explanation: 'Markeringsyta i boxen nära första ytan.'
+      };
+      prioritized.push(templ);
+    } else {
+      prioritized.push(
+        ...pick(fz, Math.min(2, fz.length)),
+        ...pick(ps, Math.min(2, ps.length)),
+      );
+    }
   } else if (category === 'forsvar') {
     prioritized.push(
       ...pick(freeze.filter(q => q.category === 'forsvar'), Math.min(3, freeze.length)),

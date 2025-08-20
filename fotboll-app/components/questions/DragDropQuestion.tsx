@@ -230,6 +230,6 @@ const styles = StyleSheet.create({
     borderColor: '#c87f08',
   },
   playerText: { color: 'white', fontWeight: '700' },
-  expl: { color: '#e7ebf3', backgroundColor: 'rgba(0,0,0,0.25)', padding: 8, borderRadius: 8 },
+  expl: { color: '#ffffff', backgroundColor: 'rgba(0,0,0,0.35)', padding: 8, borderRadius: 8 },
 });
 
