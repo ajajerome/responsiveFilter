@@ -73,6 +73,7 @@ export default function MatchFreeze({ question, onAnswer }: Props) {
 			<Text style={styles.title}>{question.question}</Text>
 			<Text style={styles.expl}>
 				Dra bollen till rätt yta eller tryck på rätt spelare. Tänk: mellan boll och mål, vinkel och täcka yta.
+				{question.explanation ? `\n${question.explanation}` : ''}
 			</Text>
 			<View style={{ width: w, height: h, position: 'relative' }}>
 				<MatchPitch width={w} height={h} />
@@ -114,6 +115,6 @@ export default function MatchFreeze({ question, onAnswer }: Props) {
 
 const styles = StyleSheet.create({
 	container: { gap: 12 },
-	title: { fontSize: 18, fontWeight: '700' },
-	expl: { color: '#bbb' },
+	title: { fontSize: 18, fontWeight: '700', color: '#e7ebf3' },
+	expl: { color: '#e7ebf3', backgroundColor: 'rgba(0,0,0,0.25)', padding: 8, borderRadius: 8 },
 });
