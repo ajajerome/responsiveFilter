@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { View, Text, StyleSheet, Pressable } from 'react-native';
+import { View, Text, StyleSheet, Pressable, ActivityIndicator } from 'react-native';
 import { colors, radii, spacing } from '@/theme';
 import { Audio } from 'expo-av';
 import * as Haptics from 'expo-haptics';
@@ -9,9 +9,10 @@ type Props = {
   correct: boolean;
   message?: string;
   onNext: () => void;
+  disabled?: boolean;
 };
 
-export default function AnswerResult({ correct, message, onNext }: Props) {
+export default function AnswerResult({ correct, message, onNext, disabled }: Props) {
   useEffect(() => {
     let sound: Audio.Sound | undefined;
     (async () => {
@@ -45,8 +46,8 @@ export default function AnswerResult({ correct, message, onNext }: Props) {
         {correct ? 'Rätt svar!' : 'Fel svar'}
       </Text>
       {message ? <Text style={styles.msg}>{message}</Text> : null}
-      <Pressable accessibilityRole="button" onPress={onNext} style={styles.nextBtn}>
-        <Text style={styles.nextTxt}>Nästa fråga</Text>
+      <Pressable accessibilityRole="button" onPress={onNext} style={[styles.nextBtn, disabled && { opacity: 0.6 }]} disabled={!!disabled}>
+        {disabled ? <ActivityIndicator color={colors.text} /> : <Text style={styles.nextTxt}>Nästa fråga</Text>}
       </Pressable>
     </View>
   );

@@ -30,6 +30,7 @@ export default function QuizScreen() {
     })();
   }, [level, counter]);
   const question: Question | null = queue && queue.length ? queue[0] : null;
+  const loadingNext = !question;
 
   const handleAnswered = useCallback((isCorrect: boolean) => {
     setLastCorrect(isCorrect);
@@ -78,7 +79,7 @@ export default function QuizScreen() {
           <PassQuestionView question={question as any} onAnswer={handleAnswered} />
         )}
         {lastCorrect !== null && (
-          <AnswerResult correct={lastCorrect} message={question?.explanation} onNext={handleNext} />
+          <AnswerResult correct={lastCorrect} message={question?.explanation} onNext={handleNext} disabled={loadingNext} />
         )}
       </View>
       <Text style={styles.progress}>Fortsätter automatiskt vid svar</Text>
