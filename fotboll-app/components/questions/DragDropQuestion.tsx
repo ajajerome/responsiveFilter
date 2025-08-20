@@ -188,7 +188,7 @@ export default function DragDropQuestionView({ question, onAnswer }: Props) {
             top: startPx.y - 18,
           }}
         >
-          <View style={styles.player}>
+          <View style={[styles.player, { backgroundColor: '#ffd400', borderColor: '#111' }]}>
             <Text style={styles.playerText}>{'playerLabel' in question ? (question.playerLabel ?? 'P') : 'P'}</Text>
           </View>
         </Animated.View>
