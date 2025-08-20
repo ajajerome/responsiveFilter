@@ -10,6 +10,9 @@ export default function FormationQuiz({ question, onAnswer }: Props) {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>{question.question}</Text>
+      {question.explanation ? (
+        <Text style={styles.expl}>{question.explanation}</Text>
+      ) : null}
       <View style={{ width: w, height: h }}>
         <MatchPitch width={w} height={h} level={question.level} />
         <Svg width={w} height={h} style={{ position: 'absolute', left: 0, top: 0 }}>
@@ -32,6 +35,7 @@ export default function FormationQuiz({ question, onAnswer }: Props) {
 const styles = StyleSheet.create({
   container: { gap: 12 },
   title: { fontSize: 18, fontWeight: '700' },
+  expl: { color: '#e7ebf3', backgroundColor: 'rgba(0,0,0,0.25)', padding: 8, borderRadius: 8 },
   option: { backgroundColor: '#f2f2f7', padding: 12, borderRadius: 8 },
   optionText: { color: '#111' },
 });

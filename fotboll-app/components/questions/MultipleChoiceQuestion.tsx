@@ -14,6 +14,7 @@ export default function MultipleChoiceQuestionView({ question, onAnswer }: Props
     <Card>
       <View style={styles.container}>
         <Text style={styles.title}>{question.question}</Text>
+        {question.explanation ? <Text style={styles.expl}>{question.explanation}</Text> : null}
         <View style={{ gap: 10 }}>
           {question.options.map((opt, i) => (
             <Button key={i} title={opt} onPress={() => onAnswer(i === question.correctIndex)} />
@@ -27,5 +28,6 @@ export default function MultipleChoiceQuestionView({ question, onAnswer }: Props
 const styles = StyleSheet.create({
   container: { gap: 12 },
   title: { fontSize: 18, fontWeight: '800', color: colors.text },
+  expl: { color: colors.muted },
 });
 
