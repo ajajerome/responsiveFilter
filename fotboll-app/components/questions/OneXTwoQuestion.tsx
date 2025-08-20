@@ -1,5 +1,6 @@
-import { View, Text, Pressable, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet } from 'react-native';
 import type { OneXTwoQuestion } from '@/types/content';
+import Button from '@/components/ui/Button';
 
 type Props = {
   question: OneXTwoQuestion;
@@ -14,10 +15,7 @@ export default function OneXTwoQuestionView({ question, onAnswer }: Props) {
       <View style={styles.column}
       >
         {labels.map((label, idx) => (
-          <Pressable key={label} style={styles.choice} onPress={() => onAnswer(idx === question.correctIndex)}>
-            <Text style={styles.choiceText}>{label}</Text>
-            <Text style={styles.choiceSub}>{question.answers[idx]}</Text>
-          </Pressable>
+          <Button key={label} title={`${label}: ${question.answers[idx]}`} onPress={() => onAnswer(idx === question.correctIndex)} />
         ))}
       </View>
       {question.explanation ? <Text style={styles.hint}>Tips: {question.explanation}</Text> : null}
@@ -29,9 +27,9 @@ const styles = StyleSheet.create({
   container: { gap: 12 },
   title: { fontSize: 18, fontWeight: '700' },
   column: { flexDirection: 'column', gap: 12 },
-  choice: { backgroundColor: '#1e90ff', paddingVertical: 12, paddingHorizontal: 16, borderRadius: 10, alignItems: 'center' },
-  choiceText: { color: 'white', fontWeight: '700', fontSize: 18 },
-  choiceSub: { color: 'white', marginTop: 4, textAlign: 'center' },
+  choice: {},
+  choiceText: { },
+  choiceSub: { },
   hint: { marginTop: 8, color: '#444' },
 });
 

@@ -30,6 +30,7 @@ export async function fetchQuestions(level: Level, position?: Position, count = 
     ...pick(pass, Math.min(1, pass.length)),
     ...pick(formation, Math.min(1, formation.length)),
   ];
+  // Fyll upp med formation/regler/spelförståelse i första hand, undvik drag_drop
   while (base.length < count) base.push(getRandomQuestion(level, position));
   return base.slice(0, count);
 }

@@ -9,10 +9,13 @@ import MatchFreeze from "@/components/questions/MatchFreeze";
 import PassQuestionView from "@/components/questions/PassQuestion";
 import FormationQuiz from "@/components/questions/FormationQuiz";
 import type { Level, Question } from "@/types/content";
+import { useAppStore } from "@/store/useAppStore";
 import AnswerResult from "@/components/AnswerResult";
 
 export default function QuizScreen() {
   const { level } = useLocalSearchParams<{ level?: Level }>();
+  const addXp = useAppStore((s) => s.actions.addXp);
+  const markCompleted = useAppStore((s) => s.actions.markQuestionCompleted);
   const [counter, setCounter] = useState(0);
   const [queue, setQueue] = useState<Question[] | null>(null);
   const [lastCorrect, setLastCorrect] = useState<boolean | null>(null);
@@ -29,13 +32,16 @@ export default function QuizScreen() {
   }, []);
 
   const handleNext = useCallback(() => {
-    // TODO: award XP, persist progress via store (actions.addXp)
+    if (question) {
+      if (lastCorrect) addXp(question.level, 10);
+      markCompleted(question.level, question.id);
+    }
     setLastCorrect(null);
     setQueue((q) => (q && q.length ? q.slice(1) : q));
     if (!queue || queue.length <= 1) {
       setCounter((c) => c + 1);
     }
-  }, [queue]);
+  }, [queue, question, lastCorrect, addXp, markCompleted]);
 
   return (
     <View style={styles.container}>

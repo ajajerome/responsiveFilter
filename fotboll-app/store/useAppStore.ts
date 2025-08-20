@@ -48,12 +48,21 @@ export const useAppStore = create<AppState>()(
         addXp: (level, amount) =>
           set((s) => {
             const lv = s.progress[level] ?? { unlocked: level === '5-manna', xp: 0, completedQuestionIds: [] };
-            return {
-              progress: {
-                ...s.progress,
-                [level]: { ...lv, xp: Math.max(0, lv.xp + amount) },
-              },
-            };
+            const nextXp = Math.max(0, lv.xp + amount);
+            const next = {
+              ...s.progress,
+              [level]: { ...lv, xp: nextXp },
+            } as Partial<Record<Level, LevelProgress>>;
+            // auto-unlock thresholds
+            if (level === '5-manna' && nextXp >= 100) {
+              const l7 = s.progress['7-manna'] ?? { unlocked: false, xp: 0, completedQuestionIds: [] };
+              next['7-manna'] = { ...l7, unlocked: true };
+            }
+            if (level === '7-manna' && nextXp >= 200) {
+              const l9 = s.progress['9-manna'] ?? { unlocked: false, xp: 0, completedQuestionIds: [] };
+              next['9-manna'] = { ...l9, unlocked: true };
+            }
+            return { progress: next };
           }),
         // TODO: auto-unlock thresholds: 5->7 at 100 XP, 7->9 at 200 XP
         markQuestionCompleted: (level, questionId) =>
