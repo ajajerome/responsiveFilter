@@ -1,5 +1,8 @@
-import { View, Text, Pressable, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet } from 'react-native';
 import type { QuizQuestion } from '@/types/content';
+import Card from '@/components/ui/Card';
+import Button from '@/components/ui/Button';
+import { colors } from '@/theme';
 
 type Props = {
   question: QuizQuestion;
@@ -8,23 +11,21 @@ type Props = {
 
 export default function MultipleChoiceQuestionView({ question, onAnswer }: Props) {
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>{question.question}</Text>
-      <View style={{ gap: 8 }}>
-        {question.options.map((opt, i) => (
-          <Pressable key={i} style={styles.option} onPress={() => onAnswer(i === question.correctIndex)}>
-            <Text style={styles.optionText}>{opt}</Text>
-          </Pressable>
-        ))}
+    <Card>
+      <View style={styles.container}>
+        <Text style={styles.title}>{question.question}</Text>
+        <View style={{ gap: 10 }}>
+          {question.options.map((opt, i) => (
+            <Button key={i} title={opt} onPress={() => onAnswer(i === question.correctIndex)} />
+          ))}
+        </View>
       </View>
-    </View>
+    </Card>
   );
 }
 
 const styles = StyleSheet.create({
   container: { gap: 12 },
-  title: { fontSize: 18, fontWeight: '700' },
-  option: { backgroundColor: '#f2f2f7', padding: 12, borderRadius: 8 },
-  optionText: { color: '#111' },
+  title: { fontSize: 18, fontWeight: '800', color: colors.text },
 });
 

@@ -30,6 +30,25 @@ export const SPELFORSTAELSE: QuizQuestion[] = [
     options: ['Kliver upp', 'Faller och täcker ytan'],
     correctIndex: 1,
     explanation: 'Att falla ger tid och förhindrar boll bakom backlinjen.'
+  },
+  {
+    id: 'sf-anfall-yta',
+    type: 'quiz',
+    level: '9-manna',
+    position: 'anfallare',
+    question: 'Som anfallare, hur skapar du yta för medspelare?',
+    options: ['Stå still i mitten', 'Dra isär backlinjen med löpning'],
+    correctIndex: 1,
+    explanation: 'Genom att dra isär backlinjen öppnar du passningsytor.'
+  },
+  {
+    id: 'sf-anfall-yta',
+    type: 'quiz',
+    level: '9-manna',
+    position: 'anfallare',
+    question: 'Som anfallare, hur skapar du yta för medspelare?',
+    options: ['Stå still i mitten', 'Dra isär backlinjen med löpning'],
+    correctIndex: 1,
+    explanation: 'Genom att dra isär backlinjen öppnar du passningsytor.'
   }
 ];
-

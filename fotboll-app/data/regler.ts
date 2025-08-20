@@ -11,6 +11,15 @@ export const REGELFRAGOR: QuizQuestion[] = [
     explanation: 'I 5-manna spelar varje lag med 5 spelare på planen inklusive målvakt.'
   },
   {
+    id: 'r-5m-inspark',
+    type: 'quiz',
+    level: '5-manna',
+    question: 'Vid inspark i 5-manna, var ska motståndarna stå?',
+    options: ['Utanför straffområdet', 'Var som helst'],
+    correctIndex: 0,
+    explanation: 'Motståndarna ska vara utanför straffområdet tills bollen är i spel.'
+  },
+  {
     id: 'r-7m-inspark',
     type: 'quiz',
     level: '7-manna',
