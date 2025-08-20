@@ -1,5 +1,5 @@
 import { useLocalSearchParams } from "expo-router";
-import { View, Text, StyleSheet } from "react-native";
+import { View, Text, StyleSheet, ImageBackground } from "react-native";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { fetchQuestions } from "@/services/questionsApi";
 import OneXTwoQuestionView from "@/components/questions/OneXTwoQuestion";
@@ -11,6 +11,8 @@ import FormationQuiz from "@/components/questions/FormationQuiz";
 import type { Level, Question } from "@/types/content";
 import { useAppStore } from "@/store/useAppStore";
 import AnswerResult from "@/components/AnswerResult";
+import XpBadge from "@/components/ui/XpBadge";
+import Tag from "@/components/ui/Tag";
 
 export default function QuizScreen() {
   const { level } = useLocalSearchParams<{ level?: Level }>();
@@ -44,8 +46,9 @@ export default function QuizScreen() {
   }, [queue, question, lastCorrect, addXp, markCompleted]);
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.badge}>{question?.level ?? ''}</Text>
+    <ImageBackground source={require('@/assets/splash-icon.png')} resizeMode="cover" style={styles.container}>
+      <XpBadge />
+      <Tag label={question?.level ?? ''} />
       <View style={{ gap: 12 }}>
         {question && question.type === 'one_x_two' && (
           <OneXTwoQuestionView question={question} onAnswer={handleAnswered} />
@@ -70,7 +73,7 @@ export default function QuizScreen() {
         )}
       </View>
       <Text style={styles.progress}>Fortsätter automatiskt vid svar</Text>
-    </View>
+    </ImageBackground>
   );
 }
 

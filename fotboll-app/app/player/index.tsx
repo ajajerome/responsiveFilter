@@ -3,11 +3,13 @@ import { Text, StyleSheet } from "react-native";
 import Screen from "@/components/ui/Screen";
 import Card from "@/components/ui/Card";
 import Button from "@/components/ui/Button";
+import XpBadge from "@/components/ui/XpBadge";
 import { colors } from "@/theme";
 
 export default function PlayerHome() {
   return (
     <Screen>
+      <XpBadge />
       <Text style={styles.title}>Välj nivå</Text>
       <Card>
         <Link href="/player/level/5-manna" asChild>
