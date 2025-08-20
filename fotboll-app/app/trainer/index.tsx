@@ -1,11 +1,14 @@
 import { View, Text, StyleSheet } from "react-native";
+import Screen from "@/components/ui/Screen";
 
 export default function TrainerHome() {
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Förälder/Tränare</Text>
-      <Text>Se barnets progression (demo).</Text>
-    </View>
+    <Screen>
+      <View style={styles.container}>
+        <Text style={styles.title}>Förälder/Tränare</Text>
+        <Text>Se barnets progression (demo).</Text>
+      </View>
+    </Screen>
   );
 }
 

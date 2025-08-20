@@ -1,11 +1,14 @@
 import { View, Text, StyleSheet } from "react-native";
+import Screen from "@/components/ui/Screen";
 
 export default function Profile() {
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Profil</Text>
-      <Text>Avatar, position och badges visas här.</Text>
-    </View>
+    <Screen>
+      <View style={styles.container}>
+        <Text style={styles.title}>Profil</Text>
+        <Text>Avatar, position och badges visas här.</Text>
+      </View>
+    </Screen>
   );
 }
 

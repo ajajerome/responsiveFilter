@@ -1,5 +1,5 @@
 import { useLocalSearchParams } from "expo-router";
-import { View, Text, StyleSheet, ImageBackground } from "react-native";
+import { View, Text, StyleSheet } from "react-native";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { fetchQuestions } from "@/services/questionsApi";
 import OneXTwoQuestionView from "@/components/questions/OneXTwoQuestion";
@@ -13,6 +13,7 @@ import { useAppStore } from "@/store/useAppStore";
 import AnswerResult from "@/components/AnswerResult";
 import XpBadge from "@/components/ui/XpBadge";
 import Tag from "@/components/ui/Tag";
+import Screen from "@/components/ui/Screen";
 
 export default function QuizScreen() {
   const { level } = useLocalSearchParams<{ level?: Level }>();
@@ -46,7 +47,7 @@ export default function QuizScreen() {
   }, [queue, question, lastCorrect, addXp, markCompleted]);
 
   return (
-    <ImageBackground source={require('@/assets/splash-icon.png')} resizeMode="cover" style={styles.container}>
+    <Screen>
       <XpBadge />
       <Tag label={question?.level ?? ''} />
       <View style={{ gap: 12 }}>
@@ -73,7 +74,7 @@ export default function QuizScreen() {
         )}
       </View>
       <Text style={styles.progress}>Fortsätter automatiskt vid svar</Text>
-    </ImageBackground>
+    </Screen>
   );
 }
 

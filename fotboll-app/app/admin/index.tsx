@@ -1,11 +1,14 @@
 import { View, Text, StyleSheet } from "react-native";
+import Screen from "@/components/ui/Screen";
 
 export default function Admin() {
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Admin</Text>
-      <Text>Hantera frågor och övningar (demo).</Text>
-    </View>
+    <Screen>
+      <View style={styles.container}>
+        <Text style={styles.title}>Admin</Text>
+        <Text>Hantera frågor och övningar (demo).</Text>
+      </View>
+    </Screen>
   );
 }
 
