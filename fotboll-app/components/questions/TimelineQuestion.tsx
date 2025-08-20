@@ -9,22 +9,25 @@ type Props = { question: TimelineQuestion; onAnswer: (isCorrect: boolean) => voi
 
 export default function TimelineQuestionView({ question, onAnswer }: Props) {
   const w = 320, h = 220;
-  // Absolute position ball
   const ball = useRef(new Animated.ValueXY({ x: question.ball.x * w, y: question.ball.y * h })).current;
+  const [started, setStarted] = useState(false);
   const [paused, setPaused] = useState(false);
 
-  useEffect(() => {
+  function startSequence() {
+    setStarted(true);
     const toX = question.animTo.x * w;
     const toY = question.animTo.y * h;
     const midX = (question.ball.x * w) + (toX - (question.ball.x * w)) * 0.4;
     const midY = (question.ball.y * h) + (toY - (question.ball.y * h)) * 0.4;
     Animated.timing(ball, { toValue: { x: midX, y: midY }, duration: Math.max(250, question.animTo.durationMs * 0.4), easing: Easing.out(Easing.quad), useNativeDriver: false }).start(() => setPaused(true));
-  }, [question.id]);
+  }
 
   return (
     <View style={styles.container}>
       <Text style={styles.title}>{question.question}</Text>
-      <Text style={styles.hint}>Sekvensen pausas – gör ditt drag.</Text>
+      {!started && <Text style={styles.hint}>Tryck Starta för att spela upp sekvensen.</Text>}
+      {started && !paused && <Text style={styles.hint}>Sekvensen spelas upp…</Text>}
+      {paused && <Text style={styles.hint}>Sekvensen pausad – gör ditt drag.</Text>}
       <View style={{ width: w, height: h }}>
         <MatchPitch width={w} height={h} />
         <Svg width={w} height={h} style={{ position: 'absolute', left: 0, top: 0 }}>
@@ -34,6 +37,9 @@ export default function TimelineQuestionView({ question, onAnswer }: Props) {
         </Svg>
         <Animated.View style={{ position: 'absolute', width: 10, height: 10, borderRadius: 5, backgroundColor: '#ffffff', transform: [{ translateX: ball.x }, { translateY: ball.y }] }} />
       </View>
+      {!started && (
+        <Button title="Starta" onPress={startSequence} />
+      )}
       {paused && (
         <View style={{ gap: 8 }}>
           {question.options.map((opt, idx) => (
