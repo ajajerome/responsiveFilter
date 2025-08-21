@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react';
+import { useRef, useState, useEffect } from 'react';
 import { View, Text, StyleSheet, PanResponder, Animated } from 'react-native';
 import MatchPitch from '@/features/pitch/MatchPitch';
 import ArrowsLayer, { Arrow as DrawnArrow } from '@/features/tactics/ArrowsLayer';
@@ -25,6 +25,16 @@ export default function DragDropQuestionView({ question, onAnswer }: Props) {
   })).current;
   // För taktik: fler spelare
   const [playersPos, setPlayersPos] = useState<Record<string, Animated.ValueXY>>({});
+  // Pulse highlight
+  const pulse = useRef(new Animated.Value(0)).current;
+  useEffect(() => {
+    Animated.loop(
+      Animated.sequence([
+        Animated.timing(pulse, { toValue: 1, duration: 700, useNativeDriver: true }),
+        Animated.timing(pulse, { toValue: 0, duration: 700, useNativeDriver: true }),
+      ])
+    ).start();
+  }, []);
 
   const startPx = 'start' in question
     ? { x: question.start.x * pitchSize.width, y: question.start.y * pitchSize.height }
@@ -193,6 +203,7 @@ export default function DragDropQuestionView({ question, onAnswer }: Props) {
             top: startPx.y - 18,
           }}
         >
+          <Animated.View style={{ position: 'absolute', left: -6, top: -8, width: 32, height: 44, borderRadius: 8, borderWidth: 2, borderColor: '#ffcf40', opacity: pulse.interpolate({ inputRange: [0, 1], outputRange: [0.3, 0.8] }) }} />
           <View style={[styles.player, { backgroundColor: teamColor, borderColor: '#e7ebf3' }]}>
             <Text style={styles.playerText}>{'playerLabel' in question ? (question.playerLabel ?? 'P') : 'P'}</Text>
           </View>
@@ -222,7 +233,8 @@ export default function DragDropQuestionView({ question, onAnswer }: Props) {
                 <View key={`z-${key}`} style={{ position: 'absolute', left: target.rect.x * pitchSize.width, top: target.rect.y * pitchSize.height, width: target.rect.width * pitchSize.width, height: target.rect.height * pitchSize.height, borderWidth: 2, borderColor: '#34c759', backgroundColor: 'rgba(52,199,89,0.12)' }} />
               )}
               <Animated.View key={`p-${key}`} {...pan.panHandlers} style={{ position: 'absolute', transform: playersPos[key].getTranslateTransform(), left: p.start.x * pitchSize.width - 12, top: p.start.y * pitchSize.height - 18 }}>
-                <View style={{ width: 24, height: 36, borderRadius: 6, backgroundColor: '#4da3ff', borderWidth: 2, borderColor: '#e7ebf3', alignItems: 'center', justifyContent: 'center' }}>
+                <Animated.View style={{ position: 'absolute', left: -6, top: -8, width: 32, height: 44, borderRadius: 8, borderWidth: 2, borderColor: '#ffcf40', opacity: pulse.interpolate({ inputRange: [0, 1], outputRange: [0.3, 0.8] }) }} />
+                <View style={{ width: 24, height: 36, borderRadius: 6, backgroundColor: teamColor, borderWidth: 2, borderColor: '#e7ebf3', alignItems: 'center', justifyContent: 'center' }}>
                   <Text style={styles.playerText}>{p.label}</Text>
                 </View>
               </Animated.View>
@@ -267,4 +279,3 @@ const styles = StyleSheet.create({
   playerText: { color: 'white', fontWeight: '700' },
   expl: { color: '#ffffff', backgroundColor: 'rgba(0,0,0,0.35)', padding: 8, borderRadius: 8 },
 });
-
