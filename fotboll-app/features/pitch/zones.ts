@@ -15,7 +15,45 @@ export type PitchZones = {
     bottomLeft: { x: number; y: number };
     bottomRight: { x: number; y: number };
   };
+  grid: GridSpec;
 };
+
+export type GridSpec = {
+  rows: number;
+  cols: number;
+  // 1-based cell index (row-major): 1..rows*cols
+  centerOf(index: number): { x: number; y: number };
+  rectOf(index: number, spanRows?: number, spanCols?: number): { x: number; y: number; width: number; height: number };
+  indexOf(row: number, col: number): number;
+};
+
+function makeGrid(rows: number, cols: number): GridSpec {
+  return {
+    rows,
+    cols,
+    centerOf(index: number) {
+      const i = Math.max(1, Math.min(rows * cols, index));
+      const r = Math.floor((i - 1) / cols) + 1;
+      const c = ((i - 1) % cols) + 1;
+      const cellW = 1 / cols;
+      const cellH = 1 / rows;
+      return { x: (c - 0.5) * cellW, y: (r - 0.5) * cellH };
+    },
+    rectOf(index: number, spanRows = 1, spanCols = 1) {
+      const i = Math.max(1, Math.min(rows * cols, index));
+      const r = Math.floor((i - 1) / cols) + 1;
+      const c = ((i - 1) % cols) + 1;
+      const cellW = 1 / cols;
+      const cellH = 1 / rows;
+      return { x: (c - 1) * cellW, y: (r - 1) * cellH, width: cellW * spanCols, height: cellH * spanRows };
+    },
+    indexOf(row: number, col: number) {
+      const r = Math.max(1, Math.min(rows, row));
+      const c = Math.max(1, Math.min(cols, col));
+      return (r - 1) * cols + c;
+    },
+  };
+}
 
 export function getZones(level: '7-manna' | '9-manna' | '5-manna' = '7-manna'): PitchZones {
   // Vertical orientation: opponent goal at top, our goal at bottom
@@ -46,6 +84,7 @@ export function getZones(level: '7-manna' | '9-manna' | '5-manna' = '7-manna'): 
       bottomLeft: { x: leftX, y: ourGoalY },
       bottomRight: { x: rightX, y: ourGoalY },
     },
+    grid: makeGrid(level === '9-manna' ? 9 : 7, level === '9-manna' ? 6 : 5),
   };
 }
 

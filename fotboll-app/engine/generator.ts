@@ -91,13 +91,15 @@ export function generateDragDrop(level: Level, position?: Position, category?: s
   if (category === 'forsvar') {
     const z = getZones(level);
     base.targetRect = z.boxDef; // cover central box in defense
-    base.opponents = [ { x: z.attThirdY > z.defThirdY ? z.centerX : z.centerX + 0.1, y: z.attThirdY } ];
+    const cell = z.grid.centerOf(z.grid.indexOf(2, Math.ceil(z.grid.cols/2)));
+    base.opponents = [ { x: cell.x, y: cell.y } ];
   }
   if (category === 'fasta') {
     const z = getZones(level);
-    // Opp corner top-right; target zone central box area
     base.targetRect = z.boxDef;
-    base.opponents = [ { x: z.corners.topRight.x, y: z.corners.topRight.y } ];
+    const cornerIdx = z.grid.indexOf(1, z.grid.cols); // top-right cell
+    const cornerPt = z.grid.centerOf(cornerIdx);
+    base.opponents = [ { x: cornerPt.x, y: cornerPt.y } ];
   }
   return base;
 }
