@@ -95,8 +95,9 @@ export async function fetchQuestions(level: Level, position?: Position, count = 
     base = [tl, ...base.filter(q => q.id !== tl.id)];
   }
   if (level === '7-manna' && category === 'forsvar') {
-    const def = (await import('@/engine/generator')).generateDefenseGrid(level);
-    base = [def, ...base];
+    const gen = await import('@/engine/generator');
+    const defPlayer = gen.generateDragDrop(level, undefined, 'forsvar');
+    base = [defPlayer, ...base];
   }
   // Fyll upp från kvarvarande pooler (utan drag_drop) utan dubbletter
   const pool: Question[] = [
