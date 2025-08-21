@@ -207,6 +207,27 @@ export function generatePass(level: Level, position?: Position, category?: strin
   };
 }
 
+export function generateDefenseGrid(level: Level, position?: Position): MatchFreezeQuestion {
+  const z = getZones(level);
+  // Place ball on opponent right flank (attacking third), correct zone in our defensive box right side
+  const ballCell = z.grid.centerOf(z.grid.indexOf(2, z.grid.cols));
+  const defRect = z.boxDef;
+  return {
+    id: uid('defgrid'),
+    type: 'matchscenario',
+    level,
+    category: 'forsvar',
+    position,
+    question: 'Motståndarna anfaller på högerkanten. Var ska du stå för att täcka rätt yta? (Ytterback)',
+    players: [
+      { id: 'oppW', x: ballCell.x, y: ballCell.y, team: 'away' },
+    ],
+    ball: { x: ballCell.x, y: ballCell.y },
+    correctZones: [ { id: 'cover', rect: { x: defRect.x + defRect.width * 0.25, y: defRect.y + defRect.height * 0.1, width: defRect.width * 0.3, height: defRect.height * 0.35 } } ],
+    explanation: 'Täck ytan mellan boll och mål på din kant, i höjd med boxen. Håll vinkel och var redo att kliva.'
+  };
+}
+
 export function generateTimeline(level: Level, position?: Position, category?: string): TimelineQuestion {
   // Example: Opponent has goal kick; you are forward – press
   const z = getZones(level);
