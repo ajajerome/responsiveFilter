@@ -3,12 +3,8 @@ import { View, Text, StyleSheet, ScrollView, Animated } from "react-native";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { fetchQuestions } from "@/services/questionsApi";
 import OneXTwoQuestionView from "@/components/questions/OneXTwoQuestion";
-import DragDropQuestionView from "@/components/questions/DragDropQuestion";
 import MultipleChoiceQuestionView from "@/components/questions/MultipleChoiceQuestion";
-import MatchFreeze from "@/components/questions/MatchFreeze";
-import PassQuestionView from "@/components/questions/PassQuestion";
-import FormationQuiz from "@/components/questions/FormationQuiz";
-import TimelineQuestionView from "@/components/questions/TimelineQuestion";
+import InteractiveQuestion from "@/components/questions/InteractiveQuestion";
 import type { Level, Question } from "@/types/content";
 import { useAppStore } from "@/store/useAppStore";
 import AnswerResult from "@/components/AnswerResult";
@@ -184,23 +180,11 @@ export default function QuizScreen() {
             {question && question.type === 'one_x_two' && (
               <OneXTwoQuestionView question={question} onAnswer={handleAnswered} />
             )}
-            {question && question.type === 'drag_drop' && (
-              <DragDropQuestionView question={question} onAnswer={handleAnswered} />
-            )}
             {question && question.type === 'quiz' && (
               <MultipleChoiceQuestionView question={question} onAnswer={handleAnswered} />
             )}
-            {question && question.type === 'formation_quiz' && (
-              <FormationQuiz question={question as any} onAnswer={handleAnswered} />
-            )}
-            {question && question.type === 'timeline' && (
-              <TimelineQuestionView question={question as any} onAnswer={handleAnswered} />
-            )}
-            {question && question.type === 'matchscenario' && !('ballHolderId' in question) && (
-              <MatchFreeze question={question as any} onAnswer={handleAnswered} />
-            )}
-            {question && question.type === 'matchscenario' && 'ballHolderId' in question && (
-              <PassQuestionView question={question as any} onAnswer={handleAnswered} />
+            {question && question.type !== 'quiz' && (
+              <InteractiveQuestion question={question as any} onAnswer={handleAnswered} />
             )}
             <Text style={styles.progress}>{fetching ? 'Hämtar nästa fråga…' : `Fråga ${Math.min(servedCount + 1, SESSION_TARGET)} / ${SESSION_TARGET}`}</Text>
           </Animated.View>
