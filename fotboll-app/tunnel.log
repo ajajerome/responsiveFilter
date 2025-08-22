@@ -1,0 +1,12 @@
+  --non-interactive is not supported, use $CI=1 instead
+Starting project at /workspace/fotboll-app
+Metro is running in CI mode, reloads are disabled. Remove CI=true to enable watch mode.
+Starting Metro Bundler
+Tunnel connected.
+Tunnel ready.
+The following packages should be updated for best compatibility with the installed expo version:
+  expo@53.0.20 - expected version: 53.0.22
+  expo-router@5.1.4 - expected version: ~5.1.5
+Your project may not work correctly until you install the expected versions of the packages.
+Waiting on http://localhost:8090
+Logs for your project will appear below.
