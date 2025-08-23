@@ -18,6 +18,7 @@ export default function DragDropQuestionView({ question, onAnswer }: Props) {
   const w = 320, h = 220;
   const [pitchSize, setPitchSize] = useState({ width: w, height: h });
   const teamColor = useAppStore((s) => s.profile.avatar?.shirtColor) || '#4da3ff';
+  const jersey = useAppStore((s) => s.profile.avatar?.jerseyNumber) || '10';
   const [arrows, setArrows] = useState<DrawnArrow[]>([]);
   const position = useRef(new Animated.ValueXY({
     x: 0,
@@ -204,8 +205,8 @@ export default function DragDropQuestionView({ question, onAnswer }: Props) {
           }}
         >
           <Animated.View style={{ position: 'absolute', left: -6, top: -8, width: 32, height: 44, borderRadius: 8, borderWidth: 2, borderColor: '#ffcf40', opacity: pulse.interpolate({ inputRange: [0, 1], outputRange: [0.3, 0.8] }) }} />
-          <View style={[styles.player, { backgroundColor: teamColor, borderColor: '#e7ebf3' }]}>
-            <Text style={styles.playerText}>{'playerLabel' in question ? (question.playerLabel ?? 'P') : 'P'}</Text>
+          <View style={[styles.player, { backgroundColor: teamColor, borderColor: '#e7ebf3' }]}> 
+            <Text style={styles.playerText}>{jersey}</Text>
           </View>
         </Animated.View>
         {/* Taktik-läge: flera spelare */}

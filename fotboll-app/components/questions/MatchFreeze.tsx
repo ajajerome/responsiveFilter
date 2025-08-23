@@ -11,6 +11,7 @@ type Props = { question: MatchFreezeQuestion; onAnswer: (isCorrect: boolean) => 
 export default function MatchFreeze({ question, onAnswer }: Props) {
 	const w = 320, h = 220;
 	const teamColor = useAppStore((s) => s.profile.avatar?.shirtColor) || '#4da3ff';
+	const jersey = useAppStore((s) => s.profile.avatar?.jerseyNumber) || '10';
 	useEffect(() => {
 		playLocal(require('@/assets/sfx/whistle.mp3'));
 	}, []);
@@ -91,7 +92,9 @@ export default function MatchFreeze({ question, onAnswer }: Props) {
 						onPress={() => check(p.id)}
 						hitSlop={12}
 						style={{ position: 'absolute', left: p.x * w - 12, top: p.y * h - 18, width: 24, height: 36, borderRadius: 6, backgroundColor: p.team === 'home' ? teamColor : '#ff3b30', alignItems: 'center', justifyContent: 'center', borderWidth: 2, borderColor: p.team === 'home' ? '#e7ebf3' : '#111' }}
-					/>
+					>
+						{p.team === 'home' ? <Text style={{ color: 'white', fontWeight: '800', fontSize: 12 }}>{jersey}</Text> : null}
+					</Pressable>
 				))}
 				<View style={{ position: 'absolute', right: 6, top: 6, backgroundColor: 'rgba(0,0,0,0.35)', paddingHorizontal: 6, paddingVertical: 4, borderRadius: 8 }}>
 					<Text style={{ color: 'white', fontWeight: '700' }}>Legend</Text>
