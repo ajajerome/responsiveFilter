@@ -28,6 +28,9 @@ export default function HomeIndex() {
           <Link href="/trainer" asChild>
             <Button title="Förälder/Tränare" onPress={() => {}} variant="secondary" style={{ marginTop: 12 }} />
           </Link>
+          <Link href="/profile" asChild>
+            <Button title="Redigera Avatar" onPress={() => {}} variant="secondary" style={{ marginTop: 12 }} />
+          </Link>
         </Card>
       </View>
     </Screen>
