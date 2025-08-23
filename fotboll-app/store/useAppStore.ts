@@ -15,6 +15,9 @@ type Profile = {
     gender?: 'kille' | 'tjej' | 'annat';
     hair?: string;
     shirtColor?: string;
+    name?: string;
+    jerseyNumber?: string;
+    skinTone?: string;
   };
   favoritePosition?: Position;
   age?: number;
@@ -27,6 +30,9 @@ type AppState = {
   actions: {
     setFavoritePosition: (pos: Position) => void;
     setTeamColor: (hex: string) => void;
+    setAvatarName: (name: string) => void;
+    setJerseyNumber: (num: string) => void;
+    setSkinTone: (hex: string) => void;
     addXp: (level: Level, amount: number) => void;
     markQuestionCompleted: (level: Level, questionId: string) => void;
     unlockLevel: (level: Level) => void;
@@ -51,6 +57,12 @@ export const useAppStore = create<AppState>()(
           set((s) => ({ profile: { ...s.profile, favoritePosition: pos } })),
         setTeamColor: (hex) =>
           set((s) => ({ profile: { ...s.profile, avatar: { ...(s.profile.avatar || {}), shirtColor: hex } } })),
+        setAvatarName: (name) =>
+          set((s) => ({ profile: { ...s.profile, avatar: { ...(s.profile.avatar || {}), name } } })),
+        setJerseyNumber: (num) =>
+          set((s) => ({ profile: { ...s.profile, avatar: { ...(s.profile.avatar || {}), jerseyNumber: num } } })),
+        setSkinTone: (hex) =>
+          set((s) => ({ profile: { ...s.profile, avatar: { ...(s.profile.avatar || {}), skinTone: hex } } })),
         addXp: (level, amount) =>
           set((s) => {
             const lv = s.progress[level] ?? { unlocked: level === '5-manna', xp: 0, completedQuestionIds: [] };

@@ -4,3 +4,15 @@ However, we detected that you don't have expo-dev-client installed for your proj
 You'll need to install expo-dev-client manually.
 See installation instructions on how to do it.: https://docs.expo.dev/clients/installation/
 Install expo-dev-client manually and try again later.
+The field "cli.appVersionSource" is not set, but it will be required in the future. Learn more: https://docs.expo.dev/build-reference/app-versions/
+Resolved "development" environment for the build. Learn more: https://docs.expo.dev/eas/environment-variables/#setting-the-environment-for-your-builds
+No environment variables with visibility "Plain text" and "Sensitive" found for the "development" environment on EAS.
+
+app.json is missing ios.infoPlist.ITSAppUsesNonExemptEncryption boolean. Manual configuration is required in App Store Connect before the app can be tested.
+
+✔ Created update channel "development" and branch "development" on @jappmaster/fotbollstranaren project. Learn more: https://docs.expo.dev/eas-update/eas-cli/
+The field "cli.appVersionSource" is not set, but it will be required in the future. Learn more: https://docs.expo.dev/build-reference/app-versions/
+✔ Using remote iOS credentials (Expo server)
+
+Failed to set up credentials.
+You're in non-interactive mode. EAS CLI couldn't find any credentials suitable for internal distribution. Run this command again in interactive mode.
