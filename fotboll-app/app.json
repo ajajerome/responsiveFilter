@@ -18,7 +18,7 @@
     },
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.ajagames.learfotball"
+      "bundleIdentifier": "com.ajagames.learnfotball"
     },
     "android": {
       "adaptiveIcon": {
