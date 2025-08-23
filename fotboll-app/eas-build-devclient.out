@@ -16,3 +16,4 @@ The field "cli.appVersionSource" is not set, but it will be required in the futu
 
 Failed to set up credentials.
 You're in non-interactive mode. EAS CLI couldn't find any credentials suitable for internal distribution. Run this command again in interactive mode.
+The field "cli.appVersionSource" is not set, but it will be required in the future. Learn more: https://docs.expo.dev/build-reference/app-versions/
