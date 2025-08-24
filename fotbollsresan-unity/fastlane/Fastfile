@@ -1,6 +1,24 @@
 default_platform(:ios)
 
 platform :ios do
+  require 'base64'
+
+  def make_api_key_from_env()
+    key_b64 = ENV["ASC_KEY_B64"]
+    key_id = ENV["ASC_KEY_ID"]
+    issuer_id = ENV["ASC_ISSUER_ID"]
+    return nil if key_b64.to_s.strip.empty? || key_id.to_s.strip.empty? || issuer_id.to_s.strip.empty?
+
+    FileUtils.mkdir_p('fastlane/tmp')
+    key_path = 'fastlane/tmp/AuthKey.p8'
+    File.write(key_path, Base64.decode64(key_b64))
+    app_store_connect_api_key(
+      key_id: key_id,
+      issuer_id: issuer_id,
+      keyfile: key_path
+    )
+  end
+
   desc "Bygg och ladda upp till TestFlight"
   lane :beta do
     # Anpassa efter ditt Xcode-projekt namn/target/scheme
@@ -16,7 +34,9 @@ platform :ios do
       export_method: "app-store"
     )
 
+    api_key = make_api_key_from_env()
     upload_to_testflight(
+      api_key: api_key,
       apple_id: "6751473029",
       beta_app_review_info: {
         contact_email: "apple-id@example.com",
@@ -46,7 +66,9 @@ platform :ios do
       export_method: "app-store"
     )
 
+    api_key = make_api_key_from_env()
     upload_to_testflight(
+      api_key: api_key,
       apple_id: "6751473029",
       beta_app_review_info: {
         contact_email: "apple-id@example.com",
