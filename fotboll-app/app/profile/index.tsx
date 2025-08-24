@@ -1,9 +1,10 @@
-import { View, Text, StyleSheet, TextInput } from "react-native";
+import { View, Text, StyleSheet, TextInput, Keyboard, TouchableOpacity } from "react-native";
 import Screen from "@/components/ui/Screen";
 import Button from "@/components/ui/Button";
 import { colors } from "@/theme";
 import { useAppStore } from "@/store/useAppStore";
 import { useEffect, useState } from "react";
+import HSVPicker from "@/components/common/HSVPicker";
 
 export default function Profile() {
 	const avatar = useAppStore((s) => s.profile.avatar) || {};
@@ -29,6 +30,7 @@ export default function Profile() {
 		setSkinStore(skinTone);
 		setTeamColorStore(shirtColor);
 		setSaved(true);
+		Keyboard.dismiss();
 		setTimeout(() => setSaved(false), 1400);
 	};
 	return (
@@ -53,17 +55,24 @@ export default function Profile() {
 						placeholderTextColor="#9aa4b2"
 						value={name}
 						onChangeText={setName}
+						returnKeyType="done"
+						onSubmitEditing={() => Keyboard.dismiss()}
 					/>
 					<Text style={styles.label}>Tröjnummer</Text>
-					<TextInput
-						style={styles.input}
-						keyboardType="number-pad"
-						placeholder="t.ex. 7"
-						placeholderTextColor="#9aa4b2"
-						maxLength={2}
-						value={jerseyNumber}
-						onChangeText={(t) => setJerseyNumber(t.replace(/[^0-9]/g, ''))}
-					/>
+					<View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
+						<TextInput
+							style={[styles.input, { flex: 1 }]}
+							keyboardType="number-pad"
+							placeholder="t.ex. 7"
+							placeholderTextColor="#9aa4b2"
+							maxLength={2}
+							value={jerseyNumber}
+							onChangeText={(t) => setJerseyNumber(t.replace(/[^0-9]/g, ''))}
+						/>
+						<TouchableOpacity onPress={() => Keyboard.dismiss()} style={{ paddingHorizontal: 12, paddingVertical: 10, borderRadius: 8, backgroundColor: colors.card }}>
+							<Text style={{ color: colors.text, fontWeight: '700' }}>Klart</Text>
+						</TouchableOpacity>
+					</View>
 					<Text style={styles.label}>Hudton</Text>
 					<View style={{ flexDirection: 'row', gap: 10 }}>
 						{['#f5d6c6', '#eac1a8', '#cf9772', '#a26e44', '#6d4b2d'].map((c) => (
@@ -76,6 +85,9 @@ export default function Profile() {
 							<Button key={c} title={c === shirtColor ? 'Vald' : ' '} onPress={() => setShirtColor(c)} style={{ backgroundColor: c, width: 40, height: 32 }} />
 						))}
 					</View>
+					{/* HSB/HSV färghjul */}
+					<Text style={styles.label}>Välj valfri färg</Text>
+					<HSVPicker value={shirtColor} onChange={setShirtColor} />
 					<Text style={styles.label}>Egen färg (hex, t.ex. #1abc9c)</Text>
 					<TextInput
 						style={styles.input}
@@ -86,6 +98,8 @@ export default function Profile() {
 							const v = txt.trim();
 							setShirtColor(v);
 						}}
+						returnKeyType="done"
+						onSubmitEditing={() => Keyboard.dismiss()}
 					/>
 					<View style={{ marginTop: 8, flexDirection: 'row', alignItems: 'center', gap: 12 }}>
 						<Button title="Spara avatar" onPress={onSave} />
