@@ -1,10 +1,11 @@
-import { View, Text, StyleSheet, Pressable, PanResponder, Animated } from 'react-native';
+import { View, Text, StyleSheet, Pressable } from 'react-native';
 import Svg, { Circle } from 'react-native-svg';
 import type { MatchFreezeQuestion } from '@/types/content';
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect } from 'react';
 import { playLocal } from '@/utils/sound';
 import MatchPitch from '@/features/pitch/MatchPitch';
 import { useAppStore } from '@/store/useAppStore';
+import JerseyIcon from '@/components/common/JerseyIcon';
 
 type Props = { question: MatchFreezeQuestion; onAnswer: (isCorrect: boolean) => void };
 
@@ -29,8 +30,11 @@ export default function MatchFreeze({ question, onAnswer }: Props) {
 			<View style={{ width: w, height: h, position: 'relative' }}>
 				<MatchPitch width={w} height={h} />
 				{/* Goalkeepers to indicate direction */}
-				<View style={{ position: 'absolute', left: w * 0.48, top: 4, width: 24, height: 36, borderRadius: 6, backgroundColor: '#ff3b30', borderWidth: 2, borderColor: '#111' }} />
-				<View style={{ position: 'absolute', left: w * 0.48, bottom: 4, width: 24, height: 36, borderRadius: 6, backgroundColor: teamColor, borderWidth: 2, borderColor: '#e7ebf3' }} />
+				<JerseyIcon color="#ff3b30" size={22} borderColor="#111" />
+				<View style={{ position: 'absolute', left: w * 0.48, top: 4 }} />
+				<View style={{ position: 'absolute', left: w * 0.48, bottom: 4 }}>
+					<JerseyIcon color={teamColor} number={jersey} size={22} />
+				</View>
 				<Svg width={w} height={h} style={{ position: 'absolute', left: 0, top: 0 }}>
 					<Circle cx={question.ball.x * w} cy={question.ball.y * h} r={5} fill="#ffffff" />
 				</Svg>
@@ -39,9 +43,9 @@ export default function MatchFreeze({ question, onAnswer }: Props) {
 						key={p.id}
 						onPress={() => check(p.id)}
 						hitSlop={12}
-						style={{ position: 'absolute', left: p.x * w - 12, top: p.y * h - 18, width: 24, height: 36, borderRadius: 6, backgroundColor: p.team === 'home' ? teamColor : '#ff3b30', alignItems: 'center', justifyContent: 'center', borderWidth: 2, borderColor: p.team === 'home' ? '#e7ebf3' : '#111' }}
+						style={{ position: 'absolute', left: p.x * w - 14, top: p.y * h - 14 }}
 					>
-						{p.team === 'home' ? <Text style={{ color: 'white', fontWeight: '800', fontSize: 12 }}>{jersey}</Text> : null}
+						<JerseyIcon color={p.team === 'home' ? teamColor : '#ff3b30'} number={p.team === 'home' ? jersey : undefined} size={26} borderColor={p.team === 'home' ? '#e7ebf3' : '#111'} />
 					</Pressable>
 				))}
 				{question.correctZones?.map(z => (
@@ -54,11 +58,11 @@ export default function MatchFreeze({ question, onAnswer }: Props) {
 				<View style={{ position: 'absolute', right: 6, top: 6, backgroundColor: 'rgba(0,0,0,0.35)', paddingHorizontal: 6, paddingVertical: 4, borderRadius: 8 }}>
 					<Text style={{ color: 'white', fontWeight: '700' }}>Legend</Text>
 					<View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
-						<View style={{ width: 10, height: 10, borderRadius: 5, backgroundColor: '#4da3ff' }} />
+						<JerseyIcon color={teamColor} number={jersey} size={16} />
 						<Text style={{ color: 'white' }}>Ditt lag</Text>
 					</View>
 					<View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
-						<View style={{ width: 10, height: 10, borderRadius: 5, backgroundColor: '#ff3b30' }} />
+						<JerseyIcon color="#ff3b30" size={16} borderColor="#111" />
 						<Text style={{ color: 'white' }}>Motståndare</Text>
 					</View>
 					<View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
