@@ -165,7 +165,7 @@ export default function DragDropQuestionView({ question, onAnswer }: Props) {
           <JerseyIcon color="#ff3b30" size={22} borderColor="#111" />
         </View>
         <View style={{ position: 'absolute', left: w * 0.48, bottom: 4 }}>
-          <JerseyIcon color={teamColor} number={jersey} size={22} />
+          <JerseyIcon color={teamColor} size={22} />
         </View>
         {'targetRect' in question && (
           <View
@@ -240,7 +240,7 @@ export default function DragDropQuestionView({ question, onAnswer }: Props) {
               )}
               <Animated.View key={`p-${key}`} {...pan.panHandlers} style={{ position: 'absolute', transform: playersPos[key].getTranslateTransform(), left: p.start.x * pitchSize.width - 14, top: p.start.y * pitchSize.height - 14 }}>
                 <Animated.View style={{ position: 'absolute', left: -6, top: -8, width: 32, height: 44, borderRadius: 8, borderWidth: 2, borderColor: '#ffcf40', opacity: pulse.interpolate({ inputRange: [0, 1], outputRange: [0.3, 0.8] }) }} />
-                <JerseyIcon color={teamColor} number={jersey} size={26} />
+                <JerseyIcon color={teamColor} size={26} />
               </Animated.View>
             </>
           );
