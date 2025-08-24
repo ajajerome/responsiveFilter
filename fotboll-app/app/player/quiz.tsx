@@ -33,6 +33,7 @@ export default function QuizScreen() {
   const addXp = useAppStore((s) => s.actions.addXp);
   const markCompleted = useAppStore((s) => s.actions.markQuestionCompleted);
   const incCat = useAppStore((s) => s.actions.incrementCategory);
+  const favoritePosition = useAppStore((s) => s.profile.favoritePosition);
   const [queue, setQueue] = useState<Question[] | null>(null);
   const [lastCorrect, setLastCorrect] = useState<boolean | null>(null);
   const [seenIds, setSeenIds] = useState<Set<string>>(new Set());
@@ -62,13 +63,13 @@ export default function QuizScreen() {
       const filter = new Set<string>(seenIds);
       const need = Math.max(0, Math.min(5, SESSION_TARGET - servedCount - (queue?.length || 0)));
       if (need > 0) {
-        const more = await fetchQuestions(level ?? '7-manna', undefined, need, filter, category);
+        const more = await fetchQuestions(level ?? '7-manna', favoritePosition, need, filter, category);
         setQueue((prev) => (prev ? [...prev, ...more] : more));
       }
     } finally {
       setFetching(false);
     }
-  }, [level, category, servedCount, seenIds, queue?.length]);
+  }, [level, category, servedCount, seenIds, queue?.length, favoritePosition]);
 
   // Reset session on level/category change
   useEffect(() => {
@@ -79,13 +80,13 @@ export default function QuizScreen() {
       setShowResults(false);
       setFetching(true);
       try {
-        const q = await fetchQuestions(level ?? '7-manna', undefined, Math.min(5, SESSION_TARGET), undefined, category);
+        const q = await fetchQuestions(level ?? '7-manna', favoritePosition, Math.min(5, SESSION_TARGET), undefined, category);
         setQueue(q);
       } finally {
         setFetching(false);
       }
     })();
-  }, [level, category]);
+  }, [level, category, favoritePosition]);
 
   useEffect(() => {
     if ((queue?.length || 0) <= 2 && servedCount < SESSION_TARGET && !fetching) {
@@ -150,12 +151,12 @@ export default function QuizScreen() {
     setCorrectCount(0);
     setFetching(true);
     try {
-      const q = await fetchQuestions(level ?? '7-manna', undefined, Math.min(5, SESSION_TARGET), undefined, category);
+      const q = await fetchQuestions(level ?? '7-manna', favoritePosition, Math.min(5, SESSION_TARGET), undefined, category);
       setQueue(q);
     } finally {
       setFetching(false);
     }
-  }, [level, category]);
+  }, [level, category, favoritePosition]);
 
   const onBackToCategory = useCallback(() => {
     if (level) router.replace(`/player/level/${level}`);
@@ -174,6 +175,7 @@ export default function QuizScreen() {
           <View style={{ alignItems: 'flex-start', marginBottom: 5 }}>
             <XpBadge />
             {category ? <Tag label={CATEGORY_LABELS[String(category)] || String(category)} /> : null}
+            {favoritePosition ? <Tag label={`Position: ${favoritePosition}`} /> : null}
             <Tag label={question?.level ?? ''} />
           </View>
           <Animated.View style={{ gap: 12, transform: [{ scale: bounce.interpolate({ inputRange: [0, 1], outputRange: [0.95, 1] }) }, { translateY: bounce.interpolate({ inputRange: [0, 1], outputRange: [14, 0] }) }] }}>
