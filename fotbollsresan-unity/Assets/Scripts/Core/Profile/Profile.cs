@@ -15,6 +15,7 @@ namespace Fotbollsresan.Core.Profile
         public Color TeamColor = Color.green;
         public PlayerStats Stats = new PlayerStats();
         public string[] Badges = Array.Empty<string>();
+        public System.Collections.Generic.List<MasteryEntry> Mastery = new System.Collections.Generic.List<MasteryEntry>();
 
         public int GetAgeInYears(DateTime? now = null)
         {
@@ -37,6 +38,16 @@ namespace Fotbollsresan.Core.Profile
         public int TotalFormationCorrect = 0;
         public int TotalPassingChoices = 0;
         public int TotalPassingCorrect = 0;
+    }
+
+    [Serializable]
+    public class MasteryEntry
+    {
+        public string Topic;          // e.g., "Defense", "Passing", "Tactics", "Rules"
+        public int Attempts;          // total attempts
+        public int Correct;           // correct answers
+        public float Rating;          // 0..1000 simplified ELO-like score
+        public string LastPracticedIso; // ISO 8601 string
     }
 }
 

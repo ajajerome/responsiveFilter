@@ -2,6 +2,8 @@ using System;
 using System.IO;
 using UnityEngine;
 using Fotbollsresan.Core.Profile;
+using System.Linq;
+using System.Collections.Generic;
 
 namespace Fotbollsresan.Core
 {
@@ -26,7 +28,8 @@ namespace Fotbollsresan.Core
                     JerseyNumber = 10,
                     TeamColor = Color.green,
                     Stats = new PlayerStats(),
-                    Badges = Array.Empty<string>()
+                    Badges = Array.Empty<string>(),
+                    Mastery = new List<MasteryEntry>()
                 };
                 SaveProfile();
             }
@@ -70,6 +73,7 @@ namespace Fotbollsresan.Core
             public float TeamA;
             public PlayerStats Stats;
             public string[] Badges;
+            public MasteryEntry[] Mastery;
 
             public SerializableProfile() {}
 
@@ -90,6 +94,7 @@ namespace Fotbollsresan.Core
                 TeamA = profile.TeamColor.a;
                 Stats = profile.Stats;
                 Badges = profile.Badges;
+                Mastery = profile.Mastery?.ToArray();
             }
 
             public PlayerProfile ToProfile()
@@ -105,7 +110,8 @@ namespace Fotbollsresan.Core
                     JerseyNumber = JerseyNumber,
                     TeamColor = new Color(TeamR, TeamG, TeamB, TeamA),
                     Stats = Stats ?? new PlayerStats(),
-                    Badges = Badges ?? Array.Empty<string>()
+                    Badges = Badges ?? Array.Empty<string>(),
+                    Mastery = Mastery != null ? new List<MasteryEntry>(Mastery) : new List<MasteryEntry>()
                 };
             }
         }

@@ -17,6 +17,8 @@ namespace Fotbollsresan.Quiz
         public List<string> Choices = new List<string>();
         public int CorrectIndex;
         public string Explanation;
+        public string Topic;     // e.g., "Defense", "Passing", "Rules", "Tactics"
+        public string Difficulty; // e.g., "Easy", "Medium", "Hard"
     }
 
     public class QuizSystem : MonoBehaviour
@@ -53,6 +55,11 @@ namespace Fotbollsresan.Quiz
                     profileService.CurrentProfile.Stats.TotalQuizAnswered++;
                     profileService.SaveProfile();
                 }
+            }
+            // Mastery hook
+            if (!string.IsNullOrEmpty(question.Topic) && masteryTracker != null)
+            {
+                masteryTracker.Record(question.Topic, correct);
             }
             return correct;
         }
@@ -92,6 +99,8 @@ namespace Fotbollsresan.Quiz
                 LoadFromJsonText(json);
             }
         }
+
+        [SerializeField] private Fotbollsresan.Core.Mastery.MasteryTracker masteryTracker;
     }
 }
 
