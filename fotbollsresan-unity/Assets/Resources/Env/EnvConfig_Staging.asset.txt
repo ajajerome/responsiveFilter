@@ -1,0 +1,11 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &1
+MonoBehaviour:
+  m_Script: {fileID: 11500000, guid: 00000000000000000000000000000000, type: 0}
+  m_Name: EnvConfig_Staging
+  EnvironmentName: staging
+  ApiBaseUrl: https://staging.api.fotbollsresan.example
+  ContentBucket: staging-content
+  EnableAnalytics: 0
+

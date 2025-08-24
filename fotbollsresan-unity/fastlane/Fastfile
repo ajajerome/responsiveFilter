@@ -29,5 +29,34 @@ platform :ios do
       skip_waiting_for_build_processing: true
     )
   end
+
+  desc "Bygg staging och ladda upp till TestFlight"
+  lane :beta_staging do
+    scheme = ENV["SCHEME"] || "Fotbollsresan"
+    workspace = Dir["*.xcworkspace"].first
+    project = Dir["*.xcodeproj"].first
+
+    increment_build_number(xcodeproj: project) if project
+
+    ENV["APP_ENV"] = "staging"
+    build_app(
+      scheme: scheme,
+      workspace: workspace,
+      export_method: "app-store"
+    )
+
+    upload_to_testflight(
+      beta_app_review_info: {
+        contact_email: "apple-id@example.com",
+        contact_first_name: "Dev",
+        contact_last_name: "Team",
+        contact_phone: "+46000000000",
+        demo_account_name: "",
+        demo_account_password: "",
+        notes: "Fotbollsresan Staging"
+      },
+      skip_waiting_for_build_processing: true
+    )
+  end
 end
 

@@ -14,6 +14,18 @@ public class iOSBuildConfigurator : IPreprocessBuildWithReport
             PlayerSettings.iOS.targetOSVersionString = "13.0";
             PlayerSettings.bundleVersion = System.Environment.GetEnvironmentVariable("APP_VERSION") ?? PlayerSettings.bundleVersion;
             PlayerSettings.iOS.buildNumber = System.Environment.GetEnvironmentVariable("APP_BUILD") ?? PlayerSettings.iOS.buildNumber;
+            var env = System.Environment.GetEnvironmentVariable("APP_ENV") ?? "staging";
+            var baseId = System.Environment.GetEnvironmentVariable("BUNDLE_BASE") ?? PlayerSettings.applicationIdentifier;
+            var bundle = env == "production" ? baseId : baseId + ".staging";
+            PlayerSettings.SetApplicationIdentifier(BuildTargetGroup.iOS, bundle);
+
+            // Define symbols
+            var defines = PlayerSettings.GetScriptingDefineSymbolsForGroup(BuildTargetGroup.iOS);
+            if (!defines.Contains("STAGING") && env == "staging")
+            {
+                defines = string.IsNullOrEmpty(defines) ? "STAGING" : defines + ";STAGING";
+                PlayerSettings.SetScriptingDefineSymbolsForGroup(BuildTargetGroup.iOS, defines);
+            }
         }
     }
 }
