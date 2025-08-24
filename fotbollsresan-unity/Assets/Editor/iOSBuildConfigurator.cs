@@ -16,7 +16,7 @@ public class iOSBuildConfigurator : IPreprocessBuildWithReport
             PlayerSettings.iOS.buildNumber = System.Environment.GetEnvironmentVariable("APP_BUILD") ?? PlayerSettings.iOS.buildNumber;
             var env = System.Environment.GetEnvironmentVariable("APP_ENV") ?? "staging";
             var overrideId = System.Environment.GetEnvironmentVariable("BUNDLE_ID");
-            var baseId = System.Environment.GetEnvironmentVariable("BUNDLE_BASE") ?? PlayerSettings.applicationIdentifier;
+            var baseId = System.Environment.GetEnvironmentVariable("BUNDLE_BASE") ?? "com.fotbollsresan.app";
             var idToUse = string.IsNullOrEmpty(overrideId) ? baseId : overrideId;
             var bundle = env == "production" ? idToUse : idToUse + ".staging";
             PlayerSettings.SetApplicationIdentifier(BuildTargetGroup.iOS, bundle);
