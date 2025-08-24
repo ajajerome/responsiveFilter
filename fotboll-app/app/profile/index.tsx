@@ -88,19 +88,6 @@ export default function Profile() {
 					{/* HSB/HSV färghjul */}
 					<Text style={styles.label}>Välj valfri färg</Text>
 					<HSVPicker value={shirtColor} onChange={setShirtColor} />
-					<Text style={styles.label}>Egen färg (hex, t.ex. #1abc9c)</Text>
-					<TextInput
-						style={styles.input}
-						placeholder="#RRGGBB"
-						placeholderTextColor="#9aa4b2"
-						value={shirtColor}
-						onChangeText={(txt) => {
-							const v = txt.trim();
-							setShirtColor(v);
-						}}
-						returnKeyType="done"
-						onSubmitEditing={() => Keyboard.dismiss()}
-					/>
 					<View style={{ marginTop: 8, flexDirection: 'row', alignItems: 'center', gap: 12 }}>
 						<Button title="Spara avatar" onPress={onSave} />
 						{saved && <Text style={{ color: '#34c759', fontWeight: '700' }}>Sparat!</Text>}
