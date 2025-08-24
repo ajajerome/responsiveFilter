@@ -378,40 +378,29 @@ export function generateTimeline(level: Level, position?: Position, category?: s
   };
 }
 
-export function generateMidBlock(level: Level): MatchFreezeQuestion {
+export function generateCornerDefense(level: Level, side: 'left' | 'right' = 'left'): MatchFreezeQuestion {
   const z = getZones(level);
   const { home, away } = makeFullSquads(level);
-  // Ball central in opponent half; correct zone: compact mid-block just above half
-  const ball = { x: z.centerX, y: z.attThirdY + 0.06 };
-  const blockRect = { x: z.centerX - 0.18, y: z.halfY + 0.04, width: 0.36, height: 0.16 };
+  const helpers = z.cornerDefHelpers(side);
+  const ball = side === 'left' ? z.corners.bottomLeft : z.corners.bottomRight;
+  const role = side === 'left' ? 'vänsterback' : 'högerback';
+  const nearRect = { x: helpers.nearPost.x - 0.05, y: helpers.nearPost.y - 0.06, width: 0.1, height: 0.12 };
+  const farRect = { x: helpers.farPost.x - 0.05, y: helpers.farPost.y - 0.06, width: 0.1, height: 0.12 };
   return {
-    id: uid('tpl_mid_block'),
+    id: uid('tpl_corner_def'),
     type: 'matchscenario',
     level,
-    category: 'forsvar',
-    question: 'Mittblock: Var ska laget samla sig för att stänga mitten?',
-    players: [...home, ...away],
+    category: 'fasta',
+    position: 'back',
+    question: `Motståndarna har hörna (${side === 'left' ? 'vänster' : 'höger'}). Du är ${role} – var ska du stå?`,
+    players: [
+      // Mark "you" as the near-post fullback position on our team
+      { id: 'you', x: helpers.nearPost.x, y: helpers.nearPost.y, team: 'home' },
+      ...home.filter(p => p.id !== 'h_lb' && p.id !== 'h_rb'),
+      ...away,
+    ],
     ball,
-    correctZones: [ { id: 'mid_block', rect: blockRect } ],
-    explanation: 'Håll lagdelarna kompakta, stäng centrala ytor och styr utåt.',
-  };
-}
-
-export function generateWingOverload(level: Level): MatchFreezeQuestion {
-  const z = getZones(level);
-  const { home, away } = makeFullSquads(level);
-  // Ball on our left attacking lane; correct zone: overload support outside and inside
-  const ball = { x: z.leftX + 0.05, y: z.attThirdY + 0.06 };
-  const overloadRect = { x: z.leftX, y: z.attThirdY, width: 0.25, height: 0.18 };
-  return {
-    id: uid('tpl_wing_overload'),
-    type: 'matchscenario',
-    level,
-    category: 'anfall',
-    question: 'Wing overload: Var ska du skapa numerärt överläge på kanten?',
-    players: [...home, ...away],
-    ball,
-    correctZones: [ { id: 'overload', rect: overloadRect } ],
-    explanation: 'Skapa 2v1 på kanten med närmsta mittfältare och ytter, erbjud överlapp/inläggsläge.',
+    correctZones: [ { id: 'near', rect: nearRect }, { id: 'far', rect: farRect } ],
+    explanation: 'Säkra första/fjol stolpe: en back markerar närmaste stolpen, en annan täcker bortre. Lagkamrater markerar zon/man centralt och vid straffpunkt.',
   };
 }

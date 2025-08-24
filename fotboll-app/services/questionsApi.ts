@@ -3,7 +3,7 @@ import { useAppStore } from '@/store/useAppStore';
 import { REGELFRAGOR } from '@/data/regler';
 import { SPELFORSTAELSE } from '@/data/spelforstaelse';
 import { FREEZE_QUESTIONS } from '@/data/freeze';
-import { getRandomQuestion, generateTimeline, generateDragDrop, generateGoalKickPress, generateDefendingCross } from '@/engine/generator';
+import { getRandomQuestion, generateTimeline, generateDragDrop, generateGoalKickPress, generateDefendingCross, generateCornerDefense } from '@/engine/generator';
 import { FORMATION_QUESTIONS } from '@/data/formation_quiz';
 import { ATTACK_DRAG_QUESTIONS } from '@/data/attack_drag';
 
@@ -42,26 +42,10 @@ export async function fetchQuestions(level: Level, position?: Position, count = 
   // Kategorispecifik vikting: säkerställ att underkategorin prioriteras
   const prioritized: Question[] = [];
   if (category === 'fasta') {
-    // Fasta situationer: favorera freeze om tillgängligt, annars enkel mall
+    // Försvar vid hörna: prioritera hörnförsvar-scenario
+    prioritized.push(generateCornerDefense(level, Math.random() > 0.5 ? 'left' : 'right'));
     const fz = freeze.filter(q => q.category === 'fasta');
-    if (fz.length === 0) {
-      const templ: MatchFreezeQuestion = {
-        id: `fz-fasta-${Date.now()}`,
-        type: 'matchscenario',
-        level,
-        category: 'fasta',
-        question: 'Motståndarna har hörna. Du är back – var ställer du dig? Tryck på rätt yta.',
-        players: [ { id: 'oppC', team: 'away', x: 0.95, y: 0.20 } ],
-        ball: { x: 0.95, y: 0.20 },
-        correctZones: [ { id: 'z', rect: { x: 0.55, y: 0.35, width: 0.10, height: 0.20 } } ],
-        explanation: 'Markeringsyta i boxen nära första ytan.'
-      };
-      prioritized.push(templ);
-    } else {
-      prioritized.push(
-        ...pick(fz, Math.min(2, fz.length)),
-      );
-    }
+    prioritized.push(...pick(fz, Math.min(1, fz.length)));
   } else if (category === 'forsvar') {
     // Defending cross template first
     prioritized.push(generateDefendingCross(level));
@@ -179,7 +163,7 @@ function generateFreezeOne(level: Level, category?: string): MatchFreezeQuestion
     type: 'matchscenario',
     level,
     category,
-    question: 'Vart ska du stå i detta läge?',
+    question: 'Vart ska du stå i detta läge? (Back)',
     players: [
       { id: 'you', team: 'home', x: 0.48, y: 0.68 },
       { id: 'opp', team: 'away', x: ball.x, y: ball.y },
