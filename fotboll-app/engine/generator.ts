@@ -327,12 +327,21 @@ export function generateDefendingCross(level: Level): MatchFreezeQuestion {
     players,
     ball: { x: crosser.x, y: crosser.y },
     correctZones: [ { id: 'cover', rect: coverRect } ],
-    explanation: 'Täck central yta mellan straffpunkt och första stolpen: vinn första bollen, var redo för andraboll.',
+    explanation: 'Täck central yta mellan straffpunkt och near post (clear first ball): vinn första bollen, var redo för andraboll.',
   };
 }
 
 export function getRandomQuestion(level: Level, position?: Position, category?: string): Question {
-  const pick = sample(['drag_drop', 'quiz', 'tactics', 'freeze', 'timeline', 'one_x_two'] as const);
+  // Limit random types by category to avoid non-scenario positioning
+  let choices: Array<'drag_drop' | 'quiz' | 'tactics' | 'freeze' | 'timeline' | 'one_x_two'> = ['quiz', 'freeze', 'timeline', 'one_x_two', 'tactics'];
+  if (category === 'forsvar' || category === 'fasta') {
+    choices = ['drag_drop', 'freeze', 'quiz'];
+  } else if (category === 'anfall') {
+    choices = ['timeline', 'tactics', 'quiz'];
+  } else if (category === 'spelregler') {
+    choices = ['quiz'];
+  }
+  const pick = sample(choices as const);
   if (pick === 'one_x_two') return generateOneXTwo(level, position);
   if (pick === 'drag_drop') return generateDragDrop(level, position, category);
   if (pick === 'tactics') return generateTactics(level, position, category);
