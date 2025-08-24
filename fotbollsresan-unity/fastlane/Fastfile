@@ -17,6 +17,7 @@ platform :ios do
     )
 
     upload_to_testflight(
+      apple_id: "6751473029",
       beta_app_review_info: {
         contact_email: "apple-id@example.com",
         contact_first_name: "Dev",
@@ -46,6 +47,7 @@ platform :ios do
     )
 
     upload_to_testflight(
+      apple_id: "6751473029",
       beta_app_review_info: {
         contact_email: "apple-id@example.com",
         contact_first_name: "Dev",
