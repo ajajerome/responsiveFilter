@@ -1,0 +1,8 @@
+{
+  "Quests": [
+    { "Id": "dq_quiz_10", "Title": "Svara på 10 quiz", "Type": "quiz", "Target": 10, "RewardXp": 100, "Weekly": false },
+    { "Id": "dq_form_5", "Title": "Placera 5 positioner", "Type": "formation", "Target": 5, "RewardXp": 80, "Weekly": false },
+    { "Id": "wq_pass_20", "Title": "Gör 20 passningsval", "Type": "passing", "Target": 20, "RewardXp": 250, "Weekly": true }
+  ]
+}
+

@@ -6,6 +6,7 @@ using Fotbollsresan.Core.Progression;
 using Fotbollsresan.Core;
 using Fotbollsresan.Core.Profile;
 using static Fotbollsresan.Core.Age.AgeService;
+using Fotbollsresan.Core.Events;
 
 namespace Fotbollsresan.Quiz
 {
@@ -40,6 +41,7 @@ namespace Fotbollsresan.Quiz
             if (correct)
             {
                 levelSystem?.AddXp(correctXp);
+                GameEvents.Emit(new XpGainedEvent{ Amount = correctXp, Source = "quiz" });
                 if (profileService?.CurrentProfile != null)
                 {
                     profileService.CurrentProfile.Stats.TotalQuizCorrect++;
@@ -50,6 +52,7 @@ namespace Fotbollsresan.Quiz
             else
             {
                 levelSystem?.AddXp(wrongXp);
+                GameEvents.Emit(new XpGainedEvent{ Amount = wrongXp, Source = "quiz" });
                 if (profileService?.CurrentProfile != null)
                 {
                     profileService.CurrentProfile.Stats.TotalQuizAnswered++;
@@ -61,6 +64,8 @@ namespace Fotbollsresan.Quiz
             {
                 masteryTracker.Record(question.Topic, correct);
             }
+            GameEvents.Emit(new QuizAnsweredEvent{ QuestionId = question.Id, Topic = question.Topic, Correct = correct });
+            GameEvents.Emit(new ActivityEvent{ Kind = "quiz" });
             return correct;
         }
 

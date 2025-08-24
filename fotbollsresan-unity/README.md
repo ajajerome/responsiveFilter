@@ -9,6 +9,7 @@ En Unity-baserad app för barn och ungdomar som tränar fotboll. Appen innehåll
 - Levelsystem: XP och nivåprogression
 - Fritt spelläge: träna position-specifikt
 - Quiz/Interaktivt: frågor med svarsalternativ, interaktiva förlopp
+- Ändlöst: streaks, dagliga/veckovisa quests, säsonger/tiers och prestige
 
 ### Krav
 - Unity 2022 LTS (t.ex. 2022.3.x) med iOS Build Support
@@ -59,12 +60,16 @@ bundle exec fastlane beta
 
 ### Kodstruktur
 - `Assets/Scripts/Core` – profil, ålder, rekommendationer, levelsystem, persistens
+- `Assets/Scripts/Core/Events` – centrala händelser (XP, aktivitet)
+- `Assets/Scripts/Core/Progression` – nivåer, streaks, säsonger
+- `Assets/Scripts/Core/Quests` – dagliga/veckovisa mål
 - `Assets/Scripts/UI` – avatar-/UI-kontrollers, fritt spelläge
 - `Assets/Scripts/Quiz` – quiz och interaktiva flöden
 
 ### Data/Persistens
 - JSON under `Application.persistentDataPath`
 - Nycklar: `profile.json`, `level.json`
+ - StreamingAssets: `quiz_*.json`, `formations.json`, `passing_sequence.json`, `quests.json`
 
 ### Licens
 Proprietär/Intern under utveckling.

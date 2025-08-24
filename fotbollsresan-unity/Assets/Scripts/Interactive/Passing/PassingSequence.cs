@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using Fotbollsresan.Core.Events;
 
 namespace Fotbollsresan.Interactive.Passing
 {
@@ -64,6 +65,8 @@ namespace Fotbollsresan.Interactive.Passing
             var choice = scene.Choices[index];
             totalScore += choice.Score;
             explanation = choice.Explanation;
+            GameEvents.Emit(new PassingChoiceEvent{ SceneId = scene.Id, ChoiceId = choice.Id, Score = choice.Score });
+            GameEvents.Emit(new ActivityEvent{ Kind = "passing" });
             if (!string.IsNullOrEmpty(choice.NextId))
             {
                 currentId = choice.NextId;

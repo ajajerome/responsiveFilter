@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
+using Fotbollsresan.Core.Events;
 
 namespace Fotbollsresan.Interactive.Formation
 {
@@ -36,6 +37,8 @@ namespace Fotbollsresan.Interactive.Formation
             {
                 placedRoles.Add(role);
             }
+            GameEvents.Emit(new FormationPlacedEvent{ Role = role, Correct = correct });
+            GameEvents.Emit(new ActivityEvent{ Kind = "formation" });
         }
 
         public int GetPlacedCount()

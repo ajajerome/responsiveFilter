@@ -1,6 +1,7 @@
 using System;
 using System.IO;
 using UnityEngine;
+using Fotbollsresan.Core.Events;
 
 namespace Fotbollsresan.Core.Progression
 {
@@ -31,6 +32,7 @@ namespace Fotbollsresan.Core.Progression
         {
             if (amount <= 0) return;
             state.CurrentXp += amount;
+            GameEvents.Emit(new XpGainedEvent{ Amount = amount, Source = "level" });
             while (state.CurrentXp >= state.XpToNext)
             {
                 state.CurrentXp -= state.XpToNext;
