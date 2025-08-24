@@ -3,7 +3,6 @@ import { useAppStore } from '@/store/useAppStore';
 import { REGELFRAGOR } from '@/data/regler';
 import { SPELFORSTAELSE } from '@/data/spelforstaelse';
 import { FREEZE_QUESTIONS } from '@/data/freeze';
-import { PASS_QUESTIONS } from '@/data/pass';
 import { getRandomQuestion } from '@/engine/generator';
 import { FORMATION_QUESTIONS } from '@/data/formation_quiz';
 import { ATTACK_DRAG_QUESTIONS } from '@/data/attack_drag';
@@ -36,7 +35,7 @@ export async function fetchQuestions(level: Level, position?: Position, count = 
   const regler = REGELFRAGOR.filter(q => q.level === level).filter(cat).filter(notSeen);
   const spel = SPELFORSTAELSE.filter(q => q.level === level && (!position || q.position === position)).filter(cat).filter(notSeen);
   const freeze = FREEZE_QUESTIONS.filter(q => q.level === level).filter(cat).filter(notSeen);
-  const pass = PASS_QUESTIONS.filter(q => q.level === level).filter(cat).filter(notSeen);
+  const pass: any[] = [];
   const formation = FORMATION_QUESTIONS.filter(q => q.level === level).filter(cat).filter(notSeen);
   const attackDrag = ATTACK_DRAG_QUESTIONS.filter(q => q.level === level).filter(cat).filter(notSeen);
 
@@ -72,7 +71,6 @@ export async function fetchQuestions(level: Level, position?: Position, count = 
     );
   } else if (category === 'anfall') {
     prioritized.push(
-      ...pick(pass.filter(q => q.category === 'anfall'), Math.min(2, pass.length)),
       ...pick(attackDrag.filter(q => q.category === 'anfall'), Math.min(2, attackDrag.length)),
     );
   } else if (category === 'spelforstaelse') {
@@ -84,8 +82,7 @@ export async function fetchQuestions(level: Level, position?: Position, count = 
     ...prioritized,
     ...pick(regler, Math.min(2, regler.length)),
     ...pick(spel, Math.min(2, spel.length)),
-    ...pick(freeze, Math.min(1, freeze.length)),
-    ...pick(pass, Math.min(1, pass.length)),
+    ...pick(freeze, Math.min(2, freeze.length)),
     ...pick(formation, Math.min(1, formation.length)),
     ...pick(attackDrag, Math.min(2, attackDrag.length)),
   ];
@@ -104,7 +101,6 @@ export async function fetchQuestions(level: Level, position?: Position, count = 
     ...regler,
     ...spel,
     ...freeze,
-    ...pass,
     ...formation,
     ...attackDrag,
   ].filter((q) => !base.some((b) => b.id === q.id));

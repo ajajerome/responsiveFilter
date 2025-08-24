@@ -19,63 +19,11 @@ export default function MatchFreeze({ question, onAnswer }: Props) {
 		if (question.correctPlayerIds && playerId) return onAnswer(question.correctPlayerIds.includes(playerId));
 		onAnswer(false);
 	};
-	// Drag på boll
-	const initialBall = useMemo(() => ({ x: question.ball.x * w, y: question.ball.y * h }), [question.ball.x, question.ball.y]);
-	const ballPos = useRef(new Animated.ValueXY({ x: 0, y: 0 })).current;
-	const [ballOffset, setBallOffset] = useState({ x: 0, y: 0 });
-	const pan = useRef(
-		PanResponder.create({
-			onStartShouldSetPanResponder: () => true,
-			onPanResponderGrant: () => {
-				ballPos.setOffset({ x: (ballPos as any).x._value, y: (ballPos as any).y._value });
-				ballPos.setValue({ x: 0, y: 0 });
-			},
-			onPanResponderMove: Animated.event([null, { dx: ballPos.x, dy: ballPos.y }], { useNativeDriver: false }),
-			onPanResponderRelease: () => {
-				ballPos.flattenOffset();
-				const current = { x: (ballPos as any).x._value, y: (ballPos as any).y._value };
-				const cx = initialBall.x + current.x;
-				const cy = initialBall.y + current.y;
-				setBallOffset(current);
-				// Rätt/fel: zon före spelare
-				if (question.correctZones && question.correctZones.length > 0) {
-					const ok = question.correctZones.some(z => (
-						cx >= z.rect.x * w && cx <= (z.rect.x + z.rect.width) * w &&
-						cy >= z.rect.y * h && cy <= (z.rect.y + z.rect.height) * h
-					));
-					if (ok) {
-						// animera bollen mot första zonens center
-						const z = question.correctZones[0];
-						const zx = (z.rect.x + z.rect.width / 2) * w;
-						const zy = (z.rect.y + z.rect.height / 2) * h;
-						playLocal(require('@/assets/sfx/success.mp3'));
-						Animated.timing(ballPos, { toValue: { x: zx - initialBall.x, y: zy - initialBall.y }, duration: 500, useNativeDriver: false }).start(() => onAnswer(true));
-					} else {
-						playLocal(require('@/assets/sfx/fail.mp3'));
-						onAnswer(false);
-					}
-					return;
-				}
-				if (question.correctPlayerIds && question.correctPlayerIds.length > 0) {
-					const hitPlayer = question.players.find(p => question.correctPlayerIds!.includes(p.id) && Math.hypot(cx - p.x * w, cy - p.y * h) < 28);
-					if (hitPlayer) {
-						playLocal(require('@/assets/sfx/success.mp3'));
-						Animated.timing(ballPos, { toValue: { x: hitPlayer.x * w - initialBall.x, y: hitPlayer.y * h - initialBall.y }, duration: 500, useNativeDriver: false }).start(() => onAnswer(true));
-					} else {
-						playLocal(require('@/assets/sfx/fail.mp3'));
-						onAnswer(false);
-					}
-					return;
-				}
-				onAnswer(false);
-			},
-		})
-	).current;
 	return (
 		<View style={styles.container}>
 			<Text style={styles.title}>{question.question}</Text>
 			<Text style={styles.expl}>
-				Dra bollen till rätt yta eller tryck på rätt spelare. Tänk: mellan boll och mål, vinkel och täcka yta.
+				Tryck på rätt spelare eller rätt yta. Tänk: mellan boll och mål, vinkel och täcka yta.
 				{question.explanation ? `\n${question.explanation}` : ''}
 			</Text>
 			<View style={{ width: w, height: h, position: 'relative' }}>
@@ -96,6 +44,13 @@ export default function MatchFreeze({ question, onAnswer }: Props) {
 						{p.team === 'home' ? <Text style={{ color: 'white', fontWeight: '800', fontSize: 12 }}>{jersey}</Text> : null}
 					</Pressable>
 				))}
+				{question.correctZones?.map(z => (
+					<Pressable
+						key={z.id}
+						onPress={() => onAnswer(true)}
+						style={{ position: 'absolute', left: z.rect.x * w, top: z.rect.y * h, width: z.rect.width * w, height: z.rect.height * h, backgroundColor: 'rgba(52,199,89,0.12)', borderColor: '#34c759', borderWidth: 2 }}
+					/>
+				))}
 				<View style={{ position: 'absolute', right: 6, top: 6, backgroundColor: 'rgba(0,0,0,0.35)', paddingHorizontal: 6, paddingVertical: 4, borderRadius: 8 }}>
 					<Text style={{ color: 'white', fontWeight: '700' }}>Legend</Text>
 					<View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
@@ -111,11 +66,6 @@ export default function MatchFreeze({ question, onAnswer }: Props) {
 						<Text style={{ color: 'white' }}>Boll</Text>
 					</View>
 				</View>
-				{/* Draggable ball overlay */}
-				<Animated.View
-					{...pan.panHandlers}
-					style={{ position: 'absolute', left: initialBall.x - 8, top: initialBall.y - 8, transform: ballPos.getTranslateTransform(), width: 16, height: 16, borderRadius: 8, backgroundColor: '#fff' }}
-				/>
 			</View>
 		</View>
 	);
