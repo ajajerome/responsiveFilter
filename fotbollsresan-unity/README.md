@@ -34,6 +34,16 @@ En Unity-baserad app för barn och ungdomar som tränar fotboll. Appen innehåll
 4) Öppna Xcode-projektet, kontrollera Signing & Capabilities (team, provisioning)
 5) Kör på enhet för test
 
+#### CLI-bygge (macOS)
+Sätt miljövariabler och kör skriptet för att bygga Xcode-projektet:
+```
+export APPLE_TEAM_ID="ABCDE12345"
+export APP_VERSION="1.0.0"
+export APP_BUILD="1"
+UNITY_PATH="/Applications/Unity/Hub/Editor/2022.3.0f1/Unity.app/Contents/MacOS/Unity" \
+bash BuildScripts/build_ios.sh
+```
+
 #### Fastlane (TestFlight)
 Förbered:
 - Redigera `fastlane/Appfile` (app_identifier, apple_id, team_id)
