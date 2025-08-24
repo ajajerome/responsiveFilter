@@ -18,7 +18,6 @@ function pick<T>(arr: T[], n: number): T[] {
 }
 
 export async function fetchQuestions(level: Level, position?: Position, count = 5, excludeIds?: Set<string>, category?: string): Promise<Question[]> {
-  // Tvinga bort 5-manna — endast 7- och 9-manna används
   if (level === '5-manna') {
     level = '7-manna';
   }
@@ -29,35 +28,23 @@ export async function fetchQuestions(level: Level, position?: Position, count = 
       else level = '7-manna';
     }
   } catch {}
-  // Blanda riktiga dataset (regler/spelförståelse) med genererade
   const notSeen = (q: { id: string }) => !excludeIds || !excludeIds.has(q.id);
   const cat = (q: any) => !category || q.category === category;
+  // Keep only non-positioning static pools
   const regler = REGELFRAGOR.filter(q => q.level === level).filter(cat).filter(notSeen);
   const spel = SPELFORSTAELSE.filter(q => q.level === level && (!position || q.position === position)).filter(cat).filter(notSeen);
-  const freeze = FREEZE_QUESTIONS.filter(q => q.level === level).filter(cat).filter(notSeen);
-  const pass: any[] = [];
-  const formation = FORMATION_QUESTIONS.filter(q => q.level === level).filter(cat).filter(notSeen);
+  const freeze: any[] = []; // disable old positioning pool
+  const formation: any[] = []; // disable formation quiz pool for now
   const attackDrag = ATTACK_DRAG_QUESTIONS.filter(q => q.level === level).filter(cat).filter(notSeen);
 
-  // Kategorispecifik vikting: säkerställ att underkategorin prioriteras
   const prioritized: Question[] = [];
   if (category === 'fasta') {
-    // Försvar vid hörna: prioritera hörnförsvar-scenario
     prioritized.push(generateCornerDefense(level, Math.random() > 0.5 ? 'left' : 'right'));
-    const fz = freeze.filter(q => q.category === 'fasta');
-    prioritized.push(...pick(fz, Math.min(1, fz.length)));
   } else if (category === 'forsvar') {
-    // Defending cross template first
     prioritized.push(generateDefendingCross(level));
-    prioritized.push(
-      ...pick(freeze.filter(q => q.category === 'forsvar'), Math.min(2, freeze.length)),
-    );
   } else if (category === 'anfall') {
-    // Goal-kick press template first
     prioritized.push(generateGoalKickPress(level));
-    prioritized.push(
-      ...pick(attackDrag.filter(q => q.category === 'anfall'), Math.min(2, attackDrag.length)),
-    );
+    prioritized.push(...pick(attackDrag.filter(q => q.category === 'anfall'), Math.min(1, attackDrag.length)));
   } else if (category === 'spelforstaelse') {
     prioritized.push(...pick(spel, Math.min(3, spel.length)));
   } else if (category === 'spelregler') {
@@ -67,11 +54,8 @@ export async function fetchQuestions(level: Level, position?: Position, count = 
     ...prioritized,
     ...pick(regler, Math.min(2, regler.length)),
     ...pick(spel, Math.min(2, spel.length)),
-    ...pick(freeze, Math.min(2, freeze.length)),
-    ...pick(formation, Math.min(1, formation.length)),
-    ...pick(attackDrag, Math.min(2, attackDrag.length)),
+    ...pick(attackDrag, Math.min(1, attackDrag.length)),
   ];
-  // Force a specific first test question for 7-manna anfall: timeline goal-kick press
   if (level === '7-manna' && category === 'anfall') {
     const tl = generateTimeline(level, undefined, 'anfall');
     base = [tl, ...base.filter(q => q.id !== tl.id)];
@@ -80,22 +64,17 @@ export async function fetchQuestions(level: Level, position?: Position, count = 
     const defPlayer = generateDragDrop(level, undefined, 'forsvar');
     base = [defPlayer, ...base];
   }
-  // Fyll upp från kvarvarande pooler utan dubbletter
   const pool: Question[] = [
     ...regler,
     ...spel,
-    ...freeze,
-    ...formation,
     ...attackDrag,
   ].filter((q) => !base.some((b) => b.id === q.id));
   while (base.length < count && pool.length) {
     const extra = pick(pool, 1);
     base.push(...extra);
   }
-  // Sista utväg: generera
   while (base.length < count) base.push(getRandomQuestion(level === '5-manna' ? '7-manna' : level, position, category));
   const result = base.slice(0, count);
-  // Om vi av någon anledning filtrerat bort allt, försök utan excludeIds en gång
   if (result.length === 0 && excludeIds && excludeIds.size > 0) {
     return fetchQuestions(level, position, count, undefined);
   }
@@ -152,7 +131,6 @@ function generateQuizOne(level: Level, category?: string): QuizQuestion {
 }
 
 function generateFreezeOne(level: Level, category?: string): MatchFreezeQuestion {
-  // Enkel mall: boll på kanten, korrekt zon centralt mellan boll och mål
   const side = Math.random() > 0.5 ? 'right' : 'left';
   const ball = side === 'right' ? { x: 0.88, y: 0.46 } : { x: 0.12, y: 0.46 };
   const correctRect = side === 'right'
