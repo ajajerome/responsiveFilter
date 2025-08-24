@@ -3,27 +3,45 @@ import Screen from "@/components/ui/Screen";
 import Button from "@/components/ui/Button";
 import { colors } from "@/theme";
 import { useAppStore } from "@/store/useAppStore";
+import { useEffect, useState } from "react";
 
 export default function Profile() {
 	const avatar = useAppStore((s) => s.profile.avatar) || {};
-	const setName = useAppStore((s) => s.actions.setAvatarName);
-	const setNum = useAppStore((s) => s.actions.setJerseyNumber);
-	const setSkin = useAppStore((s) => s.actions.setSkinTone);
-	const setTeamColor = useAppStore((s) => s.actions.setTeamColor);
+	const setNameStore = useAppStore((s) => s.actions.setAvatarName);
+	const setNumStore = useAppStore((s) => s.actions.setJerseyNumber);
+	const setSkinStore = useAppStore((s) => s.actions.setSkinTone);
+	const setTeamColorStore = useAppStore((s) => s.actions.setTeamColor);
 	const favorite = useAppStore((s) => s.profile.favoritePosition);
-	const teamColor = avatar.shirtColor || '#4da3ff';
-	const skin = avatar.skinTone || '#f5d6c6';
+	const [name, setName] = useState(avatar.name || '');
+	const [jerseyNumber, setJerseyNumber] = useState(avatar.jerseyNumber || '');
+	const [skinTone, setSkinTone] = useState(avatar.skinTone || '#f5d6c6');
+	const [shirtColor, setShirtColor] = useState(avatar.shirtColor || '#4da3ff');
+	const [saved, setSaved] = useState(false);
+	useEffect(() => {
+		setName(avatar.name || '');
+		setJerseyNumber(avatar.jerseyNumber || '');
+		setSkinTone(avatar.skinTone || '#f5d6c6');
+		setShirtColor(avatar.shirtColor || '#4da3ff');
+	}, [avatar.name, avatar.jerseyNumber, avatar.skinTone, avatar.shirtColor]);
+	const onSave = () => {
+		setNameStore(name.trim());
+		setNumStore(jerseyNumber.trim());
+		setSkinStore(skinTone);
+		setTeamColorStore(shirtColor);
+		setSaved(true);
+		setTimeout(() => setSaved(false), 1400);
+	};
 	return (
 		<Screen>
 			<View style={styles.container}>
 				<Text style={styles.title}>Din Avatar</Text>
 				{/* Live preview */}
 				<View style={styles.previewWrap}>
-					<View style={[styles.head, { backgroundColor: skin }]} />
-					<View style={[styles.shirt, { backgroundColor: teamColor }]}> 
-						<Text style={styles.numText}>{avatar.jerseyNumber || '10'}</Text>
+					<View style={[styles.head, { backgroundColor: skinTone }]} />
+					<View style={[styles.shirt, { backgroundColor: shirtColor }]}> 
+						<Text style={styles.numText}>{jerseyNumber || '10'}</Text>
 					</View>
-					<Text style={styles.nameText}>{avatar.name || 'Spelare'}</Text>
+					<Text style={styles.nameText}>{name || 'Spelare'}</Text>
 					{favorite ? <Text style={styles.posText}>{favorite}</Text> : null}
 				</View>
 				{/* Inputs */}
@@ -33,7 +51,7 @@ export default function Profile() {
 						style={styles.input}
 						placeholder="Ditt namn"
 						placeholderTextColor="#9aa4b2"
-						defaultValue={avatar.name || ''}
+						value={name}
 						onChangeText={setName}
 					/>
 					<Text style={styles.label}>Tröjnummer</Text>
@@ -43,19 +61,19 @@ export default function Profile() {
 						placeholder="t.ex. 7"
 						placeholderTextColor="#9aa4b2"
 						maxLength={2}
-						defaultValue={avatar.jerseyNumber || ''}
-						onChangeText={setNum}
+						value={jerseyNumber}
+						onChangeText={(t) => setJerseyNumber(t.replace(/[^0-9]/g, ''))}
 					/>
 					<Text style={styles.label}>Hudton</Text>
 					<View style={{ flexDirection: 'row', gap: 10 }}>
 						{['#f5d6c6', '#eac1a8', '#cf9772', '#a26e44', '#6d4b2d'].map((c) => (
-							<Button key={c} title={c === skin ? 'Vald' : ' '} onPress={() => setSkin(c)} style={{ backgroundColor: c, width: 40, height: 32 }} />
+							<Button key={c} title={c === skinTone ? 'Vald' : ' '} onPress={() => setSkinTone(c)} style={{ backgroundColor: c, width: 40, height: 32 }} />
 						))}
 					</View>
 					<Text style={styles.label}>Tröjfärg</Text>
 					<View style={{ flexDirection: 'row', gap: 10 }}>
 						{['#4da3ff', '#ffd400', '#00ffd1', '#ff6b6b', '#7a7cff'].map((c) => (
-							<Button key={c} title={c === teamColor ? 'Vald' : ' '} onPress={() => setTeamColor(c)} style={{ backgroundColor: c, width: 40, height: 32 }} />
+							<Button key={c} title={c === shirtColor ? 'Vald' : ' '} onPress={() => setShirtColor(c)} style={{ backgroundColor: c, width: 40, height: 32 }} />
 						))}
 					</View>
 					<Text style={styles.label}>Egen färg (hex, t.ex. #1abc9c)</Text>
@@ -63,12 +81,16 @@ export default function Profile() {
 						style={styles.input}
 						placeholder="#RRGGBB"
 						placeholderTextColor="#9aa4b2"
-						defaultValue={teamColor}
+						value={shirtColor}
 						onChangeText={(txt) => {
 							const v = txt.trim();
-							if (/^#[0-9a-fA-F]{6}$/.test(v)) setTeamColor(v);
+							setShirtColor(v);
 						}}
 					/>
+					<View style={{ marginTop: 8, flexDirection: 'row', alignItems: 'center', gap: 12 }}>
+						<Button title="Spara avatar" onPress={onSave} />
+						{saved && <Text style={{ color: '#34c759', fontWeight: '700' }}>Sparat!</Text>}
+					</View>
 				</View>
 			</View>
 		</Screen>
