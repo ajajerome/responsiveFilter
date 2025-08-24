@@ -3,7 +3,7 @@ import { useAppStore } from '@/store/useAppStore';
 import { REGELFRAGOR } from '@/data/regler';
 import { SPELFORSTAELSE } from '@/data/spelforstaelse';
 import { FREEZE_QUESTIONS } from '@/data/freeze';
-import { getRandomQuestion } from '@/engine/generator';
+import { getRandomQuestion, generateTimeline, generateDragDrop, generateGoalKickPress, generateDefendingCross } from '@/engine/generator';
 import { FORMATION_QUESTIONS } from '@/data/formation_quiz';
 import { ATTACK_DRAG_QUESTIONS } from '@/data/attack_drag';
 
@@ -42,17 +42,15 @@ export async function fetchQuestions(level: Level, position?: Position, count = 
   // Kategorispecifik vikting: säkerställ att underkategorin prioriteras
   const prioritized: Question[] = [];
   if (category === 'fasta') {
-    // Fasta situationer: favorera freeze/pass med fasta-taggar om tillgängligt
+    // Fasta situationer: favorera freeze om tillgängligt, annars enkel mall
     const fz = freeze.filter(q => q.category === 'fasta');
-    const ps = pass.filter(q => q.category === 'fasta');
-    if (fz.length + ps.length === 0) {
-      // fallback: skapa prototyp-fråga för fasta: "Motståndaren har hörna, du är back – var ställer du dig?"
+    if (fz.length === 0) {
       const templ: MatchFreezeQuestion = {
         id: `fz-fasta-${Date.now()}`,
         type: 'matchscenario',
         level,
         category: 'fasta',
-        question: 'Motståndarna har hörna. Du är back – var ställer du dig? Dra bollen till rätt zon.',
+        question: 'Motståndarna har hörna. Du är back – var ställer du dig? Tryck på rätt yta.',
         players: [ { id: 'oppC', team: 'away', x: 0.95, y: 0.20 } ],
         ball: { x: 0.95, y: 0.20 },
         correctZones: [ { id: 'z', rect: { x: 0.55, y: 0.35, width: 0.10, height: 0.20 } } ],
@@ -62,14 +60,17 @@ export async function fetchQuestions(level: Level, position?: Position, count = 
     } else {
       prioritized.push(
         ...pick(fz, Math.min(2, fz.length)),
-        ...pick(ps, Math.min(2, ps.length)),
       );
     }
   } else if (category === 'forsvar') {
+    // Defending cross template first
+    prioritized.push(generateDefendingCross(level));
     prioritized.push(
-      ...pick(freeze.filter(q => q.category === 'forsvar'), Math.min(3, freeze.length)),
+      ...pick(freeze.filter(q => q.category === 'forsvar'), Math.min(2, freeze.length)),
     );
   } else if (category === 'anfall') {
+    // Goal-kick press template first
+    prioritized.push(generateGoalKickPress(level));
     prioritized.push(
       ...pick(attackDrag.filter(q => q.category === 'anfall'), Math.min(2, attackDrag.length)),
     );
@@ -88,15 +89,14 @@ export async function fetchQuestions(level: Level, position?: Position, count = 
   ];
   // Force a specific first test question for 7-manna anfall: timeline goal-kick press
   if (level === '7-manna' && category === 'anfall') {
-    const tl = (await import('@/engine/generator')).generateTimeline(level, undefined, 'anfall');
+    const tl = generateTimeline(level, undefined, 'anfall');
     base = [tl, ...base.filter(q => q.id !== tl.id)];
   }
   if (level === '7-manna' && category === 'forsvar') {
-    const gen = await import('@/engine/generator');
-    const defPlayer = gen.generateDragDrop(level, undefined, 'forsvar');
+    const defPlayer = generateDragDrop(level, undefined, 'forsvar');
     base = [defPlayer, ...base];
   }
-  // Fyll upp från kvarvarande pooler (utan drag_drop) utan dubbletter
+  // Fyll upp från kvarvarande pooler utan dubbletter
   const pool: Question[] = [
     ...regler,
     ...spel,
@@ -118,7 +118,6 @@ export async function fetchQuestions(level: Level, position?: Position, count = 
   return result;
 }
 
-// Lokal generator (mock) — skapar frågor utan backend
 export type GenerateOptions = {
   type: 'quiz' | 'freeze';
   level?: Level;
