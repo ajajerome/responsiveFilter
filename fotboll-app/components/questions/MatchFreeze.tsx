@@ -10,7 +10,7 @@ import JerseyIcon from '@/components/common/JerseyIcon';
 type Props = { question: MatchFreezeQuestion; onAnswer: (isCorrect: boolean) => void };
 
 export default function MatchFreeze({ question, onAnswer }: Props) {
-	const w = 320, h = 220;
+	const w = 360, h = 260;
 	const teamColor = useAppStore((s) => s.profile.avatar?.shirtColor) || '#4da3ff';
 	const jersey = useAppStore((s) => s.profile.avatar?.jerseyNumber) || '10';
 	useEffect(() => {
@@ -41,13 +41,13 @@ export default function MatchFreeze({ question, onAnswer }: Props) {
 				<MatchPitch width={w} height={h} />
 				{/* Goalkeepers to indicate direction */}
 				<View style={{ position: 'absolute', left: w * 0.48, top: 4 }}>
-					<JerseyIcon color="#ff3b30" size={22} borderColor="#111" />
+					<JerseyIcon color="#ff3b30" size={24} borderColor="#111" />
 				</View>
 				<View style={{ position: 'absolute', left: w * 0.48, bottom: 4 }}>
-					<JerseyIcon color={teamColor} size={22} />
+					<JerseyIcon color={teamColor} size={24} />
 				</View>
 				<Svg width={w} height={h} style={{ position: 'absolute', left: 0, top: 0 }}>
-					<Circle cx={question.ball.x * w} cy={question.ball.y * h} r={5} fill="#ffffff" />
+					<Circle cx={question.ball.x * w} cy={question.ball.y * h} r={6} fill="#ffffff" />
 				</Svg>
 				{question.players.map(p => {
 					const isYou = p.team === 'home' && p.id === 'you';
@@ -55,18 +55,18 @@ export default function MatchFreeze({ question, onAnswer }: Props) {
 						<Pressable
 							key={p.id}
 							onPress={() => check(p.id)}
-							hitSlop={12}
-							style={{ position: 'absolute', left: p.x * w - 18, top: p.y * h - 22 }}
+							hitSlop={24}
+							style={{ position: 'absolute', left: p.x * w - 20, top: p.y * h - 26 }}
 						>
 							{isYou && (
 								<Animated.View
 									style={{
 										position: 'absolute',
-										left: -6,
-										top: -8,
-										width: 44,
-										height: 60,
-										borderRadius: 12,
+										left: -10,
+										top: -12,
+										width: 60,
+										height: 80,
+										borderRadius: 16,
 										borderWidth: 3,
 										borderColor: '#ffd400',
 										opacity: glow.interpolate({ inputRange: [0, 1], outputRange: [0.35, 0.9] }),
@@ -74,7 +74,7 @@ export default function MatchFreeze({ question, onAnswer }: Props) {
 									}}
 								/>
 							)}
-							<JerseyIcon color={p.team === 'home' ? teamColor : '#ff3b30'} number={isYou ? jersey : undefined} size={30} borderColor={p.team === 'home' ? '#e7ebf3' : '#111'} />
+							<JerseyIcon color={p.team === 'home' ? teamColor : '#ff3b30'} number={isYou ? jersey : undefined} size={34} borderColor={p.team === 'home' ? '#e7ebf3' : '#111'} />
 						</Pressable>
 					);
 				})}

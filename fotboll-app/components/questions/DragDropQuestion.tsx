@@ -16,7 +16,7 @@ type Props = {
 };
 
 export default function DragDropQuestionView({ question, onAnswer }: Props) {
-  const w = 320, h = 220;
+  const w = 360, h = 260;
   const [pitchSize, setPitchSize] = useState({ width: w, height: h });
   const teamColor = useAppStore((s) => s.profile.avatar?.shirtColor) || '#4da3ff';
   const jersey = useAppStore((s) => s.profile.avatar?.jerseyNumber) || '10';
@@ -162,10 +162,10 @@ export default function DragDropQuestionView({ question, onAnswer }: Props) {
         <MatchPitch width={w} height={h} />
         {/* Goalkeepers direction */}
         <View style={{ position: 'absolute', left: w * 0.48, top: 4 }}>
-          <JerseyIcon color="#ff3b30" size={22} borderColor="#111" />
+          <JerseyIcon color="#ff3b30" size={24} borderColor="#111" />
         </View>
         <View style={{ position: 'absolute', left: w * 0.48, bottom: 4 }}>
-          <JerseyIcon color={teamColor} size={22} />
+          <JerseyIcon color={teamColor} size={24} />
         </View>
         {'targetRect' in question && (
           <View
@@ -175,15 +175,15 @@ export default function DragDropQuestionView({ question, onAnswer }: Props) {
               top: question.targetRect.y * pitchSize.height,
               width: question.targetRect.width * pitchSize.width,
               height: question.targetRect.height * pitchSize.height,
-              borderWidth: 2,
+              borderWidth: 3,
               borderColor: '#34c759',
               backgroundColor: 'rgba(52,199,89,0.12)',
             }}
           />
         )}
         {'opponents' in question && (question as any).opponents?.map((o: any, i: number) => (
-          <View key={`opp-${i}`} style={{ position: 'absolute', left: o.x * pitchSize.width - 14, top: o.y * pitchSize.height - 14 }}>
-            <JerseyIcon color="#ff3b30" size={26} borderColor="#111" />
+          <View key={`opp-${i}`} style={{ position: 'absolute', left: o.x * pitchSize.width - 16, top: o.y * pitchSize.height - 16 }}>
+            <JerseyIcon color="#ff3b30" size={30} borderColor="#111" />
           </View>
         ))}
         {'targets' in question && question.targets?.map(t => (
@@ -195,7 +195,7 @@ export default function DragDropQuestionView({ question, onAnswer }: Props) {
               top: t.rect.y * pitchSize.height,
               width: t.rect.width * pitchSize.width,
               height: t.rect.height * pitchSize.height,
-              borderWidth: 2,
+              borderWidth: 3,
               borderColor: '#34c759',
               backgroundColor: 'rgba(52,199,89,0.12)',
             }}
@@ -207,12 +207,12 @@ export default function DragDropQuestionView({ question, onAnswer }: Props) {
           style={{
             position: 'absolute',
             transform: position.getTranslateTransform(),
-            left: startPx.x - 20,
-            top: startPx.y - 24,
+            left: startPx.x - 22,
+            top: startPx.y - 26,
           }}
         >
-          <Animated.View style={{ position: 'absolute', left: -10, top: -12, width: 56, height: 72, borderRadius: 14, borderWidth: 3, borderColor: '#ffd400', opacity: pulse.interpolate({ inputRange: [0, 1], outputRange: [0.35, 0.95] }) }} />
-          <JerseyIcon color={teamColor} number={jersey} size={34} />
+          <Animated.View style={{ position: 'absolute', left: -12, top: -14, width: 66, height: 84, borderRadius: 16, borderWidth: 3, borderColor: '#ffd400', opacity: pulse.interpolate({ inputRange: [0, 1], outputRange: [0.35, 0.95] }) }} />
+          <JerseyIcon color={teamColor} number={jersey} size={38} />
         </Animated.View>
         {/* Taktik-läge: flera spelare (utan glow) */}
         {'players' in question && question.players.map(p => {
@@ -236,10 +236,10 @@ export default function DragDropQuestionView({ question, onAnswer }: Props) {
           return (
             <>
               {target && (
-                <View key={`z-${key}`} style={{ position: 'absolute', left: target.rect.x * pitchSize.width, top: target.rect.y * pitchSize.height, width: target.rect.width * pitchSize.width, height: target.rect.height * pitchSize.height, borderWidth: 2, borderColor: '#34c759', backgroundColor: 'rgba(52,199,89,0.12)' }} />
+                <View key={`z-${key}`} style={{ position: 'absolute', left: target.rect.x * pitchSize.width, top: target.rect.y * pitchSize.height, width: target.rect.width * pitchSize.width, height: target.rect.height * pitchSize.height, borderWidth: 3, borderColor: '#34c759', backgroundColor: 'rgba(52,199,89,0.12)' }} />
               )}
-              <Animated.View key={`p-${key}`} {...pan.panHandlers} style={{ position: 'absolute', transform: playersPos[key].getTranslateTransform(), left: p.start.x * pitchSize.width - 14, top: p.start.y * pitchSize.height - 14 }}>
-                <JerseyIcon color={teamColor} size={26} />
+              <Animated.View key={`p-${key}`} {...pan.panHandlers} style={{ position: 'absolute', transform: playersPos[key].getTranslateTransform(), left: p.start.x * pitchSize.width - 16, top: p.start.y * pitchSize.height - 16 }}>
+                <JerseyIcon color={teamColor} size={30} />
               </Animated.View>
             </>
           );
