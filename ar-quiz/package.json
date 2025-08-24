@@ -9,6 +9,7 @@
     "preview": "vite preview"
   },
   "devDependencies": {
+    "@types/three": "^0.179.0",
     "@types/webxr": "^0.5.22",
     "typescript": "~5.8.3",
     "vite": "^7.1.2"
