@@ -1932,3 +1932,74 @@ request to https://api.expo.dev/graphql failed, reason:
 request to https://api.expo.dev/graphql failed, reason: 
 
 request to https://api.expo.dev/graphql failed, reason: 
+- Exporting...
+[expo-cli] Starting Metro Bundler
+[expo-cli] iOS node_modules/expo-router/entry.js ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓░ 99.9% (1122/1122)
+[expo-cli] Android node_modules/expo-router/entry.js ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓░ 99.9% (1119/1119)
+[expo-cli] iOS Bundled 4107ms node_modules/expo-router/entry.js (1122 modules)
+[expo-cli] Android Bundled 6366ms node_modules/expo-router/entry.js (1119 modules)
+[expo-cli] Android node_modules/expo-router/entry.js ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓░ 99.9% (1119/1119)
+[expo-cli] Creating asset map
+[expo-cli] 
+[expo-cli] › Assets (35):
+[expo-cli] assets/sfx/fail.mp3 (275 B)
+[expo-cli] assets/sfx/kick.mp3 (243 B)
+[expo-cli] assets/sfx/success.mp3 (243 B)
+[expo-cli] assets/sfx/whistle.mp3 (243 B)
+[expo-cli] node_modules/@react-navigation/elements/lib/module/assets/back-icon-mask.png (653 B)
+[expo-cli] node_modules/@react-navigation/elements/lib/module/assets/back-icon.png (8 variations | 359 B)
+[expo-cli] node_modules/@react-navigation/elements/lib/module/assets/clear-icon.png (4 variations | 425 B)
+[expo-cli] node_modules/@react-navigation/elements/lib/module/assets/close-icon.png (4 variations | 235 B)
+[expo-cli] node_modules/@react-navigation/elements/lib/module/assets/search-icon.png (7 variations | 592 B)
+[expo-cli] node_modules/expo-router/assets/arrow_down.png (9.46 kB)
+[expo-cli] node_modules/expo-router/assets/error.png (469 B)
+[expo-cli] node_modules/expo-router/assets/file.png (138 B)
+[expo-cli] node_modules/expo-router/assets/forward.png (188 B)
+[expo-cli] node_modules/expo-router/assets/pkg.png (364 B)
+[expo-cli] node_modules/expo-router/assets/sitemap.png (465 B)
+[expo-cli] node_modules/expo-router/assets/unmatched.png (4.75 kB)
+[expo-cli] 
+[expo-cli] › ios bundles (2):
+[expo-cli] _expo/static/js/ios/entry-a87608817e671a5c16c89143ce179f78.hbc (1.72 MB)
+[expo-cli] _expo/static/js/ios/entry-a87608817e671a5c16c89143ce179f78.hbc.map (6.56 MB)
+[expo-cli] 
+[expo-cli] › android bundles (2):
+[expo-cli] _expo/static/js/android/entry-f11c0b4c78886e65ee7ba017d1b42d4e.hbc (1.72 MB)
+[expo-cli] _expo/static/js/android/entry-f11c0b4c78886e65ee7ba017d1b42d4e.hbc.map (6.56 MB)
+[expo-cli] 
+[expo-cli] › Files (2):
+[expo-cli] assetmap.json (11 kB)
+[expo-cli] metadata.json (4.02 kB)
+[expo-cli] 
+[expo-cli] Exported: dist
+✔ Exported bundle(s)
+- Uploading...
+- Uploading assetmap.json (0 / 10.7 KB)
+✔ Uploaded assetmap.json 
+✔ Uploaded 2 app bundles
+✔ Uploading assets skipped - no new assets found
+ℹ 31 iOS assets, 31 Android assets (maximum: 2000 total per update). Learn more about asset limits: https://expo.fyi/eas-update-asset-limits
+- Computing project fingerprints
+✔ Computed project fingerprints
+- Publishing...
+✔ Published!
+
+Branch             staging
+Runtime version    1.0.0
+Platform           android, ios
+Update group ID    4580527f-7039-4a84-8461-eba6e21ef741
+Android update ID  114b422f-9254-41b4-b5f1-ccb6a77564d1
+iOS update ID      a44793b6-506f-44d1-8584-70ba946840c0
+Message            Add profile button to home screen for avatar editing
+
+Co-authored-by: jeromenilssonaja <jeromenilssonaja@gmail.com>
+Commit             2ba22d9f02c6009c38b21b311670d5b413a4c4e4*
+EAS Dashboard      https://expo.dev/accounts/jappmaster/projects/fotbollstranaren/updates/4580527f-7039-4a84-8461-eba6e21ef741
+
+No compatible builds found for the following fingerprints:
+    iOS fingerprint:  56a21474d22be2375b288f689af1f1dd83fecc5e
+    URL            :  https://expo.dev/accounts/jappmaster/projects/fotbollstranaren/fingerprints/56a21474d22be2375b288f689af1f1dd83fecc5e
+
+    Android fingerprint:  f93c7cd3c2ca02cabe5d93aa79a936ed0efafc8b
+    URL                :  https://expo.dev/accounts/jappmaster/projects/fotbollstranaren/fingerprints/f93c7cd3c2ca02cabe5d93aa79a936ed0efafc8b
+

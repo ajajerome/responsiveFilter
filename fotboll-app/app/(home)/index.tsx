@@ -9,10 +9,25 @@ import { useAppStore } from "@/store/useAppStore";
 
 export default function HomeIndex() {
   const setTeamColor = useAppStore((s) => s.actions.setTeamColor);
-  const color = useAppStore((s) => s.profile.avatar?.shirtColor) || '#4da3ff';
+  const avatar = useAppStore((s) => s.profile.avatar) || {};
+  const color = avatar.shirtColor || '#4da3ff';
   return (
     <Screen>
       <XpBadge />
+      <View style={{ paddingHorizontal: 16, paddingTop: 8 }}>
+        <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
+          <View style={{ width: 24, height: 24, borderRadius: 12, backgroundColor: avatar.skinTone || '#f5d6c6', borderWidth: 1, borderColor: '#e7ebf3' }} />
+          <View style={{ paddingHorizontal: 8, paddingVertical: 6, borderRadius: 10, backgroundColor: 'rgba(255,255,255,0.06)', flexDirection: 'row', alignItems: 'center', gap: 8 }}>
+            <View style={{ width: 28, height: 22, borderRadius: 6, backgroundColor: color, alignItems: 'center', justifyContent: 'center', borderWidth: 1, borderColor: '#e7ebf3' }}>
+              <Text style={{ color: 'white', fontWeight: '800', fontSize: 12 }}>{avatar.jerseyNumber || '10'}</Text>
+            </View>
+            <Text style={{ color: colors.text, fontWeight: '700' }}>{avatar.name || 'Spelare'}</Text>
+          </View>
+          <Link href="/profile" asChild>
+            <Button title="Ändra" onPress={() => {}} variant="secondary" />
+          </Link>
+        </View>
+      </View>
       <View style={{ flex: 1, justifyContent: 'center' }}>
         <Text style={styles.title}>Fotbollsteori – Resan börjar</Text>
         <Card>
