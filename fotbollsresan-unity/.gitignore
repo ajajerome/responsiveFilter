@@ -1,0 +1,21 @@
+# Unity
+Library/
+Temp/
+Obj/
+Build/
+Builds/
+Logs/
+UserSettings/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Rider/VSCode
+.idea/
+.vs/
+.vscode/
+
+# Unity Packages cache
+Packages/packages-lock.json
+

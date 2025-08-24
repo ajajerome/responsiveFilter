@@ -1,0 +1,5 @@
+app_identifier("com.dittbolag.fotbollsresan")
+apple_id("apple-id@example.com")
+itc_team_id("123456789")
+team_id("ABCDE12345")
+
