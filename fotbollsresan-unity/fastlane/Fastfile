@@ -22,17 +22,16 @@ platform :ios do
   desc "Bygg och ladda upp till TestFlight"
   lane :beta do
     # Anpassa efter ditt Xcode-projekt namn/target/scheme
-    scheme = ENV["SCHEME"] || "Fotbollsresan"
+    scheme = ENV["SCHEME"] || "Unity-iPhone"
     workspace = Dir["*.xcworkspace"].first
     project = Dir["*.xcodeproj"].first
 
     increment_build_number(xcodeproj: project) if project
 
-    build_app(
-      scheme: scheme,
-      workspace: workspace,
-      export_method: "app-store"
-    )
+    params = { scheme: scheme, export_method: "app-store" }
+    params[:workspace] = workspace if workspace
+    params[:project] = project if project && !workspace
+    build_app(params)
 
     api_key = make_api_key_from_env()
     upload_to_testflight(
@@ -53,18 +52,17 @@ platform :ios do
 
   desc "Bygg staging och ladda upp till TestFlight"
   lane :beta_staging do
-    scheme = ENV["SCHEME"] || "Fotbollsresan"
+    scheme = ENV["SCHEME"] || "Unity-iPhone"
     workspace = Dir["*.xcworkspace"].first
     project = Dir["*.xcodeproj"].first
 
     increment_build_number(xcodeproj: project) if project
 
     ENV["APP_ENV"] = "staging"
-    build_app(
-      scheme: scheme,
-      workspace: workspace,
-      export_method: "app-store"
-    )
+    params = { scheme: scheme, export_method: "app-store" }
+    params[:workspace] = workspace if workspace
+    params[:project] = project if project && !workspace
+    build_app(params)
 
     api_key = make_api_key_from_env()
     upload_to_testflight(
