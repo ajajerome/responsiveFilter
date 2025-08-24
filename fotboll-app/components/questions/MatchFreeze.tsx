@@ -1,7 +1,7 @@
-import { View, Text, StyleSheet, Pressable } from 'react-native';
+import { View, Text, StyleSheet, Pressable, Animated } from 'react-native';
 import Svg, { Circle } from 'react-native-svg';
 import type { MatchFreezeQuestion } from '@/types/content';
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { playLocal } from '@/utils/sound';
 import MatchPitch from '@/features/pitch/MatchPitch';
 import { useAppStore } from '@/store/useAppStore';
@@ -20,6 +20,16 @@ export default function MatchFreeze({ question, onAnswer }: Props) {
 		if (question.correctPlayerIds && playerId) return onAnswer(question.correctPlayerIds.includes(playerId));
 		onAnswer(false);
 	};
+	// Glow anim for 'you'
+	const glow = useRef(new Animated.Value(0)).current;
+	useEffect(() => {
+		Animated.loop(
+			Animated.sequence([
+				Animated.timing(glow, { toValue: 1, duration: 700, useNativeDriver: true }),
+				Animated.timing(glow, { toValue: 0, duration: 700, useNativeDriver: true }),
+			])
+		).start();
+	}, []);
 	return (
 		<View style={styles.container}>
 			<Text style={styles.title}>{question.question}</Text>
@@ -40,15 +50,31 @@ export default function MatchFreeze({ question, onAnswer }: Props) {
 					<Circle cx={question.ball.x * w} cy={question.ball.y * h} r={5} fill="#ffffff" />
 				</Svg>
 				{question.players.map(p => {
-					const showNumber = p.team === 'home' && p.id === 'you';
+					const isYou = p.team === 'home' && p.id === 'you';
 					return (
 						<Pressable
 							key={p.id}
 							onPress={() => check(p.id)}
 							hitSlop={12}
-							style={{ position: 'absolute', left: p.x * w - 14, top: p.y * h - 14 }}
+							style={{ position: 'absolute', left: p.x * w - 18, top: p.y * h - 22 }}
 						>
-							<JerseyIcon color={p.team === 'home' ? teamColor : '#ff3b30'} number={showNumber ? jersey : undefined} size={26} borderColor={p.team === 'home' ? '#e7ebf3' : '#111'} />
+							{isYou && (
+								<Animated.View
+									style={{
+										position: 'absolute',
+										left: -6,
+										top: -8,
+										width: 44,
+										height: 60,
+										borderRadius: 12,
+										borderWidth: 3,
+										borderColor: '#ffd400',
+										opacity: glow.interpolate({ inputRange: [0, 1], outputRange: [0.35, 0.9] }),
+										transform: [{ scale: glow.interpolate({ inputRange: [0, 1], outputRange: [0.98, 1.05] }) }],
+									}}
+								/>
+							)}
+							<JerseyIcon color={p.team === 'home' ? teamColor : '#ff3b30'} number={isYou ? jersey : undefined} size={30} borderColor={p.team === 'home' ? '#e7ebf3' : '#111'} />
 						</Pressable>
 					);
 				})}

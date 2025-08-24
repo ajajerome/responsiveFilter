@@ -27,13 +27,13 @@ export default function DragDropQuestionView({ question, onAnswer }: Props) {
   })).current;
   // För taktik: fler spelare
   const [playersPos, setPlayersPos] = useState<Record<string, Animated.ValueXY>>({});
-  // Pulse highlight
+  // Pulse highlight for single draggable only
   const pulse = useRef(new Animated.Value(0)).current;
   useEffect(() => {
     Animated.loop(
       Animated.sequence([
-        Animated.timing(pulse, { toValue: 1, duration: 700, useNativeDriver: true }),
-        Animated.timing(pulse, { toValue: 0, duration: 700, useNativeDriver: true }),
+        Animated.timing(pulse, { toValue: 1, duration: 650, useNativeDriver: true }),
+        Animated.timing(pulse, { toValue: 0, duration: 650, useNativeDriver: true }),
       ])
     ).start();
   }, []);
@@ -207,14 +207,14 @@ export default function DragDropQuestionView({ question, onAnswer }: Props) {
           style={{
             position: 'absolute',
             transform: position.getTranslateTransform(),
-            left: startPx.x - 18,
-            top: startPx.y - 18,
+            left: startPx.x - 20,
+            top: startPx.y - 24,
           }}
         >
-          <Animated.View style={{ position: 'absolute', left: -6, top: -8, width: 32, height: 44, borderRadius: 8, borderWidth: 2, borderColor: '#ffcf40', opacity: pulse.interpolate({ inputRange: [0, 1], outputRange: [0.3, 0.8] }) }} />
-          <JerseyIcon color={teamColor} number={jersey} size={30} />
+          <Animated.View style={{ position: 'absolute', left: -10, top: -12, width: 56, height: 72, borderRadius: 14, borderWidth: 3, borderColor: '#ffd400', opacity: pulse.interpolate({ inputRange: [0, 1], outputRange: [0.35, 0.95] }) }} />
+          <JerseyIcon color={teamColor} number={jersey} size={34} />
         </Animated.View>
-        {/* Taktik-läge: flera spelare */}
+        {/* Taktik-läge: flera spelare (utan glow) */}
         {'players' in question && question.players.map(p => {
           const key = p.id;
           if (!playersPos[key]) {
@@ -239,7 +239,6 @@ export default function DragDropQuestionView({ question, onAnswer }: Props) {
                 <View key={`z-${key}`} style={{ position: 'absolute', left: target.rect.x * pitchSize.width, top: target.rect.y * pitchSize.height, width: target.rect.width * pitchSize.width, height: target.rect.height * pitchSize.height, borderWidth: 2, borderColor: '#34c759', backgroundColor: 'rgba(52,199,89,0.12)' }} />
               )}
               <Animated.View key={`p-${key}`} {...pan.panHandlers} style={{ position: 'absolute', transform: playersPos[key].getTranslateTransform(), left: p.start.x * pitchSize.width - 14, top: p.start.y * pitchSize.height - 14 }}>
-                <Animated.View style={{ position: 'absolute', left: -6, top: -8, width: 32, height: 44, borderRadius: 8, borderWidth: 2, borderColor: '#ffcf40', opacity: pulse.interpolate({ inputRange: [0, 1], outputRange: [0.3, 0.8] }) }} />
                 <JerseyIcon color={teamColor} size={26} />
               </Animated.View>
             </>
