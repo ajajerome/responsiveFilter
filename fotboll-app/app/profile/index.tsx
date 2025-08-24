@@ -58,6 +58,17 @@ export default function Profile() {
 							<Button key={c} title={c === teamColor ? 'Vald' : ' '} onPress={() => setTeamColor(c)} style={{ backgroundColor: c, width: 40, height: 32 }} />
 						))}
 					</View>
+					<Text style={styles.label}>Egen färg (hex, t.ex. #1abc9c)</Text>
+					<TextInput
+						style={styles.input}
+						placeholder="#RRGGBB"
+						placeholderTextColor="#9aa4b2"
+						defaultValue={teamColor}
+						onChangeText={(txt) => {
+							const v = txt.trim();
+							if (/^#[0-9a-fA-F]{6}$/.test(v)) setTeamColor(v);
+						}}
+					/>
 				</View>
 			</View>
 		</Screen>
