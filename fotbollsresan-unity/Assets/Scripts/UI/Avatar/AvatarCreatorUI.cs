@@ -14,10 +14,16 @@ namespace Fotbollsresan.UI.Avatar
         [SerializeField] private TMP_InputField nameInput;
         [SerializeField] private TMP_InputField birthdateIsoInput; // format: YYYY-MM-DD
         [SerializeField] private TMP_Dropdown positionDropdown; // values: Any/Forward/Midfielder/Defender/Goalkeeper
+        [SerializeField] private TMP_Dropdown hairDropdown; // Hair types
+        [SerializeField] private TMP_InputField jerseyInput; // 1-99
         [SerializeField] private Slider skinR;
         [SerializeField] private Slider skinG;
         [SerializeField] private Slider skinB;
         [SerializeField] private Image skinPreview;
+        [SerializeField] private Slider teamR;
+        [SerializeField] private Slider teamG;
+        [SerializeField] private Slider teamB;
+        [SerializeField] private Image teamPreview;
 
         private void Start()
         {
@@ -31,6 +37,7 @@ namespace Fotbollsresan.UI.Avatar
             }
 
             UpdateSkinPreview();
+            UpdateTeamPreview();
         }
 
         public void OnNameChanged(string value)
@@ -66,6 +73,35 @@ namespace Fotbollsresan.UI.Avatar
             if (skinPreview == null) return;
             var color = new Color(skinR?.value ?? 1f, skinG?.value ?? 1f, skinB?.value ?? 1f, 1f);
             skinPreview.color = color;
+        }
+
+        public void OnHairChanged(int optionIndex)
+        {
+            if (hairDropdown == null) return;
+            var hair = hairDropdown.options[optionIndex].text;
+            avatarCreator.SetHairType(hair);
+        }
+
+        public void OnJerseyChanged(string number)
+        {
+            if (int.TryParse(number, out var n))
+            {
+                avatarCreator.SetJerseyNumber(n);
+            }
+        }
+
+        public void OnTeamColorChanged()
+        {
+            var color = new Color(teamR?.value ?? 0f, teamG?.value ?? 1f, teamB?.value ?? 0f, 1f);
+            avatarCreator.SetTeamColor(color);
+            UpdateTeamPreview();
+        }
+
+        private void UpdateTeamPreview()
+        {
+            if (teamPreview == null) return;
+            var color = new Color(teamR?.value ?? 0f, teamG?.value ?? 1f, teamB?.value ?? 0f, 1f);
+            teamPreview.color = color;
         }
     }
 }

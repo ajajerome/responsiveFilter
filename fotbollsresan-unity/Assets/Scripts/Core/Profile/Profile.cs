@@ -10,6 +10,11 @@ namespace Fotbollsresan.Core.Profile
         public DateTime BirthDate;
         public string PreferredPosition; // e.g., "Forward", "Midfielder", "Defender", "Goalkeeper"
         public Color SkinColor = Color.white;
+        public string HairType = "Short";
+        public int JerseyNumber = 10;
+        public Color TeamColor = Color.green;
+        public PlayerStats Stats = new PlayerStats();
+        public string[] Badges = Array.Empty<string>();
 
         public int GetAgeInYears(DateTime? now = null)
         {
@@ -21,6 +26,17 @@ namespace Fotbollsresan.Core.Profile
             }
             return Mathf.Max(age, 0);
         }
+    }
+
+    [Serializable]
+    public class PlayerStats
+    {
+        public int TotalQuizAnswered = 0;
+        public int TotalQuizCorrect = 0;
+        public int TotalFormationPlaced = 0;
+        public int TotalFormationCorrect = 0;
+        public int TotalPassingChoices = 0;
+        public int TotalPassingCorrect = 0;
     }
 }
 

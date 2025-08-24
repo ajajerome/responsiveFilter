@@ -1,0 +1,23 @@
+{
+  "StartId": "s1",
+  "Scenes": [
+    {
+      "Id": "s1",
+      "Prompt": "Du (avatar #10) har bollen. Vem passar du?",
+      "Choices": [
+        { "Id": "A", "Label": "Fri lagkamrat i djupled", "Score": 100, "NextId": "s2", "Explanation": "Bra! Hotar framåt." },
+        { "Id": "B", "Label": "Tillbaka till back", "Score": 50, "NextId": "s2", "Explanation": "Säkert val men mindre framåttänk." },
+        { "Id": "C", "Label": "Dribbla 3 spelare", "Score": 0, "NextId": "s2", "Explanation": "Riskabelt och tappar bollen oftast." }
+      ]
+    },
+    {
+      "Id": "s2",
+      "Prompt": "Bollen når kanten. Var rör du dig?",
+      "Choices": [
+        { "Id": "A", "Label": "In i straffområdet", "Score": 100, "Explanation": "Du hotar ytan framför mål." },
+        { "Id": "B", "Label": "Står kvar", "Score": 0, "Explanation": "Passiv, svårt att skapa målchans." }
+      ]
+    }
+  ]
+}
+

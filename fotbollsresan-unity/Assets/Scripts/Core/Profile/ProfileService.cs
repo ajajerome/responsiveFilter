@@ -21,7 +21,12 @@ namespace Fotbollsresan.Core
                     PlayerName = "",
                     BirthDate = DateTime.UtcNow.Date,
                     PreferredPosition = "",
-                    SkinColor = Color.white
+                    SkinColor = Color.white,
+                    HairType = "Short",
+                    JerseyNumber = 10,
+                    TeamColor = Color.green,
+                    Stats = new PlayerStats(),
+                    Badges = Array.Empty<string>()
                 };
                 SaveProfile();
             }
@@ -57,6 +62,14 @@ namespace Fotbollsresan.Core
             public float SkinG;
             public float SkinB;
             public float SkinA;
+            public string HairType;
+            public int JerseyNumber;
+            public float TeamR;
+            public float TeamG;
+            public float TeamB;
+            public float TeamA;
+            public PlayerStats Stats;
+            public string[] Badges;
 
             public SerializableProfile() {}
 
@@ -69,6 +82,14 @@ namespace Fotbollsresan.Core
                 SkinG = profile.SkinColor.g;
                 SkinB = profile.SkinColor.b;
                 SkinA = profile.SkinColor.a;
+                HairType = profile.HairType;
+                JerseyNumber = profile.JerseyNumber;
+                TeamR = profile.TeamColor.r;
+                TeamG = profile.TeamColor.g;
+                TeamB = profile.TeamColor.b;
+                TeamA = profile.TeamColor.a;
+                Stats = profile.Stats;
+                Badges = profile.Badges;
             }
 
             public PlayerProfile ToProfile()
@@ -79,7 +100,12 @@ namespace Fotbollsresan.Core
                     PlayerName = PlayerName,
                     BirthDate = dt == default ? DateTime.UtcNow.Date : dt,
                     PreferredPosition = PreferredPosition,
-                    SkinColor = new Color(SkinR, SkinG, SkinB, SkinA)
+                    SkinColor = new Color(SkinR, SkinG, SkinB, SkinA),
+                    HairType = HairType,
+                    JerseyNumber = JerseyNumber,
+                    TeamColor = new Color(TeamR, TeamG, TeamB, TeamA),
+                    Stats = Stats ?? new PlayerStats(),
+                    Badges = Badges ?? Array.Empty<string>()
                 };
             }
         }

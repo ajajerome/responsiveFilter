@@ -1,0 +1,19 @@
+{
+  "Questions": [
+    {
+      "Id": "q1",
+      "Prompt": "Hur många spelare är på planen per lag i 5v5?",
+      "Choices": ["3", "5", "7"],
+      "CorrectIndex": 1,
+      "Explanation": "I 5v5 spelar man med fem spelare på planen."
+    },
+    {
+      "Id": "q2",
+      "Prompt": "Vilken färg har domarens kort när det är varning?",
+      "Choices": ["Rött", "Gult", "Blått"],
+      "CorrectIndex": 1,
+      "Explanation": "Gult kort är en varning."
+    }
+  ]
+}
+
