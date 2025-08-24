@@ -90,12 +90,32 @@ export function generateDragDrop(level: Level, position?: Position, category?: s
   };
   if (category === 'forsvar') {
     const z = getZones(level);
-    base.targetRect = z.boxDef; // cover central box in defense
+    // Choose role and corresponding defensive zone within the box
+    const rolePick = sample(['LB', 'CB', 'RB'] as const);
+    if (rolePick === 'LB') {
+      base.position = 'back';
+      base.question = 'Du är vänsterback – flytta dig så du täcker rätt yta.';
+      base.targetRect = { x: z.boxDef.x, y: z.boxDef.y + z.boxDef.height * 0.1, width: z.boxDef.width * 0.3, height: z.boxDef.height * 0.6 };
+      base.start = { x: 0.35, y: 0.88 };
+    } else if (rolePick === 'RB') {
+      base.position = 'back';
+      base.question = 'Du är högerback – flytta dig så du täcker rätt yta.';
+      base.targetRect = { x: z.boxDef.x + z.boxDef.width * 0.7, y: z.boxDef.y + z.boxDef.height * 0.1, width: z.boxDef.width * 0.3, height: z.boxDef.height * 0.6 };
+      base.start = { x: 0.65, y: 0.88 };
+    } else {
+      base.position = 'back';
+      base.question = 'Du är mittback – flytta dig så du täcker rätt yta.';
+      base.targetRect = { x: z.boxDef.x + z.boxDef.width * 0.35, y: z.boxDef.y + z.boxDef.height * 0.05, width: z.boxDef.width * 0.3, height: z.boxDef.height * 0.7 };
+      base.start = { x: 0.5, y: 0.88 };
+    }
+    // Add a threatening opponent near box edge
     const cell = z.grid.centerOf(z.grid.indexOf(2, Math.ceil(z.grid.cols/2)));
     base.opponents = [ { x: cell.x, y: cell.y } ];
   }
   if (category === 'fasta') {
     const z = getZones(level);
+    base.position = 'back';
+    base.question = 'Fasta: täck ytan vid första ytan – flytta spelaren rätt.';
     base.targetRect = z.boxDef;
     const cornerIdx = z.grid.indexOf(1, z.grid.cols); // top-right cell
     const cornerPt = z.grid.centerOf(cornerIdx);
