@@ -9,6 +9,8 @@ export type PitchZones = {
   defThirdY: number;
   boxDef: { x: number; y: number; width: number; height: number };
   boxAtt: { x: number; y: number; width: number; height: number };
+  penaltyBoxDef: { x: number; y: number; width: number; height: number };
+  sixYardBoxDef: { x: number; y: number; width: number; height: number };
   corners: {
     topLeft: { x: number; y: number };
     topRight: { x: number; y: number };
@@ -16,6 +18,11 @@ export type PitchZones = {
     bottomRight: { x: number; y: number };
   };
   grid: GridSpec;
+  cornerDefHelpers: (side: 'left' | 'right') => {
+    nearPost: { x: number; y: number };
+    farPost: { x: number; y: number };
+    penaltySpot: { x: number; y: number };
+  };
 };
 
 export type GridSpec = {
@@ -67,6 +74,23 @@ export function getZones(level: '7-manna' | '9-manna' | '5-manna' = '7-manna'): 
   const defThirdY = 0.72; // defensive third towards our goal
   const boxWidth = level === '9-manna' ? 0.22 : 0.18;
   const boxHeight = level === '9-manna' ? 0.16 : 0.14;
+  // Approximate penalty and six-yard boxes for our goal (bottom)
+  const penaltyW = level === '9-manna' ? 0.44 : 0.40;
+  const penaltyH = level === '9-manna' ? 0.20 : 0.18;
+  const sixW = level === '9-manna' ? 0.22 : 0.20;
+  const sixH = level === '9-manna' ? 0.10 : 0.09;
+  const penaltyBoxDef = { x: centerX - penaltyW / 2, y: ourGoalY - penaltyH - 0.02, width: penaltyW, height: penaltyH };
+  const sixYardBoxDef = { x: centerX - sixW / 2, y: ourGoalY - sixH - 0.01, width: sixW, height: sixH };
+  const penaltySpot = { x: centerX, y: penaltyBoxDef.y + penaltyBoxDef.height * 0.45 };
+  const cornerDefHelpers = (side: 'left' | 'right') => {
+    const nearPost = side === 'left'
+      ? { x: sixYardBoxDef.x + 0.02, y: sixYardBoxDef.y + sixYardBoxDef.height * 0.2 }
+      : { x: sixYardBoxDef.x + sixYardBoxDef.width - 0.02, y: sixYardBoxDef.y + sixYardBoxDef.height * 0.2 };
+    const farPost = side === 'left'
+      ? { x: sixYardBoxDef.x + sixYardBoxDef.width - 0.02, y: sixYardBoxDef.y + sixYardBoxDef.height * 0.2 }
+      : { x: sixYardBoxDef.x + 0.02, y: sixYardBoxDef.y + sixYardBoxDef.height * 0.2 };
+    return { nearPost, farPost, penaltySpot };
+  };
   return {
     oppGoalY,
     ourGoalY,
@@ -78,6 +102,8 @@ export function getZones(level: '7-manna' | '9-manna' | '5-manna' = '7-manna'): 
     defThirdY,
     boxDef: { x: centerX - boxWidth / 2, y: defThirdY - boxHeight / 2, width: boxWidth, height: boxHeight },
     boxAtt: { x: centerX - boxWidth / 2, y: attThirdY - boxHeight / 2, width: boxWidth, height: boxHeight },
+    penaltyBoxDef,
+    sixYardBoxDef,
     corners: {
       topLeft: { x: leftX, y: oppGoalY },
       topRight: { x: rightX, y: oppGoalY },
@@ -85,6 +111,7 @@ export function getZones(level: '7-manna' | '9-manna' | '5-manna' = '7-manna'): 
       bottomRight: { x: rightX, y: ourGoalY },
     },
     grid: makeGrid(level === '9-manna' ? 9 : 7, level === '9-manna' ? 6 : 5),
+    cornerDefHelpers,
   };
 }
 
