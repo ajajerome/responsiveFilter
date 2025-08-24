@@ -377,3 +377,41 @@ export function generateTimeline(level: Level, position?: Position, category?: s
     correctIndex: 1,
   };
 }
+
+export function generateMidBlock(level: Level): MatchFreezeQuestion {
+  const z = getZones(level);
+  const { home, away } = makeFullSquads(level);
+  // Ball central in opponent half; correct zone: compact mid-block just above half
+  const ball = { x: z.centerX, y: z.attThirdY + 0.06 };
+  const blockRect = { x: z.centerX - 0.18, y: z.halfY + 0.04, width: 0.36, height: 0.16 };
+  return {
+    id: uid('tpl_mid_block'),
+    type: 'matchscenario',
+    level,
+    category: 'forsvar',
+    question: 'Mittblock: Var ska laget samla sig för att stänga mitten?',
+    players: [...home, ...away],
+    ball,
+    correctZones: [ { id: 'mid_block', rect: blockRect } ],
+    explanation: 'Håll lagdelarna kompakta, stäng centrala ytor och styr utåt.',
+  };
+}
+
+export function generateWingOverload(level: Level): MatchFreezeQuestion {
+  const z = getZones(level);
+  const { home, away } = makeFullSquads(level);
+  // Ball on our left attacking lane; correct zone: overload support outside and inside
+  const ball = { x: z.leftX + 0.05, y: z.attThirdY + 0.06 };
+  const overloadRect = { x: z.leftX, y: z.attThirdY, width: 0.25, height: 0.18 };
+  return {
+    id: uid('tpl_wing_overload'),
+    type: 'matchscenario',
+    level,
+    category: 'anfall',
+    question: 'Wing overload: Var ska du skapa numerärt överläge på kanten?',
+    players: [...home, ...away],
+    ball,
+    correctZones: [ { id: 'overload', rect: overloadRect } ],
+    explanation: 'Skapa 2v1 på kanten med närmsta mittfältare och ytter, erbjud överlapp/inläggsläge.',
+  };
+}
