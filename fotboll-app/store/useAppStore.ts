@@ -27,6 +27,7 @@ type AppState = {
   profile: Profile;
   progress: Partial<Record<Level, LevelProgress>>;
   badges: string[];
+  stats: { correctAnswerTimestamps: number[] };
   actions: {
     setFavoritePosition: (pos: Position) => void;
     setTeamColor: (hex: string) => void;
@@ -34,6 +35,7 @@ type AppState = {
     setJerseyNumber: (num: string) => void;
     setSkinTone: (hex: string) => void;
     setAge: (age: number) => void;
+    recordCorrectAnswer: () => void;
     addXp: (level: Level, amount: number) => void;
     markQuestionCompleted: (level: Level, questionId: string) => void;
     unlockLevel: (level: Level) => void;
@@ -53,6 +55,7 @@ export const useAppStore = create<AppState>()(
       profile: { avatar: {} },
       progress: initialProgress,
       badges: [],
+      stats: { correctAnswerTimestamps: [] },
       actions: {
         setFavoritePosition: (pos) =>
           set((s) => ({ profile: { ...s.profile, favoritePosition: pos } })),
@@ -65,6 +68,13 @@ export const useAppStore = create<AppState>()(
         setSkinTone: (hex) =>
           set((s) => ({ profile: { ...s.profile, avatar: { ...(s.profile.avatar || {}), skinTone: hex } } })),
         setAge: (age) => set((s) => ({ profile: { ...s.profile, age } })),
+        recordCorrectAnswer: () =>
+          set((s) => {
+            const now = Date.now();
+            const weekAgo = now - 7 * 24 * 60 * 60 * 1000;
+            const kept = (s.stats.correctAnswerTimestamps || []).filter((t) => t >= weekAgo);
+            return { stats: { correctAnswerTimestamps: [...kept, now] } } as any;
+          }),
         addXp: (level, amount) =>
           set((s) => {
             const lv = s.progress[level] ?? { unlocked: level === '5-manna', xp: 0, completedQuestionIds: [] };
@@ -73,7 +83,6 @@ export const useAppStore = create<AppState>()(
               ...s.progress,
               [level]: { ...lv, xp: nextXp },
             } as Partial<Record<Level, LevelProgress>>;
-            // auto-unlock thresholds
             if (level === '5-manna' && nextXp >= 100) {
               const l7 = s.progress['7-manna'] ?? { unlocked: false, xp: 0, completedQuestionIds: [] };
               next['7-manna'] = { ...l7, unlocked: true };
