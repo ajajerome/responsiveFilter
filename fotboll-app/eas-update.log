@@ -3091,3 +3091,64 @@ No compatible builds found for the following fingerprints:
     Android fingerprint:  f93c7cd3c2ca02cabe5d93aa79a936ed0efafc8b
     URL                :  https://expo.dev/accounts/jappmaster/projects/fotbollstranaren/fingerprints/f93c7cd3c2ca02cabe5d93aa79a936ed0efafc8b
 
+[expo-cli] Starting Metro Bundler
+[expo-cli] iOS node_modules/expo-router/entry.js ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓░ 99.9% (1118/1118)
+[expo-cli] Android node_modules/expo-router/entry.js ▓▓▓▓▓▓▓▓▓▓▓▓▓░░░ 82.8% (760/835)
+[expo-cli] Android Bundled 4033ms node_modules/expo-router/entry.js (835 modules)
+[expo-cli] iOS Bundled 6478ms node_modules/expo-router/entry.js (1118 modules)
+[expo-cli] iOS node_modules/expo-router/entry.js ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓░ 99.9% (1118/1118)
+[expo-cli] Creating asset map
+[expo-cli] 
+[expo-cli] › Assets (34):
+[expo-cli] assets/sfx/fail.mp3 (275 B)
+[expo-cli] assets/sfx/success.mp3 (243 B)
+[expo-cli] assets/sfx/whistle.mp3 (243 B)
+[expo-cli] node_modules/@react-navigation/elements/lib/module/assets/back-icon-mask.png (653 B)
+[expo-cli] node_modules/@react-navigation/elements/lib/module/assets/back-icon.png (8 variations | 359 B)
+[expo-cli] node_modules/@react-navigation/elements/lib/module/assets/clear-icon.png (4 variations | 425 B)
+[expo-cli] node_modules/@react-navigation/elements/lib/module/assets/close-icon.png (4 variations | 235 B)
+[expo-cli] node_modules/@react-navigation/elements/lib/module/assets/search-icon.png (7 variations | 592 B)
+[expo-cli] node_modules/expo-router/assets/arrow_down.png (9.46 kB)
+[expo-cli] node_modules/expo-router/assets/error.png (469 B)
+[expo-cli] node_modules/expo-router/assets/file.png (138 B)
+[expo-cli] node_modules/expo-router/assets/forward.png (188 B)
+[expo-cli] node_modules/expo-router/assets/pkg.png (364 B)
+[expo-cli] node_modules/expo-router/assets/sitemap.png (465 B)
+[expo-cli] node_modules/expo-router/assets/unmatched.png (4.75 kB)
+[expo-cli] 
+[expo-cli] › android bundles (2):
+[expo-cli] _expo/static/js/android/entry-6cdaea0b9aad7542d99ce5c1d779de82.hbc (1.73 MB)
+[expo-cli] _expo/static/js/android/entry-6cdaea0b9aad7542d99ce5c1d779de82.hbc.map (6.57 MB)
+[expo-cli] 
+[expo-cli] › ios bundles (2):
+[expo-cli] _expo/static/js/ios/entry-8c66e36553d48a7f5afaaeb008dcd5c4.hbc (1.73 MB)
+[expo-cli] _expo/static/js/ios/entry-8c66e36553d48a7f5afaaeb008dcd5c4.hbc.map (6.58 MB)
+[expo-cli] 
+[expo-cli] › Files (2):
+[expo-cli] assetmap.json (10.7 kB)
+[expo-cli] metadata.json (3.9 kB)
+[expo-cli] 
+[expo-cli] Exported: dist
+✔ Uploaded 2 app bundles
+✔ Uploading assets skipped - no new assets found
+ℹ 30 iOS assets, 30 Android assets (maximum: 2000 total per update). Learn more about asset limits: https://expo.fyi/eas-update-asset-limits
+
+Branch             staging
+Runtime version    1.0.0
+Platform           android, ios
+Update group ID    d35b2305-4875-48d4-9024-5f9d88724846
+Android update ID  e8b982cd-3b62-4659-9981-1d7ae954c66e
+iOS update ID      51b11258-d259-44bb-9e02-7b7a3589026e
+Message            Refactor home screen with personalized greeting and sleep-time check
+
+Co-authored-by: jeromenilssonaja <jeromenilssonaja@gmail.com>
+Commit             15da4d1087c904169ce8c1adb296fea0edaad111*
+EAS Dashboard      https://expo.dev/accounts/jappmaster/projects/fotbollstranaren/updates/d35b2305-4875-48d4-9024-5f9d88724846
+
+No compatible builds found for the following fingerprints:
+    iOS fingerprint:  56a21474d22be2375b288f689af1f1dd83fecc5e
+    URL            :  https://expo.dev/accounts/jappmaster/projects/fotbollstranaren/fingerprints/56a21474d22be2375b288f689af1f1dd83fecc5e
+
+    Android fingerprint:  f93c7cd3c2ca02cabe5d93aa79a936ed0efafc8b
+    URL                :  https://expo.dev/accounts/jappmaster/projects/fotbollstranaren/fingerprints/f93c7cd3c2ca02cabe5d93aa79a936ed0efafc8b
+

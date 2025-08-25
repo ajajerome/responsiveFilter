@@ -105,15 +105,30 @@ function generateQuizOne(level: Level, category?: string): QuizQuestion {
     spelregler: [
       { q: 'Vad gäller vid inspark?', options: ['Bollen i målområdet', 'Var som helst'], correctIndex: 0, explanation: 'Inspark slås i mål-/straffområdet beroende på spelform.' },
       { q: 'Får målvakten ta upp tillbakapass?', options: ['Ja', 'Nej'], correctIndex: 1, explanation: 'Tillbakapass-regeln förbjuder det.' },
+      { q: 'När är det offside?', options: ['När anfallare är framför sista back vid passning', 'När anfallare tar emot inkast'], correctIndex: 0, explanation: 'Offside bedöms vid passningsögonblicket, inte på inkast.' },
+      { q: 'Hur många spelare får vara på planen i 7‑manna?', options: ['7 + målvakt', '6 + målvakt'], correctIndex: 0, explanation: 'Sju utespelare inklusive målvakt i 7‑manna.' },
+      { q: 'Varför blåser domaren för indirekt frispark?', options: ['Farligt spel utan kroppskontakt', 'Glidtackling från sidan'], correctIndex: 0, explanation: 'Indirekt frispark ges bl.a. vid farligt spel utan kontakt.' },
     ],
     spelforstaelse: [
       { q: 'När ska du passa?', options: ['När medspelare är spelbar', 'När motståndaren pressar hårt'], correctIndex: 0, explanation: 'Passa en spelbar medspelare i rätt läge.' },
+      { q: 'Vad gör du efter att ha passat bollen?', options: ['Stannar kvar', 'Tar ny yta för att bli spelbar'], correctIndex: 1, explanation: 'Rör dig för att skapa nytt passningsalternativ.' },
+      { q: 'Hur skapar du bredd i anfall?', options: ['Stannar centralt', 'Håller dig nära sidlinjen'], correctIndex: 1, explanation: 'Bredd skapas genom att nyttja planens ytterkanter.' },
+      { q: 'Vad menas med att “vända spelet”?', options: ['Passa hemåt till målvakt', 'Byta kant för att hitta fri yta'], correctIndex: 1, explanation: 'Spelvändning skapar ny yta och bryter press.' },
+      { q: 'Hur agerar du om laget tappar boll?', options: ['Står kvar', 'Återerövrar snabbt eller faller hem'], correctIndex: 1, explanation: 'Snabb återerövring eller kompakt försvar beroende på läge.' },
     ],
     anfall: [
       { q: 'Vilket val skapar målchans?', options: ['Väggspel', 'Tillbaka till målvakt'], correctIndex: 0, explanation: 'Väggspel bryter linjer.' },
+      { q: 'När ska du slå inlägg?', options: ['När medspelare löper i boxen', 'När ingen är i boxen'], correctIndex: 0, explanation: 'Slå inlägg när medspelare är spelbara i ytorna.' },
+      { q: 'Hur hotar du bakom backlinjen?', options: ['Stannar framför backlinjen', 'Löpning i djupled i rätt timing'], correctIndex: 1, explanation: 'Tajmad djupledslöp ger frilägeshot.' },
+      { q: 'Vilket är bäst i trångt läge?', options: ['Väggspel', 'Skott från långt håll'], correctIndex: 0, explanation: 'Väggspel öppnar upp i trånga ytor.' },
+      { q: 'Hur skapar du överlapp?', options: ['Springer bakom bollhållaren', 'Springer framför bollhållaren'], correctIndex: 0, explanation: 'Överlapp sker bakom bollhållaren för att skapa 2‑mot‑1.' },
     ],
     forsvar: [
       { q: 'Hur styr du i 1v1?', options: ['Stå upp och vinkla', 'Glidtackla direkt'], correctIndex: 0, explanation: 'Stå upp och styr bortåt.' },
+      { q: 'Vad är förstaprioritet i boxen vid inlägg?', options: ['Markera yta centralt', 'Markera kantspelare'], correctIndex: 0, explanation: 'Säkra yta mellan stolpe och straffpunkt först.' },
+      { q: 'Hur agerar understöd?', options: ['Går på samma spelare', 'Täcker ytan bakom pressande lagkamrat'], correctIndex: 1, explanation: 'Understöd säkrar bakom press.' },
+      { q: 'När droppar du i djupled?', options: ['När forward löper bakom', 'När boll är på egen planhalva'], correctIndex: 0, explanation: 'Droppa i tid när hot i djupled finns.' },
+      { q: 'Hur flyttar laget vid spelvändning?', options: ['Följer bollens sida snabbt', 'Stannar kvar på sin sida'], correctIndex: 0, explanation: 'Hela laget förflyttas mot bollsida för kompakthet.' },
     ],
   };
   const pool = baseByCat[category || 'spelforstaelse'] || baseByCat.spelforstaelse;
