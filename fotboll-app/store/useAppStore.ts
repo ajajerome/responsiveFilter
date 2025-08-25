@@ -33,6 +33,7 @@ type AppState = {
     setAvatarName: (name: string) => void;
     setJerseyNumber: (num: string) => void;
     setSkinTone: (hex: string) => void;
+    setAge: (age: number) => void;
     addXp: (level: Level, amount: number) => void;
     markQuestionCompleted: (level: Level, questionId: string) => void;
     unlockLevel: (level: Level) => void;
@@ -63,6 +64,7 @@ export const useAppStore = create<AppState>()(
           set((s) => ({ profile: { ...s.profile, avatar: { ...(s.profile.avatar || {}), jerseyNumber: num } } })),
         setSkinTone: (hex) =>
           set((s) => ({ profile: { ...s.profile, avatar: { ...(s.profile.avatar || {}), skinTone: hex } } })),
+        setAge: (age) => set((s) => ({ profile: { ...s.profile, age } })),
         addXp: (level, amount) =>
           set((s) => {
             const lv = s.progress[level] ?? { unlocked: level === '5-manna', xp: 0, completedQuestionIds: [] };
@@ -82,7 +84,6 @@ export const useAppStore = create<AppState>()(
             }
             return { progress: next };
           }),
-        // TODO: auto-unlock thresholds: 5->7 at 100 XP, 7->9 at 200 XP
         markQuestionCompleted: (level, questionId) =>
           set((s) => {
             const lv = s.progress[level] ?? { unlocked: level === '5-manna', xp: 0, completedQuestionIds: [] };
@@ -103,8 +104,8 @@ export const useAppStore = create<AppState>()(
           set((s) => {
             const lv = s.progress[level] ?? { unlocked: level === '5-manna', xp: 0, completedQuestionIds: [], categoryProgress: {} };
             const cp = lv.categoryProgress ?? {};
-            const entry = cp[category] ?? { completed: 0, total: totalHint ?? 10 } as any;
-            const total = totalHint ?? entry.total ?? 10;
+            const entry = cp[category] ?? { completed: 0, total: totalHint ?? 50 } as any;
+            const total = totalHint ?? entry.total ?? 50;
             const completed = Math.max(0, Math.min(total, (entry.completed ?? 0) + delta));
             return {
               progress: {
