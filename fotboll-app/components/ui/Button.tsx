@@ -10,9 +10,8 @@ type Props = Omit<PressableProps, 'children'> & {
 export default function Button({ title, onPress, variant = 'primary', style, ...rest }: Props) {
   const bg = variant === 'primary' ? colors.secondary : colors.card;
   const fg = variant === 'primary' ? colors.text : colors.text;
-  const injectedOnPress = rest.onPress ?? onPress;
   return (
-    <Pressable {...rest} onPress={injectedOnPress} style={[styles.base, { backgroundColor: bg }, style]}
+    <Pressable {...rest} onPress={onPress} style={[styles.base, { backgroundColor: bg }, style]}
       accessibilityRole="button"
     >
       <Text style={[styles.text, { color: fg }]}>{title}</Text>

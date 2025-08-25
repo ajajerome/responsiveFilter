@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import type { Level, Position } from '@/types/content';
+import type { Level, Position, Question } from '@/types/content';
 
 type LevelProgress = {
   unlocked: boolean;
@@ -23,11 +23,13 @@ type Profile = {
   age?: number;
 };
 
+type CategoryStat = { attempts: number; correct: number };
+
 type AppState = {
   profile: Profile;
   progress: Partial<Record<Level, LevelProgress>>;
   badges: string[];
-  stats: { correctAnswerTimestamps: number[] };
+  stats: { correctAnswerTimestamps: number[]; byCategory: Record<string, CategoryStat> };
   actions: {
     setFavoritePosition: (pos: Position) => void;
     setTeamColor: (hex: string) => void;
@@ -40,6 +42,7 @@ type AppState = {
     markQuestionCompleted: (level: Level, questionId: string) => void;
     unlockLevel: (level: Level) => void;
     incrementCategory: (level: Level, category: string, delta?: number, totalHint?: number) => void;
+    recordAnswerResult: (question: Question, isCorrect: boolean) => void;
   };
 };
 
@@ -55,7 +58,7 @@ export const useAppStore = create<AppState>()(
       profile: { avatar: {} },
       progress: initialProgress,
       badges: [],
-      stats: { correctAnswerTimestamps: [] },
+      stats: { correctAnswerTimestamps: [], byCategory: {} },
       actions: {
         setFavoritePosition: (pos) =>
           set((s) => ({ profile: { ...s.profile, favoritePosition: pos } })),
@@ -73,7 +76,7 @@ export const useAppStore = create<AppState>()(
             const now = Date.now();
             const weekAgo = now - 7 * 24 * 60 * 60 * 1000;
             const kept = (s.stats.correctAnswerTimestamps || []).filter((t) => t >= weekAgo);
-            return { stats: { correctAnswerTimestamps: [...kept, now] } } as any;
+            return { stats: { ...s.stats, correctAnswerTimestamps: [...kept, now] } } as any;
           }),
         addXp: (level, amount) =>
           set((s) => {
@@ -123,12 +126,26 @@ export const useAppStore = create<AppState>()(
               },
             };
           }),
+        recordAnswerResult: (question, isCorrect) =>
+          set((s) => {
+            const cat = question.category || 'okänd';
+            const prev = s.stats.byCategory[cat] || { attempts: 0, correct: 0 };
+            const next: CategoryStat = { attempts: prev.attempts + 1, correct: prev.correct + (isCorrect ? 1 : 0) };
+            return { stats: { ...s.stats, byCategory: { ...s.stats.byCategory, [cat]: next } } } as any;
+          }),
       },
     }),
     {
       name: 'fotboll-app-store',
       storage: createJSONStorage(() => AsyncStorage),
-      version: 1,
+      version: 2,
+      migrate: (persisted: any, fromVersion) => {
+        if (!persisted) return persisted;
+        if (fromVersion && fromVersion < 2) {
+          return { ...persisted, stats: { correctAnswerTimestamps: persisted.stats?.correctAnswerTimestamps || [], byCategory: {} } };
+        }
+        return persisted;
+      }
     }
   )
 );

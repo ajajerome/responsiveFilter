@@ -341,7 +341,7 @@ export function getRandomQuestion(level: Level, position?: Position, category?: 
   } else if (category === 'spelregler') {
     choices = ['quiz'];
   }
-  const pick = sample(choices as const);
+  const pick = sample(choices);
   if (pick === 'one_x_two') return generateOneXTwo(level, position);
   if (pick === 'drag_drop') return generateDragDrop(level, position, category);
   if (pick === 'tactics') return generateTactics(level, position, category);

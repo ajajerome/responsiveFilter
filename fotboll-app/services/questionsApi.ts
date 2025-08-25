@@ -73,7 +73,7 @@ export async function fetchQuestions(level: Level, position?: Position, count = 
     const extra = pick(pool, 1);
     base.push(...extra);
   }
-  while (base.length < count) base.push(getRandomQuestion(level === '5-manna' ? '7-manna' : level, position, category));
+  while (base.length < count) base.push(getRandomQuestion(level, position, category));
   const result = base.slice(0, count);
   if (result.length === 0 && excludeIds && excludeIds.size > 0) {
     return fetchQuestions(level, position, count, undefined);

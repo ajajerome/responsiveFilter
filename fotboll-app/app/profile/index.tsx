@@ -8,27 +8,33 @@ import HSVPicker from "@/components/common/HSVPicker";
 
 export default function Profile() {
 	const avatar = useAppStore((s) => s.profile.avatar) || {};
+	const ageStore = useAppStore((s) => s.profile.age);
 	const setNameStore = useAppStore((s) => s.actions.setAvatarName);
 	const setNumStore = useAppStore((s) => s.actions.setJerseyNumber);
 	const setSkinStore = useAppStore((s) => s.actions.setSkinTone);
 	const setTeamColorStore = useAppStore((s) => s.actions.setTeamColor);
+	const setAgeStore = useAppStore((s) => s.actions.setAge);
 	const favorite = useAppStore((s) => s.profile.favoritePosition);
 	const [name, setName] = useState(avatar.name || '');
 	const [jerseyNumber, setJerseyNumber] = useState(avatar.jerseyNumber || '');
 	const [skinTone, setSkinTone] = useState(avatar.skinTone || '#f5d6c6');
 	const [shirtColor, setShirtColor] = useState(avatar.shirtColor || '#4da3ff');
+	const [age, setAge] = useState(String(ageStore || ''));
 	const [saved, setSaved] = useState(false);
 	useEffect(() => {
 		setName(avatar.name || '');
 		setJerseyNumber(avatar.jerseyNumber || '');
 		setSkinTone(avatar.skinTone || '#f5d6c6');
 		setShirtColor(avatar.shirtColor || '#4da3ff');
-	}, [avatar.name, avatar.jerseyNumber, avatar.skinTone, avatar.shirtColor]);
+		setAge(String(ageStore || ''));
+	}, [avatar.name, avatar.jerseyNumber, avatar.skinTone, avatar.shirtColor, ageStore]);
 	const onSave = () => {
 		setNameStore(name.trim());
 		setNumStore(jerseyNumber.trim());
 		setSkinStore(skinTone);
 		setTeamColorStore(shirtColor);
+		const a = parseInt(age, 10);
+		if (!isNaN(a) && a >= 7 && a <= 13) setAgeStore(a);
 		setSaved(true);
 		Keyboard.dismiss();
 		setTimeout(() => setSaved(false), 1400);
@@ -55,6 +61,18 @@ export default function Profile() {
 						placeholderTextColor="#9aa4b2"
 						value={name}
 						onChangeText={setName}
+						returnKeyType="done"
+						onSubmitEditing={() => Keyboard.dismiss()}
+					/>
+					<Text style={styles.label}>Ålder (7-13)</Text>
+					<TextInput
+						style={styles.input}
+						keyboardType="number-pad"
+						placeholder="t.ex. 10"
+						placeholderTextColor="#9aa4b2"
+						maxLength={2}
+						value={age}
+						onChangeText={(t) => setAge(t.replace(/[^0-9]/g, ''))}
 						returnKeyType="done"
 						onSubmitEditing={() => Keyboard.dismiss()}
 					/>

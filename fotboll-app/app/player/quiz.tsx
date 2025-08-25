@@ -33,6 +33,8 @@ export default function QuizScreen() {
   const addXp = useAppStore((s) => s.actions.addXp);
   const markCompleted = useAppStore((s) => s.actions.markQuestionCompleted);
   const incCat = useAppStore((s) => s.actions.incrementCategory);
+  const recordCorrectTs = useAppStore((s) => s.actions.recordCorrectAnswer);
+  const recordAnswerResult = useAppStore((s) => s.actions.recordAnswerResult);
   const favoritePosition = useAppStore((s) => s.profile.favoritePosition);
   const [queue, setQueue] = useState<Question[] | null>(null);
   const [lastCorrect, setLastCorrect] = useState<boolean | null>(null);
@@ -106,10 +108,13 @@ export default function QuizScreen() {
   const handleAnswered = useCallback((isCorrect: boolean) => {
     setLastCorrect(isCorrect);
     if (question) {
+      // record stats per category
+      recordAnswerResult(question, isCorrect);
       // live XP per correct
       if (isCorrect) {
         addXp(question.level, 1);
         setCorrectCount((c) => c + 1);
+        recordCorrectTs();
       }
       // progress by category
       if (category) incCat(question.level, String(category), 1);
@@ -121,7 +126,7 @@ export default function QuizScreen() {
     setTimeout(() => {
       advanceNow();
     }, 700);
-  }, [question, addXp, category, incCat, markCompleted, advanceNow]);
+  }, [question, addXp, category, incCat, markCompleted, advanceNow, recordAnswerResult, recordCorrectTs]);
 
   // Results overlay and bonus award
   const sessionXp = correctCount + (correctCount === SESSION_TARGET ? 5 : 0);
