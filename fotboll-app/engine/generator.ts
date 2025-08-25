@@ -351,6 +351,7 @@ export function getRandomQuestion(level: Level, position?: Position, category?: 
 }
 
 export function generateMatchFreeze(level: Level, position?: Position, category?: string): MatchFreezeQuestion {
+  const z = getZones(level);
   const players = level === '5-manna'
     ? [
         { id: 'a1', x: 0.3, y: 0.6, team: 'home' as const },
@@ -373,16 +374,27 @@ export function generateMatchFreeze(level: Level, position?: Position, category?
         { id: 'b1', x: 0.5, y: 0.6, team: 'away' as const },
         { id: 'b2', x: 0.68, y: 0.48, team: 'away' as const },
       ];
+  // If defense scenario, include 'you' centrally in the defensive box
+  let withYou = players;
+  let qText = category === 'forsvar' ? 'Var ska du stå för att täcka rätt yta? (Back)' : 'Vem borde få bollen här?';
+  let pos: Position | undefined = position;
+  let cz: MatchFreezeQuestion['correctZones'] | undefined = category === 'forsvar' ? [ { id: 'def', rect: z.boxDef } ] : undefined;
+  if (category === 'forsvar') {
+    const cx = z.boxDef.x + z.boxDef.width * 0.5;
+    const cy = z.boxDef.y + z.boxDef.height * 0.5;
+    withYou = [ { id: 'you', x: cx, y: cy, team: 'home' as const }, ...players.filter(p => p.team !== 'home').slice(0, 2) ];
+    pos = 'back';
+  }
   return {
     id: uid('freeze'),
     type: 'matchscenario',
     level,
-    position,
+    position: pos,
     category,
-    question: category === 'forsvar' ? 'Var ska du stå för att täcka rätt yta?' : 'Vem borde få bollen här?',
-    players,
-    ball: { x: getZones(level).rightX - 0.02, y: getZones(level).attThirdY },
-    correctZones: category === 'forsvar' ? [ { id: 'def', rect: getZones(level).boxDef } ] : undefined,
+    question: qText,
+    players: withYou as any,
+    ball: { x: z.rightX - 0.02, y: z.attThirdY },
+    correctZones: cz,
     correctPlayerIds: category === 'forsvar' ? undefined : ['a3'],
     explanation: category === 'forsvar' ? 'Täck centralt mellan boll och mål i försvarszon.' : 'Spelare a3 har bäst vinkel och yta för att hota framåt.',
   };
