@@ -1,0 +1,84 @@
+default_platform(:ios)
+
+platform :ios do
+  require 'base64'
+
+  def make_api_key_from_env()
+    key_b64 = ENV["ASC_KEY_B64"]
+    key_id = ENV["ASC_KEY_ID"]
+    issuer_id = ENV["ASC_ISSUER_ID"]
+    return nil if key_b64.to_s.strip.empty? || key_id.to_s.strip.empty? || issuer_id.to_s.strip.empty?
+
+    FileUtils.mkdir_p('fastlane/tmp')
+    key_path = 'fastlane/tmp/AuthKey.p8'
+    File.write(key_path, Base64.decode64(key_b64))
+    app_store_connect_api_key(
+      key_id: key_id,
+      issuer_id: issuer_id,
+      keyfile: key_path
+    )
+  end
+
+  desc "Bygg och ladda upp till TestFlight"
+  lane :beta do
+    # Anpassa efter ditt Xcode-projekt namn/target/scheme
+    scheme = ENV["SCHEME"] || "Unity-iPhone"
+    workspace = Dir["*.xcworkspace"].first
+    project = Dir["*.xcodeproj"].first
+
+    increment_build_number(xcodeproj: project) if project
+
+    params = { scheme: scheme, export_method: "app-store" }
+    params[:workspace] = workspace if workspace
+    params[:project] = project if project && !workspace
+    build_app(params)
+
+    api_key = make_api_key_from_env()
+    upload_to_testflight(
+      api_key: api_key,
+      apple_id: "6751473029",
+      beta_app_review_info: {
+        contact_email: "apple-id@example.com",
+        contact_first_name: "Dev",
+        contact_last_name: "Team",
+        contact_phone: "+46000000000",
+        demo_account_name: "",
+        demo_account_password: "",
+        notes: "Fotbollsresan MVP"
+      },
+      skip_waiting_for_build_processing: true
+    )
+  end
+
+  desc "Bygg staging och ladda upp till TestFlight"
+  lane :beta_staging do
+    scheme = ENV["SCHEME"] || "Unity-iPhone"
+    workspace = Dir["*.xcworkspace"].first
+    project = Dir["*.xcodeproj"].first
+
+    increment_build_number(xcodeproj: project) if project
+
+    ENV["APP_ENV"] = "staging"
+    params = { scheme: scheme, export_method: "app-store" }
+    params[:workspace] = workspace if workspace
+    params[:project] = project if project && !workspace
+    build_app(params)
+
+    api_key = make_api_key_from_env()
+    upload_to_testflight(
+      api_key: api_key,
+      apple_id: "6751473029",
+      beta_app_review_info: {
+        contact_email: "apple-id@example.com",
+        contact_first_name: "Dev",
+        contact_last_name: "Team",
+        contact_phone: "+46000000000",
+        demo_account_name: "",
+        demo_account_password: "",
+        notes: "Fotbollsresan Staging"
+      },
+      skip_waiting_for_build_processing: true
+    )
+  end
+end
+

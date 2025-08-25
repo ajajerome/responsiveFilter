@@ -1,0 +1,22 @@
+{
+  "Formations": [
+    {
+      "Id": "4-3-3",
+      "DisplayName": "4-3-3",
+      "Slots": [
+        { "Role": "LB", "Position": { "x": 0.15, "y": 0.2 } },
+        { "Role": "CB", "Position": { "x": 0.3,  "y": 0.2 } },
+        { "Role": "CB", "Position": { "x": 0.3,  "y": 0.35 } },
+        { "Role": "RB", "Position": { "x": 0.15, "y": 0.35 } },
+        { "Role": "CM", "Position": { "x": 0.5,  "y": 0.25 } },
+        { "Role": "CM", "Position": { "x": 0.5,  "y": 0.3 } },
+        { "Role": "CM", "Position": { "x": 0.5,  "y": 0.35 } },
+        { "Role": "LW", "Position": { "x": 0.75, "y": 0.2 } },
+        { "Role": "ST", "Position": { "x": 0.8,  "y": 0.28 } },
+        { "Role": "RW", "Position": { "x": 0.75, "y": 0.36 } },
+        { "Role": "GK", "Position": { "x": 0.05, "y": 0.28 } }
+      ]
+    }
+  ]
+}
+
