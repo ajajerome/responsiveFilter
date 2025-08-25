@@ -7,10 +7,21 @@ import XpBadge from "@/components/ui/XpBadge";
 import { colors } from "@/theme";
 import { useAppStore } from "@/store/useAppStore";
 
+function greeting() {
+  const h = new Date().getHours();
+  if (h < 5) return 'God natt';
+  if (h < 11) return 'God morgon';
+  if (h < 17) return 'God dag';
+  if (h < 21) return 'God kväll';
+  return 'God natt';
+}
+
 export default function HomeIndex() {
   const setTeamColor = useAppStore((s) => s.actions.setTeamColor);
   const avatar = useAppStore((s) => s.profile.avatar) || {};
   const color = avatar.shirtColor || '#4da3ff';
+  const hours = new Date().getHours();
+  const sleepTime = hours >= 21;
   return (
     <Screen>
       <XpBadge />
@@ -29,23 +40,27 @@ export default function HomeIndex() {
         </View>
       </View>
       <View style={{ flex: 1, justifyContent: 'center' }}>
-        <Text style={styles.title}>Fotbollsteori – Resan börjar</Text>
+        <Text style={styles.title}>{greeting()} {avatar.name || 'Spelare'}</Text>
         <Card>
-          <Text style={{ color: colors.muted, marginBottom: 8 }}>Välj lagfärg:</Text>
-          <View style={{ flexDirection: 'row', gap: 10, marginBottom: 12 }}>
+          <Text style={{ color: colors.muted, marginBottom: 8 }}>Aktuell XP:</Text>
+          <View style={{ marginBottom: 12 }}>
+            <XpBadge />
+          </View>
+          {sleepTime ? (
+            <Text style={{ color: colors.text }}>
+              Sover du inte nu? Vi kan inte träna. För att bli bättre behöver du sömn.
+            </Text>
+          ) : (
+            <Link href="/player" asChild>
+              <Button title="Jag vill träna" onPress={() => {}} />
+            </Link>
+          )}
+          <Text style={{ color: colors.muted, marginTop: 16 }}>Välj lagfärg:</Text>
+          <View style={{ flexDirection: 'row', gap: 10, marginTop: 8 }}>
             {['#4da3ff', '#ffd400', '#00ffd1', '#ff6b6b', '#7a7cff'].map((c) => (
               <Button key={c} title={c === color ? 'Vald' : ' '} onPress={() => setTeamColor(c)} style={{ backgroundColor: c, width: 48, height: 36 }} />
             ))}
           </View>
-          <Link href="/player" asChild>
-            <Button title="Starta som spelare" onPress={() => {}} />
-          </Link>
-          <Link href="/trainer" asChild>
-            <Button title="Förälder/Tränare" onPress={() => {}} variant="secondary" style={{ marginTop: 12 }} />
-          </Link>
-          <Link href="/profile" asChild>
-            <Button title="Redigera Avatar" onPress={() => {}} variant="secondary" style={{ marginTop: 12 }} />
-          </Link>
         </Card>
       </View>
     </Screen>
@@ -53,5 +68,5 @@ export default function HomeIndex() {
 }
 
 const styles = StyleSheet.create({
-  title: { fontSize: 24, fontWeight: "800", color: colors.text, textAlign: "center" },
+  title: { fontSize: 24, fontWeight: "800", color: colors.text, textAlign: "center", marginBottom: 8 },
 });
