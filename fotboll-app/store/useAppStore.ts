@@ -23,6 +23,7 @@ type AppState = {
   progress: Partial<Record<Level, LevelProgress>>;
   badges: string[];
   actions: {
+    setAvatar: (avatar: Partial<Profile['avatar']>) => void;
     setFavoritePosition: (pos: Position) => void;
     addXp: (level: Level, amount: number) => void;
     markQuestionCompleted: (level: Level, questionId: string) => void;
@@ -43,6 +44,8 @@ export const useAppStore = create<AppState>()(
       progress: initialProgress,
       badges: [],
       actions: {
+        setAvatar: (avatar) =>
+          set((s) => ({ profile: { ...s.profile, avatar: { ...s.profile.avatar, ...avatar } } })),
         setFavoritePosition: (pos) =>
           set((s) => ({ profile: { ...s.profile, favoritePosition: pos } })),
         addXp: (level, amount) =>

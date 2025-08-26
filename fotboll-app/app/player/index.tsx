@@ -1,7 +1,18 @@
-import { Link } from "expo-router";
+import { Link, useRouter } from "expo-router";
 import { View, Text, Pressable, StyleSheet } from "react-native";
+import { useEffect } from "react";
+import { useAppStore } from "@/store/useAppStore";
 
 export default function PlayerHome() {
+  const router = useRouter();
+  const avatarGender = useAppStore((s) => s.profile.avatar.gender);
+
+  useEffect(() => {
+    if (!avatarGender) {
+      router.replace('/player/create');
+    }
+  }, [avatarGender]);
+
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Välj nivå</Text>
