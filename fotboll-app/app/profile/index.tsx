@@ -4,7 +4,7 @@ import Button from "@/components/ui/Button";
 import { colors } from "@/theme";
 import { useAppStore } from "@/store/useAppStore";
 import { useEffect, useMemo, useState } from "react";
-import HSVPicker from "@/components/common/HSVPicker";
+// Removed HSVPicker
 import { useRouter } from "expo-router";
 
 export default function Profile() {
@@ -62,6 +62,9 @@ export default function Profile() {
 			setTimeout(() => router.replace('/(home)' as any), 400);
 		}
 	};
+
+	const presetKitColors = ['#4da3ff', '#ffd400', '#00ffd1', '#ff6b6b', '#7a7cff', '#34c759', '#ff9f0a'];
+
 	return (
 		<Screen>
 			<View style={styles.container}>
@@ -124,9 +127,11 @@ export default function Profile() {
 						))}
 					</View>
 					<Text style={styles.label}>Tröjfärg</Text>
-					{/* Removed preset swatch row; only HSV color picker controls shirt color */}
-					<Text style={styles.label}>Välj valfri färg</Text>
-					<HSVPicker value={shirtColor} onChange={setShirtColor} />
+					<View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 10 }}>
+						{presetKitColors.map((c) => (
+							<Button key={c} title={c === shirtColor ? 'Vald' : ' '} onPress={() => setShirtColor(c)} style={{ backgroundColor: c, width: 40, height: 32 }} />
+						))}
+					</View>
 					<View style={{ marginTop: 8, flexDirection: 'row', alignItems: 'center', gap: 12 }}>
 						<Button title="Spara avatar" onPress={onSave} disabled={!canSave} />
 						{saved && <Text style={{ color: '#34c759', fontWeight: '700' }}>Sparat!</Text>}
