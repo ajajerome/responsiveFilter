@@ -17,6 +17,11 @@ function pick<T>(arr: T[], n: number): T[] {
   return out;
 }
 
+const SUPPORTED_TYPES = new Set(['quiz', 'one_x_two', 'drag_drop', 'matchscenario', 'timeline']);
+function isValidQuestion(q: any): q is Question {
+  return !!q && typeof q === 'object' && SUPPORTED_TYPES.has(q.type) && typeof q.question === 'string' && q.question.trim().length > 0;
+}
+
 export async function fetchQuestions(level: Level, position?: Position, count = 5, excludeIds?: Set<string>, category?: string): Promise<Question[]> {
   if (level === '5-manna') {
     level = '7-manna';
@@ -31,19 +36,22 @@ export async function fetchQuestions(level: Level, position?: Position, count = 
   const notSeen = (q: { id: string }) => !excludeIds || !excludeIds.has(q.id);
   const cat = (q: any) => !category || q.category === category;
   // Keep only non-positioning static pools
-  const regler = REGELFRAGOR.filter(q => q.level === level).filter(cat).filter(notSeen);
-  const spel = SPELFORSTAELSE.filter(q => q.level === level && (!position || q.position === position)).filter(cat).filter(notSeen);
+  const regler = REGELFRAGOR.filter(q => q.level === level).filter(cat).filter(notSeen).filter(isValidQuestion);
+  const spel = SPELFORSTAELSE.filter(q => q.level === level && (!position || q.position === position)).filter(cat).filter(notSeen).filter(isValidQuestion);
   const freeze: any[] = []; // disable old positioning pool
   const formation: any[] = []; // disable formation quiz pool for now
-  const attackDrag = ATTACK_DRAG_QUESTIONS.filter(q => q.level === level).filter(cat).filter(notSeen);
+  const attackDrag = ATTACK_DRAG_QUESTIONS.filter(q => q.level === level).filter(cat).filter(notSeen).filter(isValidQuestion);
 
   const prioritized: Question[] = [];
   if (category === 'fasta') {
-    prioritized.push(generateCornerDefense(level, Math.random() > 0.5 ? 'left' : 'right'));
+    const q = generateCornerDefense(level, Math.random() > 0.5 ? 'left' : 'right');
+    if (isValidQuestion(q)) prioritized.push(q);
   } else if (category === 'forsvar') {
-    prioritized.push(generateDefendingCross(level));
+    const q = generateDefendingCross(level);
+    if (isValidQuestion(q)) prioritized.push(q);
   } else if (category === 'anfall') {
-    prioritized.push(generateGoalKickPress(level));
+    const q = generateGoalKickPress(level);
+    if (isValidQuestion(q)) prioritized.push(q);
     prioritized.push(...pick(attackDrag.filter(q => q.category === 'anfall'), Math.min(1, attackDrag.length)));
   } else if (category === 'spelforstaelse') {
     prioritized.push(...pick(spel, Math.min(3, spel.length)));
@@ -55,28 +63,31 @@ export async function fetchQuestions(level: Level, position?: Position, count = 
     ...pick(regler, Math.min(2, regler.length)),
     ...pick(spel, Math.min(2, spel.length)),
     ...pick(attackDrag, Math.min(1, attackDrag.length)),
-  ];
+  ].filter(isValidQuestion);
   if (level === '7-manna' && category === 'anfall') {
     const tl = generateTimeline(level, undefined, 'anfall');
-    base = [tl, ...base.filter(q => q.id !== tl.id)];
+    if (isValidQuestion(tl)) base = [tl, ...base.filter(q => q.id !== tl.id)];
   }
   if (level === '7-manna' && category === 'forsvar') {
     const defPlayer = generateDragDrop(level, undefined, 'forsvar');
-    base = [defPlayer, ...base];
+    if (isValidQuestion(defPlayer)) base = [defPlayer, ...base];
   }
   const pool: Question[] = [
     ...regler,
     ...spel,
     ...attackDrag,
-  ].filter((q) => !base.some((b) => b.id === q.id));
+  ].filter((q) => !base.some((b) => b.id === q.id)).filter(isValidQuestion);
   while (base.length < count && pool.length) {
     const extra = pick(pool, 1);
     base.push(...extra);
   }
-  while (base.length < count) base.push(getRandomQuestion(level, position, category));
-  const result = base.slice(0, count);
-  if (result.length === 0 && excludeIds && excludeIds.size > 0) {
-    return fetchQuestions(level, position, count, undefined);
+  while (base.length < count) {
+    const g = getRandomQuestion(level, position, category);
+    if (isValidQuestion(g)) base.push(g);
+  }
+  const result = base.slice(0, count).filter(isValidQuestion);
+  if (result.length < count && excludeIds && excludeIds.size > 0) {
+    return fetchQuestions(level, position, count, undefined, category);
   }
   return result;
 }
