@@ -44,24 +44,22 @@ export default function Profile() {
 		setErrors(next);
 	}, [name, age, jerseyNumber]);
 
-	const canSave = useMemo(() => Object.keys(errors).length === 0 && name.trim().length > 0, [errors, name]);
-
 	const onSave = () => {
-		const trimmed = name.trim();
+		const trimmed = (name || '').trim();
+		const finalName = trimmed.length ? trimmed : 'Spelare';
 		const a = parseInt(age, 10);
-		const j = Math.max(1, Math.min(99, parseInt(jerseyNumber || '10', 10) || 10));
-		setNameStore(trimmed);
-		setNumStore(String(j));
+		const finalAge = !isNaN(a) && a >= 7 && a <= 13 ? a : 10;
+		const jParsed = parseInt(jerseyNumber || '10', 10);
+		const finalJersey = Math.max(1, Math.min(99, isNaN(jParsed) ? 10 : jParsed));
+		setNameStore(finalName);
+		setNumStore(String(finalJersey));
 		setSkinStore(skinTone);
 		setTeamColorStore(shirtColor);
-		if (!isNaN(a) && a >= 7 && a <= 13) setAgeStore(a);
+		setAgeStore(finalAge);
 		setSaved(true);
 		Keyboard.dismiss();
-		setTimeout(() => setSaved(false), 1400);
-		// Always continue to Home when valid
-		if (trimmed && !isNaN(a) && a >= 7 && a <= 13) {
-			setTimeout(() => router.replace('/(home)' as any), 400);
-		}
+		// Navigate immediately
+		router.replace('/(home)' as any);
 	};
 
 	const presetKitColors = ['#4da3ff', '#ffd400', '#00ffd1', '#ff6b6b', '#7a7cff', '#34c759', '#ff9f0a'];
@@ -134,7 +132,7 @@ export default function Profile() {
 						))}
 					</View>
 					<View style={{ marginTop: 8, flexDirection: 'row', alignItems: 'center', gap: 12 }}>
-						<Button title="Spara och fortsätt" onPress={onSave} disabled={!canSave} />
+						<Button title="Spara och fortsätt" onPress={onSave} />
 						{saved && <Text style={{ color: '#34c759', fontWeight: '700' }}>Sparat!</Text>}
 					</View>
 				</View>
