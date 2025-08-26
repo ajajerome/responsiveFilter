@@ -124,7 +124,7 @@ export default function HomeIndex() {
               {showWeakestBadge && weakestCat && (
                 <View key="svagast"
                   style={{ paddingHorizontal: 10, paddingVertical: 6, backgroundColor: 'rgba(255,100,100,0.12)', borderRadius: 999, borderWidth: 1, borderColor: 'rgba(255,100,100,0.4)' }}>
-                  <Text style={{ color: '#ff6b6b', fontWeight: '900' }}>Svagast just nu: {CATEGORY_LABELS[weakestCat] || weakestCat}</Text>
+                  <Text style={{ color: '#ff6b6b', fontWeight: '900' }}>Svagast just nu: {CATEGORY_LABELS[weakestCat] || weakestCat} {Math.round((weakest?.acc || 0) * 100)}% ({weakest?.attempts} försök)</Text>
                 </View>
               )}
             </View>
