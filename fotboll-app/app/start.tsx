@@ -4,8 +4,12 @@ import Screen from "@/components/ui/Screen";
 import Card from "@/components/ui/Card";
 import Button from "@/components/ui/Button";
 import { colors } from "@/theme";
+import { useAppStore } from "@/store/useAppStore";
 
 export default function Start() {
+	const avatar = useAppStore((s) => s.profile.avatar) || {};
+	const age = useAppStore((s) => s.profile.age);
+	const needsOnboarding = !avatar?.name || !age || age < 7 || age > 13;
 	return (
 		<Screen>
 			<View style={{ flex: 1, justifyContent: 'center' }}>
@@ -14,7 +18,7 @@ export default function Start() {
 					<Link href="/profile" asChild>
 						<Button title="Skapa spelare" onPress={() => {}} />
 					</Link>
-					<Link href="/(home)" asChild>
+					<Link href={needsOnboarding ? "/profile" : "/(home)"} asChild>
 						<Button title="Fortsätt spela" onPress={() => {}} variant="secondary" style={{ marginTop: 12 }} />
 					</Link>
 				</Card>

@@ -5,8 +5,10 @@ import { colors } from "@/theme";
 import { useAppStore } from "@/store/useAppStore";
 import { useEffect, useState } from "react";
 import HSVPicker from "@/components/common/HSVPicker";
+import { useRouter } from "expo-router";
 
 export default function Profile() {
+	const router = useRouter();
 	const avatar = useAppStore((s) => s.profile.avatar) || {};
 	const ageStore = useAppStore((s) => s.profile.age);
 	const setNameStore = useAppStore((s) => s.actions.setAvatarName);
@@ -21,6 +23,7 @@ export default function Profile() {
 	const [shirtColor, setShirtColor] = useState(avatar.shirtColor || '#4da3ff');
 	const [age, setAge] = useState(String(ageStore || ''));
 	const [saved, setSaved] = useState(false);
+	const wasEmptyBefore = !(avatar?.name) || !ageStore;
 	useEffect(() => {
 		setName(avatar.name || '');
 		setJerseyNumber(avatar.jerseyNumber || '');
@@ -38,6 +41,10 @@ export default function Profile() {
 		setSaved(true);
 		Keyboard.dismiss();
 		setTimeout(() => setSaved(false), 1400);
+		// Auto-continue to home if onboarding
+		if (wasEmptyBefore && name.trim() && !isNaN(a) && a >= 7 && a <= 13) {
+			setTimeout(() => router.replace('/(home)' as any), 400);
+		}
 	};
 	return (
 		<Screen>

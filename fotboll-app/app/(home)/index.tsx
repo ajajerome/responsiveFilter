@@ -28,7 +28,6 @@ const CATEGORY_LABELS: Record<string, string> = {
 };
 
 export default function HomeIndex() {
-  const setTeamColor = useAppStore((s) => s.actions.setTeamColor);
   const avatar = useAppStore((s) => s.profile.avatar) || {};
   const color = avatar.shirtColor || '#4da3ff';
   const stats = useAppStore((s) => s.stats.byCategory);
@@ -165,13 +164,6 @@ export default function HomeIndex() {
                 <Button title={`Träna ${CATEGORY_LABELS[weakestCat] || weakestCat}`} onPress={() => {}} style={{ marginTop: 10 }} />
               </Link>
             )}
-          </View>
-
-          <Text style={{ color: colors.muted, marginTop: 16 }}>Välj lagfärg:</Text>
-          <View style={{ flexDirection: 'row', gap: 10, marginTop: 8 }}>
-            {['#4da3ff', '#ffd400', '#00ffd1', '#ff6b6b', '#7a7cff'].map((c) => (
-              <Button key={c} title={c === color ? 'Vald' : ' '} onPress={() => setTeamColor(c)} style={{ backgroundColor: c, width: 48, height: 36 }} />
-            ))}
           </View>
         </Card>
       </View>
