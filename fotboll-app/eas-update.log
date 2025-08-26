@@ -3634,3 +3634,6 @@ No compatible builds found for the following fingerprints:
     Android fingerprint:  f93c7cd3c2ca02cabe5d93aa79a936ed0efafc8b
     URL                :  https://expo.dev/accounts/jappmaster/projects/fotbollstranaren/fingerprints/f93c7cd3c2ca02cabe5d93aa79a936ed0efafc8b
 
+[expo-cli] Starting Metro Bundler
+[expo-cli] iOS node_modules/expo-router/entry.js ▓▓▓▓▓▓▓▓▓▓▓▓▓▓░░ 92.8% (1070/1111)
+[expo-cli] Android node_modules/expo-router/entry.js ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓░ 99.9% (1112/1112)

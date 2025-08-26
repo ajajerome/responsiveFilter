@@ -59,7 +59,7 @@ export default function Profile() {
 		setSaved(true);
 		Keyboard.dismiss();
 		// Navigate immediately
-		router.replace('/(home)' as any);
+		router.replace('/(home)/index' as any);
 	};
 
 	const presetKitColors = ['#4da3ff', '#ffd400', '#00ffd1', '#ff6b6b', '#7a7cff', '#34c759', '#ff9f0a'];
