@@ -58,7 +58,8 @@ export default function Profile() {
 		setSaved(true);
 		Keyboard.dismiss();
 		setTimeout(() => setSaved(false), 1400);
-		if (wasEmptyBefore && trimmed && !isNaN(a) && a >= 7 && a <= 13) {
+		// Always continue to Home when valid
+		if (trimmed && !isNaN(a) && a >= 7 && a <= 13) {
 			setTimeout(() => router.replace('/(home)' as any), 400);
 		}
 	};
@@ -133,7 +134,7 @@ export default function Profile() {
 						))}
 					</View>
 					<View style={{ marginTop: 8, flexDirection: 'row', alignItems: 'center', gap: 12 }}>
-						<Button title="Spara avatar" onPress={onSave} disabled={!canSave} />
+						<Button title="Spara och fortsätt" onPress={onSave} disabled={!canSave} />
 						{saved && <Text style={{ color: '#34c759', fontWeight: '700' }}>Sparat!</Text>}
 					</View>
 				</View>
