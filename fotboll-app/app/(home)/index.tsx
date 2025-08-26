@@ -22,6 +22,7 @@ export default function HomeIndex() {
   const color = avatar.shirtColor || '#4da3ff';
   const stats = useAppStore((s) => s.stats.byCategory);
   const badges = useAppStore((s) => s.badges);
+  const correctTs = useAppStore((s) => s.stats.correctAnswerTimestamps);
   const hours = new Date().getHours();
   const sleepTime = hours >= 21;
 
@@ -31,6 +32,12 @@ export default function HomeIndex() {
   const defAcc = def.attempts ? Math.round((def.correct / def.attempts) * 100) : 0;
   const suggestDefense = def.attempts >= 3 && atkAcc - defAcc >= 10;
   const autoCategory = suggestDefense ? 'forsvar' : 'spelforstaelse';
+
+  const now = Date.now();
+  const weekAgo = now - 7 * 24 * 60 * 60 * 1000;
+  const weeklyCorrect = (correctTs || []).filter((t) => t >= weekAgo).length;
+  const weeklyGoal = 10;
+  const tired = weeklyCorrect < weeklyGoal;
 
   return (
     <Screen>
@@ -56,6 +63,22 @@ export default function HomeIndex() {
           <View style={{ marginBottom: 12 }}>
             <XpBadge />
           </View>
+
+          {/* Weekly goal & Tamagotchi */}
+          <View style={{ marginBottom: 12, padding: 10, borderRadius: 10, backgroundColor: 'rgba(255,255,255,0.04)', borderWidth: 1, borderColor: 'rgba(255,255,255,0.08)' }}>
+            <Text style={{ color: colors.text, fontWeight: '800' }}>Veckomål</Text>
+            <Text style={{ color: colors.text }}>Rätt denna vecka: {weeklyCorrect} / {weeklyGoal}</Text>
+            {tired ? (
+              <Text style={{ color: '#ff6b6b', marginTop: 4 }}>
+                Jag börjar bli trött om vi inte tränar mer den här veckan… Ska vi köra?
+              </Text>
+            ) : (
+              <Text style={{ color: '#34c759', marginTop: 4 }}>
+                Grymt! Du håller målet uppe den här veckan.
+              </Text>
+            )}
+          </View>
+
           {sleepTime ? (
             <Text style={{ color: colors.text }}>
               Sover du inte nu? Vi kan inte träna. För att bli bättre behöver du sömn.
