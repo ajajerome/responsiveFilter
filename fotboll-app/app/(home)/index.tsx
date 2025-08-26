@@ -60,6 +60,7 @@ export default function HomeIndex() {
   const summaryText = strongest.length && weakest
     ? `Stark i ${strongest.map(s => CATEGORY_LABELS[s.key] || s.key).join(' & ')} men svagare i ${(CATEGORY_LABELS[weakest.key] || weakest.key)}.`
     : `Fortsätt träna och lås upp fler kategorier.`;
+  const showWeakestBadge = !!(weakest && weakest.attempts >= 5 && weakest.acc < 0.5);
 
   return (
     <Screen>
@@ -114,12 +115,18 @@ export default function HomeIndex() {
           {/* Badges */}
           <View style={{ marginTop: 16 }}>
             <Text style={{ color: colors.muted, marginBottom: 8 }}>Mina badges</Text>
-            <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 8 }}>
+            <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 8, alignItems: 'center' }}>
               {(badges.length ? badges : ['Startklar']).map((b) => (
                 <View key={b} style={{ paddingHorizontal: 10, paddingVertical: 6, backgroundColor: 'rgba(255,255,255,0.06)', borderRadius: 8, borderWidth: 1, borderColor: 'rgba(255,255,255,0.1)' }}>
                   <Text style={{ color: colors.text, fontWeight: '700' }}>{b}</Text>
                 </View>
               ))}
+              {showWeakestBadge && weakestCat && (
+                <View key="svagast"
+                  style={{ paddingHorizontal: 10, paddingVertical: 6, backgroundColor: 'rgba(255,100,100,0.12)', borderRadius: 999, borderWidth: 1, borderColor: 'rgba(255,100,100,0.4)' }}>
+                  <Text style={{ color: '#ff6b6b', fontWeight: '900' }}>Svagast just nu: {CATEGORY_LABELS[weakestCat] || weakestCat}</Text>
+                </View>
+              )}
             </View>
           </View>
 
