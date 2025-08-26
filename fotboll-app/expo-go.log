@@ -2,11 +2,5 @@ Starting project at /workspace/fotboll-app
 Starting Metro Bundler
 Tunnel connected.
 Tunnel ready.
-TypeScript: The tsconfig.json#include property has been updated
-The following packages should be updated for best compatibility with the installed expo version:
-  @react-native-async-storage/async-storage@2.2.0 - expected version: 2.1.2
-  expo@53.0.20 - expected version: 53.0.22
-  expo-router@5.1.4 - expected version: ~5.1.5
-Your project may not work correctly until you install the expected versions of the packages.
 Waiting on http://localhost:8081
 Logs for your project will appear below.
