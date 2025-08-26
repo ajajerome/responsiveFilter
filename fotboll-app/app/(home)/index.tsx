@@ -62,6 +62,10 @@ export default function HomeIndex() {
     : `Fortsätt träna och lås upp fler kategorier.`;
   const showWeakestBadge = !!(weakest && weakest.attempts >= 5 && weakest.acc < 0.5);
 
+  const orderedForBars = Object.keys(CATEGORY_LABELS)
+    .map((k) => ({ key: k, attempts: stats[k]?.attempts || 0, acc: stats[k]?.attempts ? (stats[k].correct / stats[k].attempts) : 0 }))
+    .filter((e) => e.attempts > 0);
+
   return (
     <Screen>
       <XpBadge />
@@ -129,6 +133,26 @@ export default function HomeIndex() {
               )}
             </View>
           </View>
+
+          {/* Category Progress Bars */}
+          {orderedForBars.length > 0 && (
+            <View style={{ marginTop: 16 }}>
+              <Text style={{ color: colors.muted, marginBottom: 6 }}>Kategoriprogress</Text>
+              <View style={{ gap: 8 }}>
+                {orderedForBars.map((e) => (
+                  <View key={e.key} style={{ gap: 4 }}>
+                    <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+                      <Text style={{ color: colors.text, fontWeight: '700' }}>{CATEGORY_LABELS[e.key] || e.key}</Text>
+                      <Text style={{ color: colors.muted }}>{Math.round(e.acc * 100)}% ({e.attempts})</Text>
+                    </View>
+                    <View style={{ height: 6, borderRadius: 999, backgroundColor: 'rgba(255,255,255,0.08)', overflow: 'hidden' }}>
+                      <View style={{ height: 6, borderRadius: 999, width: `${Math.max(2, Math.round(e.acc * 100))}%`, backgroundColor: e.acc >= 0.6 ? '#34c759' : e.acc >= 0.4 ? '#ffd400' : '#ff6b6b' }} />
+                    </View>
+                  </View>
+                ))}
+              </View>
+            </View>
+          )}
 
           {/* Dynamic Strength Summary */}
           <View style={{ marginTop: 16 }}>
