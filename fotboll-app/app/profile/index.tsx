@@ -3,7 +3,7 @@ import Screen from "@/components/ui/Screen";
 import Button from "@/components/ui/Button";
 import { colors } from "@/theme";
 import { useAppStore } from "@/store/useAppStore";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import HSVPicker from "@/components/common/HSVPicker";
 import { useRouter } from "expo-router";
 
@@ -23,6 +23,7 @@ export default function Profile() {
 	const [shirtColor, setShirtColor] = useState(avatar.shirtColor || '#4da3ff');
 	const [age, setAge] = useState(String(ageStore || ''));
 	const [saved, setSaved] = useState(false);
+	const [errors, setErrors] = useState<{ name?: string; age?: string; jersey?: string }>({});
 	const wasEmptyBefore = !(avatar?.name) || !ageStore;
 	useEffect(() => {
 		setName(avatar.name || '');
@@ -31,18 +32,33 @@ export default function Profile() {
 		setShirtColor(avatar.shirtColor || '#4da3ff');
 		setAge(String(ageStore || ''));
 	}, [avatar.name, avatar.jerseyNumber, avatar.skinTone, avatar.shirtColor, ageStore]);
+
+	useEffect(() => {
+		const next: { name?: string; age?: string; jersey?: string } = {};
+		const trimmed = name.trim();
+		if (!trimmed) next.name = 'Ange ett namn';
+		const a = parseInt(age, 10);
+		if (isNaN(a) || a < 7 || a > 13) next.age = 'Ålder måste vara 7–13';
+		const j = parseInt(jerseyNumber || '', 10);
+		if (isNaN(j) || j < 1 || j > 99) next.jersey = 'Nummer 1–99';
+		setErrors(next);
+	}, [name, age, jerseyNumber]);
+
+	const canSave = useMemo(() => Object.keys(errors).length === 0 && name.trim().length > 0, [errors, name]);
+
 	const onSave = () => {
-		setNameStore(name.trim());
-		setNumStore(jerseyNumber.trim());
+		const trimmed = name.trim();
+		const a = parseInt(age, 10);
+		const j = Math.max(1, Math.min(99, parseInt(jerseyNumber || '10', 10) || 10));
+		setNameStore(trimmed);
+		setNumStore(String(j));
 		setSkinStore(skinTone);
 		setTeamColorStore(shirtColor);
-		const a = parseInt(age, 10);
 		if (!isNaN(a) && a >= 7 && a <= 13) setAgeStore(a);
 		setSaved(true);
 		Keyboard.dismiss();
 		setTimeout(() => setSaved(false), 1400);
-		// Auto-continue to home if onboarding
-		if (wasEmptyBefore && name.trim() && !isNaN(a) && a >= 7 && a <= 13) {
+		if (wasEmptyBefore && trimmed && !isNaN(a) && a >= 7 && a <= 13) {
 			setTimeout(() => router.replace('/(home)' as any), 400);
 		}
 	};
@@ -67,10 +83,11 @@ export default function Profile() {
 						placeholder="Ditt namn"
 						placeholderTextColor="#9aa4b2"
 						value={name}
-						onChangeText={setName}
+						onChangeText={(t) => setName(t.replace(/\s{2,}/g, ' ').slice(0, 24))}
 						returnKeyType="done"
 						onSubmitEditing={() => Keyboard.dismiss()}
 					/>
+					{errors.name ? <Text style={{ color: '#ff6b6b' }}>{errors.name}</Text> : null}
 					<Text style={styles.label}>Ålder (7-13)</Text>
 					<TextInput
 						style={styles.input}
@@ -83,6 +100,7 @@ export default function Profile() {
 						returnKeyType="done"
 						onSubmitEditing={() => Keyboard.dismiss()}
 					/>
+					{errors.age ? <Text style={{ color: '#ff6b6b' }}>{errors.age}</Text> : null}
 					<Text style={styles.label}>Tröjnummer</Text>
 					<View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
 						<TextInput
@@ -98,6 +116,7 @@ export default function Profile() {
 							<Text style={{ color: colors.text, fontWeight: '700' }}>Klart</Text>
 						</TouchableOpacity>
 					</View>
+					{errors.jersey ? <Text style={{ color: '#ff6b6b' }}>{errors.jersey}</Text> : null}
 					<Text style={styles.label}>Hudton</Text>
 					<View style={{ flexDirection: 'row', gap: 10 }}>
 						{['#f5d6c6', '#eac1a8', '#cf9772', '#a26e44', '#6d4b2d'].map((c) => (
@@ -114,7 +133,7 @@ export default function Profile() {
 					<Text style={styles.label}>Välj valfri färg</Text>
 					<HSVPicker value={shirtColor} onChange={setShirtColor} />
 					<View style={{ marginTop: 8, flexDirection: 'row', alignItems: 'center', gap: 12 }}>
-						<Button title="Spara avatar" onPress={onSave} />
+						<Button title="Spara avatar" onPress={onSave} disabled={!canSave} />
 						{saved && <Text style={{ color: '#34c759', fontWeight: '700' }}>Sparat!</Text>}
 					</View>
 				</View>
