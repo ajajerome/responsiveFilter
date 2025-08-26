@@ -27,6 +27,10 @@ type AppState = {
     addXp: (level: Level, amount: number) => void;
     markQuestionCompleted: (level: Level, questionId: string) => void;
     unlockLevel: (level: Level) => void;
+    // Admin
+    resetAll: () => void;
+    unlockAll: () => void;
+    clearProgress: () => void;
   };
 };
 
@@ -71,6 +75,26 @@ export const useAppStore = create<AppState>()(
             const lv = s.progress[level] ?? { unlocked: false, xp: 0, completedQuestionIds: [] };
             return { progress: { ...s.progress, [level]: { ...lv, unlocked: true } } };
           }),
+        resetAll: () =>
+          set(() => ({ profile: { avatar: {} }, progress: initialProgress, badges: [] })),
+        unlockAll: () =>
+          set((s) => ({
+            progress: {
+              ...s.progress,
+              '5-manna': { unlocked: true, xp: 0, completedQuestionIds: [] },
+              '7-manna': { unlocked: true, xp: 0, completedQuestionIds: [] },
+              '9-manna': { unlocked: true, xp: 0, completedQuestionIds: [] },
+            },
+          })),
+        clearProgress: () =>
+          set((s) => ({
+            progress: {
+              ...s.progress,
+              '5-manna': { unlocked: true, xp: 0, completedQuestionIds: [] },
+              '7-manna': { unlocked: false, xp: 0, completedQuestionIds: [] },
+              '9-manna': { unlocked: false, xp: 0, completedQuestionIds: [] },
+            },
+          })),
       },
     }),
     {

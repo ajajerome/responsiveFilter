@@ -11,6 +11,12 @@ export default function HomeIndex() {
       <Link href="/trainer" asChild>
         <Pressable style={[styles.button, { backgroundColor: "#34c759" }]}><Text style={styles.buttonText}>Förälder/Tränare</Text></Pressable>
       </Link>
+      <Link href="/profile" asChild>
+        <Pressable style={[styles.button, { backgroundColor: "#5856d6" }]}><Text style={styles.buttonText}>Profil</Text></Pressable>
+      </Link>
+      <Link href="/admin" asChild>
+        <Pressable style={[styles.button, { backgroundColor: "#8e8e93" }]}><Text style={styles.buttonText}>Admin</Text></Pressable>
+      </Link>
     </View>
   );
 }
