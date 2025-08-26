@@ -131,8 +131,7 @@ export default function HSVPicker({ value, onChange, width = 260 }: Props) {
 					<Rect x={0} y={0} width={svSize.w} height={svSize.h} fill="url(#gradS)" />
 					<Rect x={0} y={0} width={svSize.w} height={svSize.h} fill="url(#gradV)" />
 				</Svg>
-				{/* Picker thumb */}
-				<View style={{ position: 'absolute', left: Math.max(0, Math.min(svSize.w - 10, s * svSize.w - 5)), top: Math.max(0, Math.min(svSize.h - 10, (1 - v) * svSize.h - 5)), width: 14, height: 14, borderRadius: 7, borderWidth: 2, borderColor: '#fff' }} />
+				{/* Removed SV picker thumb overlay */}
 			</View>
 			{/* Hue slider */}
 			<View {...huePan.panHandlers} style={{ marginHorizontal: pad, marginTop: pad, width: svSize.w, height: hueHeight, borderRadius: 8, overflow: 'hidden' }}>
@@ -146,7 +145,7 @@ export default function HSVPicker({ value, onChange, width = 260 }: Props) {
 					</Defs>
 					<Rect x={0} y={0} width={svSize.w} height={hueHeight} fill="url(#gradHue)" />
 				</Svg>
-				<View style={{ position: 'absolute', left: Math.max(0, Math.min(svSize.w - 6, (h / 360) * svSize.w - 3)), top: -2, width: 8, height: hueHeight + 4, borderRadius: 4, borderWidth: 2, borderColor: '#fff' }} />
+				<View style={{ position: 'absolute', left: Math.max(0, Math.min(svSize.w - 6, (h / 360) * svSize.w - 3)), top: -2, width: 8, height: hueHeight + 4, borderRadius: 4, borderWidth: 2, borderColor: '#fff', backgroundColor: 'transparent' }} />
 			</View>
 		</View>
 	);
