@@ -124,12 +124,7 @@ export default function Profile() {
 						))}
 					</View>
 					<Text style={styles.label}>Tröjfärg</Text>
-					<View style={{ flexDirection: 'row', gap: 10 }}>
-						{['#4da3ff', '#ffd400', '#00ffd1', '#ff6b6b', '#7a7cff'].map((c) => (
-							<Button key={c} title={c === shirtColor ? 'Vald' : ' '} onPress={() => setShirtColor(c)} style={{ backgroundColor: c, width: 40, height: 32 }} />
-						))}
-					</View>
-					{/* HSB/HSV färghjul */}
+					{/* Removed preset swatch row; only HSV color picker controls shirt color */}
 					<Text style={styles.label}>Välj valfri färg</Text>
 					<HSVPicker value={shirtColor} onChange={setShirtColor} />
 					<View style={{ marginTop: 8, flexDirection: 'row', alignItems: 'center', gap: 12 }}>
