@@ -46,9 +46,10 @@ export const SPELFORSTAELSE: QuizQuestion[] = [
     explanation: 'Genom att dra isär backlinjen öppnar du passningsytor.'
   },
   {
-    id: 'sf-anfall-yta',
+    id: 'sf-anfall-yta-2',
     type: 'quiz',
     level: '9-manna',
+    category: 'spelforstaelse',
     position: 'anfallare',
     question: 'Som anfallare, hur skapar du yta för medspelare?',
     options: ['Stå still i mitten', 'Dra isär backlinjen med löpning'],
