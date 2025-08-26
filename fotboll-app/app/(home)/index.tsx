@@ -29,6 +29,8 @@ const CATEGORY_LABELS: Record<string, string> = {
 
 export default function HomeIndex() {
   const avatar = useAppStore((s) => s.profile.avatar) || {};
+  const age = useAppStore((s) => s.profile.age);
+  const isOnboarded = !!(avatar?.name && age && age >= 7 && age <= 13);
   const color = avatar.shirtColor || '#4da3ff';
   const stats = useAppStore((s) => s.stats.byCategory);
   const badges = useAppStore((s) => s.badges);
@@ -77,9 +79,11 @@ export default function HomeIndex() {
             </View>
             <Text style={{ color: colors.text, fontWeight: '700' }}>{avatar.name || 'Spelare'}</Text>
           </View>
-          <Link href="/profile" asChild>
-            <Button title="Ändra" onPress={() => {}} variant="secondary" />
-          </Link>
+          {isOnboarded ? (
+            <Link href="/profile" asChild>
+              <Button title="Ändra" onPress={() => {}} variant="secondary" />
+            </Link>
+          ) : null}
         </View>
       </View>
       <View style={{ flex: 1, justifyContent: 'center' }}>
