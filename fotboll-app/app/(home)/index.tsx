@@ -16,6 +16,17 @@ function greeting() {
   return 'God natt';
 }
 
+const CATEGORY_LABELS: Record<string, string> = {
+  spelregler: 'Spelregler',
+  forsvar: 'Försvar',
+  anfall: 'Anfall',
+  fasta: 'Fasta',
+  teknik: 'Teknik',
+  spelforstaelse: 'Spelförståelse',
+  lagarbete: 'Lagarbete',
+  malvakt: 'Målvakt',
+};
+
 export default function HomeIndex() {
   const setTeamColor = useAppStore((s) => s.actions.setTeamColor);
   const avatar = useAppStore((s) => s.profile.avatar) || {};
@@ -38,6 +49,17 @@ export default function HomeIndex() {
   const weeklyCorrect = (correctTs || []).filter((t) => t >= weekAgo).length;
   const weeklyGoal = 10;
   const tired = weeklyCorrect < weeklyGoal;
+
+  // Dynamic strengths/weaknesses across categories
+  const entries = Object.entries(stats).map(([key, v]) => ({ key, attempts: v.attempts, acc: v.attempts ? (v.correct / v.attempts) : 0 }));
+  const reliable = entries.filter((e) => e.attempts >= 3);
+  const sorted = (reliable.length ? reliable : entries).sort((a, b) => b.acc - a.acc);
+  const strongest = sorted.slice(0, 2);
+  const weakest = sorted.length ? sorted[sorted.length - 1] : undefined;
+  const weakestCat = weakest?.key;
+  const summaryText = strongest.length && weakest
+    ? `Stark i ${strongest.map(s => CATEGORY_LABELS[s.key] || s.key).join(' & ')} men svagare i ${(CATEGORY_LABELS[weakest.key] || weakest.key)}.`
+    : `Fortsätt träna och lås upp fler kategorier.`;
 
   return (
     <Screen>
@@ -101,17 +123,15 @@ export default function HomeIndex() {
             </View>
           </View>
 
-          {/* Suggestion */}
+          {/* Dynamic Strength Summary */}
           <View style={{ marginTop: 16 }}>
             <Text style={{ color: colors.muted, marginBottom: 6 }}>Din utveckling</Text>
             <Text style={{ color: colors.text }}>
-              {suggestDefense
-                ? `Du är stark i anfall (${atkAcc}%) men lite svagare i försvar (${defAcc}%). Vill du träna mer försvar?`
-                : `Fortsätt träna! Anfall: ${atkAcc}% · Försvar: ${defAcc}%`}
+              {summaryText}
             </Text>
-            {suggestDefense && !sleepTime && (
-              <Link href={{ pathname: '/player/quiz', params: { category: 'forsvar' } } as any} asChild>
-                <Button title="Ja, träna försvar" onPress={() => {}} style={{ marginTop: 10 }} />
+            {weakestCat && !sleepTime && (
+              <Link href={{ pathname: '/player/quiz', params: { category: weakestCat } } as any} asChild>
+                <Button title={`Träna ${CATEGORY_LABELS[weakestCat] || weakestCat}`} onPress={() => {}} style={{ marginTop: 10 }} />
               </Link>
             )}
           </View>
