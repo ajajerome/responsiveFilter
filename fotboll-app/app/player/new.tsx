@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { View, Text, TextInput, Pressable, StyleSheet, Keyboard } from 'react-native';
+import { View, Text, TextInput, Pressable, StyleSheet, Keyboard, Platform, ScrollView, KeyboardAvoidingView } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 import { useAppStore } from '@/store/useAppStore';
@@ -11,46 +11,51 @@ export default function NewPlayer() {
   const [name, setLocalName] = useState('');
   const [error, setError] = useState<string>('');
   return (
-    <SafeAreaView style={[styles.container, { backgroundColor: FC25.colors.bg }]}>
-      <Text style={[styles.title, { color: FC25.colors.text }]}>Ny spelare</Text>
-      <TextInput
-        placeholder="Ditt namn"
-        value={name}
-        onChangeText={(t) => { setLocalName(t); if (error) setError(''); }}
-        style={[styles.input, { color: FC25.colors.text, borderColor: FC25.colors.border }]}
-        placeholderTextColor={FC25.colors.subtle}
-        autoCapitalize="words"
-        autoCorrect={false}
-        returnKeyType="done"
-        onSubmitEditing={() => {
-          const trimmed = name.trim();
-          if (!trimmed) { setError('Ange ett namn för att fortsätta'); return; }
-          setName(trimmed);
-          Keyboard.dismiss();
-          // Use replace to avoid back-navigating to onboarding step and ensure navigation fires immediately
-          router.replace('/player/avatar');
-        }}
-      />
-      {!!error && <Text style={[styles.error, { color: '#ff3b30' }]}>{error}</Text>}
-      <Pressable
-        style={[styles.button, { backgroundColor: name.trim() ? FC25.colors.primary : FC25.colors.border }]}
-        onPress={() => {
-          const trimmed = name.trim();
-          if (!trimmed) { setError('Ange ett namn för att fortsätta'); return; }
-          setName(trimmed);
-          Keyboard.dismiss();
-          // Defer navigation to next frame to prevent any keyboard/layout interference
-          requestAnimationFrame(() => router.replace('/player/avatar'));
-        }}
-      >
-        <Text style={styles.buttonText}>Fortsätt</Text>
-      </Pressable>
+    <SafeAreaView style={[styles.container, { backgroundColor: FC25.colors.bg }]}> 
+      <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} keyboardVerticalOffset={64} style={{ flex: 1 }}>
+        <ScrollView contentContainerStyle={{ flexGrow: 1, justifyContent: 'center', paddingVertical: 24 }} keyboardShouldPersistTaps="handled">
+          <View style={{ paddingHorizontal: 24, gap: 12 }}>
+            <Text style={[styles.title, { color: FC25.colors.text }]}>Ny spelare</Text>
+            <TextInput
+              placeholder="Ditt namn"
+              value={name}
+              onChangeText={(t) => { setLocalName(t); if (error) setError(''); }}
+              style={[styles.input, { color: FC25.colors.text, borderColor: FC25.colors.border }]}
+              placeholderTextColor={FC25.colors.subtle}
+              autoCapitalize="words"
+              autoCorrect={false}
+              returnKeyType="done"
+              onSubmitEditing={() => {
+                const trimmed = name.trim();
+                if (!trimmed) { setError('Ange ett namn för att fortsätta'); return; }
+                setName(trimmed);
+                Keyboard.dismiss();
+                requestAnimationFrame(() => router.replace('/player/avatar'));
+              }}
+            />
+            {!!error && <Text style={[styles.error, { color: '#ff3b30' }]}>{error}</Text>}
+            <Pressable
+              style={[styles.button, { backgroundColor: name.trim() ? FC25.colors.primary : FC25.colors.border }]}
+              hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+              onPress={() => {
+                const trimmed = name.trim();
+                if (!trimmed) { setError('Ange ett namn för att fortsätta'); return; }
+                setName(trimmed);
+                Keyboard.dismiss();
+                requestAnimationFrame(() => router.replace('/player/avatar'));
+              }}
+            >
+              <Text style={styles.buttonText}>Fortsätt</Text>
+            </Pressable>
+          </View>
+        </ScrollView>
+      </KeyboardAvoidingView>
     </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, padding: 24, gap: 12, justifyContent: 'center' },
+  container: { flex: 1 },
   title: { fontSize: 22, fontWeight: '700', marginBottom: 8 },
   input: { borderWidth: 1, borderRadius: 10, paddingHorizontal: 12, paddingVertical: 10 },
   error: { marginTop: 4, fontSize: 12 },
