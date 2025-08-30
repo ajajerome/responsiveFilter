@@ -125,5 +125,34 @@ export const QUESTIONS: Question[] = [
     ]},
     explanation: 'Spela ut, skapa övertalighet och avsluta.'
   }
+  ,
+  {
+    id: 's004',
+    type: 'matchscenario',
+    level: '5-manna',
+    position: 'back',
+    question: 'Spelvändning från höger till vänster och avslut.',
+    scenario: {
+      level: '5-manna', attacking: 'home', possession: 'home',
+      players: [
+        { id: 'h-gk', role: 'GK', team: 'home', pos: { x: 10, y: 50 } },
+        { id: 'h-rb', role: 'RB', team: 'home', pos: { x: 25, y: 70 } },
+        { id: 'h-lw', role: 'LW', team: 'home', pos: { x: 50, y: 25 } },
+        { id: 'h-st', role: 'ST', team: 'home', pos: { x: 70, y: 50 } },
+        { id: 'a-gk', role: 'GK', team: 'away', pos: { x: 90, y: 50 } },
+        { id: 'a-d1', role: 'CB', team: 'away', pos: { x: 75, y: 40 } },
+        { id: 'a-d2', role: 'CB', team: 'away', pos: { x: 75, y: 60 } },
+      ],
+      ball: { pos: { x: 25, y: 70 } },
+      keyActors: { ballCarrierId: 'h-rb', focusLane: 'right' },
+    } as Scenario,
+    allowedActions: ['pass', 'dribble', 'shoot'],
+    sequence: { steps: [
+      { expected: 'pass', hint: 'Vänd spelet till vänsterkanten', xpBonus: 2 },
+      { expected: 'dribble', hint: 'Ta yta längs vänsterkanten', xpBonus: 2 },
+      { expected: 'shoot', hint: 'Sök avslut centralt', xpBonus: 3 },
+    ]},
+    explanation: 'Spelvändning skapar yta på motsatt sida.'
+  }
 ];
 
