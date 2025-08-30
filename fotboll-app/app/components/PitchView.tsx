@@ -1,12 +1,17 @@
-import { memo, useMemo } from 'react';
+import { memo, useMemo, useCallback } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import Svg, { Rect, Line, Circle } from 'react-native-svg';
-import type { Scenario } from '@/types/scenario';
+import type { Scenario, Vector2 } from '@/types/scenario';
 
 type Props = {
 	scenario: Scenario;
 	width?: number;
 	height?: number;
+	selectable?: boolean;
+	onSelectPlayer?: (playerId: string, pos: Vector2) => void;
+	onSelectPoint?: (pos: Vector2) => void;
+	highlightPlayerIds?: string[];
+	selectedPoint?: Vector2;
 };
 
 function normalize(x: number, y: number, w: number, h: number) {
@@ -25,13 +30,22 @@ function formationZones(level: Scenario['level']) {
 	}
 }
 
-export const PitchView = memo(function PitchView({ scenario, width = 340, height = 220 }: Props) {
+export const PitchView = memo(function PitchView({ scenario, width = 340, height = 220, selectable, onSelectPlayer, onSelectPoint, highlightPlayerIds, selectedPoint }: Props) {
 	const zones = useMemo(() => formationZones(scenario.level), [scenario.level]);
+
+	const handlePitchPress = useCallback((e: any) => {
+		if (!selectable || !onSelectPoint) return;
+		const lx = e?.nativeEvent?.locationX ?? 0;
+		const ly = e?.nativeEvent?.locationY ?? 0;
+		const nx = Math.max(0, Math.min(100, (lx / width) * 100));
+		const ny = Math.max(0, Math.min(100, (ly / height) * 100));
+		onSelectPoint({ x: nx, y: ny });
+	}, [selectable, onSelectPoint, width, height]);
 	return (
 		<View style={styles.wrapper}>
 			<Svg width={width} height={height}>
 				<Rect x={0} y={0} width={width} height={height} rx={10} ry={10} fill="#0c7a43" />
-				<Rect x={6} y={6} width={width - 12} height={height - 12} stroke="#ffffff" strokeWidth={2} fill="transparent" />
+				<Rect x={6} y={6} width={width - 12} height={height - 12} stroke="#ffffff" strokeWidth={2} fill="transparent" onPress={handlePitchPress} />
 				{/* Mid line */}
 				<Line x1={width / 2} y1={6} x2={width / 2} y2={height - 6} stroke="#ffffff" strokeWidth={2} />
 				{/* Simple penalty boxes */}
@@ -47,10 +61,20 @@ export const PitchView = memo(function PitchView({ scenario, width = 340, height
 					const { cx, cy } = normalize(p.pos.x, p.pos.y, width, height);
 					const isCarrier = scenario.keyActors?.ballCarrierId === p.id;
 					const color = p.team === 'home' ? '#3a86ff' : '#ff006e';
+					const highlighted = highlightPlayerIds?.includes(p.id);
 					return (
-						<>
-							<Circle key={p.id} cx={cx} cy={cy} r={10} fill={color} stroke={isCarrier ? '#ffd60a' : '#ffffff'} strokeWidth={isCarrier ? 3 : 1.5} />
-						</>
+						<Circle
+							key={p.id}
+							cx={cx}
+							cy={cy}
+							r={12}
+							fill={color}
+							stroke={isCarrier ? '#ffd60a' : highlighted ? '#00f0ff' : '#ffffff'}
+							strokeWidth={isCarrier || highlighted ? 3 : 1.5}
+							onPress={() => {
+								if (selectable && onSelectPlayer) onSelectPlayer(p.id, p.pos);
+							}}
+						/>
 					);
 				})}
 
@@ -59,6 +83,14 @@ export const PitchView = memo(function PitchView({ scenario, width = 340, height
 					const { cx, cy } = normalize(scenario.ball.pos.x, scenario.ball.pos.y, width, height);
 					return <Circle cx={cx} cy={cy} r={4} fill="#ffffff" stroke="#000" strokeWidth={1} />;
 				})()}
+
+				{/* Selected target point overlay */}
+				{selectedPoint && (
+					(() => {
+						const { cx, cy } = normalize(selectedPoint.x, selectedPoint.y, width, height);
+						return <Circle cx={cx} cy={cy} r={6} fill="rgba(0,240,255,0.9)" stroke="#0a0a0f" strokeWidth={1.5} />;
+					})()
+				)}
 			</Svg>
 			<View style={styles.legend}>
 				<Text style={styles.legendText}>Blå: Hemmalag • Röd: Bortalag • Gul ring: Bollhållare</Text>

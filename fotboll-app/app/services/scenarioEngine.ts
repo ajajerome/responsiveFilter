@@ -30,6 +30,25 @@ export function validateAction(
 		return { valid: false, message: 'Åtgärden är inte tillåten i detta scenario.' };
 	}
 
+	const RULES = {
+		'5-manna': { maxPass: 40, minDribble: 5, maxDribble: 25, shootX: 75 },
+		'7-manna': { maxPass: 50, minDribble: 5, maxDribble: 30, shootX: 80 },
+		'9-manna': { maxPass: 60, minDribble: 5, maxDribble: 35, shootX: 85 },
+	} as const;
+	const R = RULES[s.level];
+
+	function forwardThreshold(shootX: number) {
+		return s.attacking === 'home' ? (x: number) => x >= shootX : (x: number) => x <= 100 - shootX;
+	}
+
+	function inFocusLane(y: number) {
+		if (!options?.focusLane) return true;
+		// left: 0..33, center: 33..66, right: 66..100 (approx)
+		if (options.focusLane === 'left') return y <= 33;
+		if (options.focusLane === 'center') return y > 33 && y < 66;
+		return y >= 66;
+	}
+
 	switch (action.kind) {
 		case 'pass': {
 			if (action.actorId !== s.keyActors?.ballCarrierId) {
@@ -45,8 +64,11 @@ export function validateAction(
 			if (!isAttackingForward(s, from.pos.x, to.pos.x)) {
 				return { valid: false, message: 'Passningen går inte framåt i anfall riktning.' };
 			}
-			if (d > 40) {
+			if (d > R.maxPass) {
 				return { valid: false, message: 'Passningen är för lång för denna nivå.' };
+			}
+			if (!inFocusLane(to.pos.y)) {
+				return { valid: false, message: 'Passningen lämnar rekommenderad spel-lane.' };
 			}
 			return { valid: true, xpDelta: 10, message: 'Bra passning! Fortsätt framåt.' };
 		}
@@ -58,8 +80,9 @@ export function validateAction(
 				return { valid: false, message: 'Dribbling ska ta laget framåt.' };
 			}
 			const step = distance(action.from, action.to);
-			if (step < 5) return { valid: false, message: 'För kort dribblingsteg.' };
-			if (step > 25) return { valid: false, message: 'För långt steg för kontrollerad dribbling.' };
+			if (step < R.minDribble) return { valid: false, message: 'För kort dribblingsteg.' };
+			if (step > R.maxDribble) return { valid: false, message: 'För långt steg för kontrollerad dribbling.' };
+			if (!inFocusLane(action.to.y)) return { valid: false, message: 'Håll dig i aktuell spel-lane.' };
 			return { valid: true, xpDelta: 8, message: 'Fin dribbling!' };
 		}
 		case 'shoot': {
@@ -68,7 +91,7 @@ export function validateAction(
 			}
 			const shooter = s.players.find((p) => p.id === action.actorId);
 			if (!shooter) return { valid: false, message: 'Skytt saknas.' };
-			const closeToGoal = s.attacking === 'home' ? shooter.pos.x >= 75 : shooter.pos.x <= 25;
+			const closeToGoal = forwardThreshold(R.shootX)(shooter.pos.x);
 			if (!closeToGoal) return { valid: false, message: 'Avslutet tas för långt ifrån.' };
 			return { valid: true, xpDelta: 15, message: 'Bra avslutsläge!' };
 		}

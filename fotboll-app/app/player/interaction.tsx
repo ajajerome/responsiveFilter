@@ -7,6 +7,7 @@ import ActionBar from '@/app/components/ActionBar';
 import { FC25 } from '@/app/components/Theme';
 import { validateAction } from '@/app/services/scenarioEngine';
 import type { ActionType } from '@/types/content';
+import type { Vector2 } from '@/types/scenario';
 
 type AgeTier = 'U7' | 'U9' | 'U11' | 'U13+';
 
@@ -58,6 +59,9 @@ export default function InteractionScreen() {
 	const question = relevantQuestions[qIndex % Math.max(1, relevantQuestions.length)];
 	const [feedback, setFeedback] = useState<string>('');
 	const [xp, setXp] = useState<number>(0);
+	const [selectedAction, setSelectedAction] = useState<ActionType | undefined>();
+	const [selectedTargetPlayerId, setSelectedTargetPlayerId] = useState<string | undefined>();
+	const [selectedPoint, setSelectedPoint] = useState<Vector2 | undefined>();
 
 	return (
 		<ScrollView contentContainerStyle={styles.container}>
@@ -72,7 +76,22 @@ export default function InteractionScreen() {
 			</View>
 
 			{question?.type === 'matchscenario' ? (
-				<PitchView scenario={(question as MatchScenarioQuestion).scenario} />
+				<PitchView
+					scenario={(question as MatchScenarioQuestion).scenario}
+					selectable
+					highlightPlayerIds={selectedTargetPlayerId ? [selectedTargetPlayerId] : []}
+					selectedPoint={selectedPoint}
+					onSelectPlayer={(pid) => {
+						if (!selectedAction) return;
+						if (selectedAction === 'pass') {
+							setSelectedTargetPlayerId(pid);
+						}
+					}}
+					onSelectPoint={(pt) => {
+						if (!selectedAction) return;
+						if (selectedAction === 'dribble' || selectedAction === 'defend') setSelectedPoint(pt);
+					}}
+				/>
 			) : (
 				<View style={styles.teamsWrapper}>
 					<TeamView level={level} color="#1e90ff" label="Lag Blå" />
@@ -101,19 +120,45 @@ export default function InteractionScreen() {
 					<ActionBar
 						allowed={(question as MatchScenarioQuestion).allowedActions}
 						onSelect={(act: ActionType) => {
+							setSelectedAction(act);
+							setFeedback(
+								act === 'pass'
+									? 'Välj en medspelare att passa till'
+								: act === 'dribble'
+									? 'Tryck på planen dit du vill dribbla'
+									: act === 'defend'
+									? 'Välj en försvarare och tryck dit du vill pressa'
+									: 'Försök avslut om du är nära mål'
+							);
+						}}
+					/>
+					<Pressable
+						style={styles.nextBtn}
+						onPress={() => {
+							if (question?.type !== 'matchscenario' || !selectedAction) return;
 							const scen = (question as MatchScenarioQuestion).scenario;
-							const actorId = scen.keyActors?.ballCarrierId;
-							const result = validateAction(scen, { kind: act, actorId }, {
-								allowedActions: (question as MatchScenarioQuestion).allowedActions,
-								focusLane: scen.keyActors?.focusLane,
-							});
+							const actorId = selectedAction === 'defend' ? undefined : scen.keyActors?.ballCarrierId;
+							const result = validateAction(
+								scen,
+								selectedAction === 'pass'
+									? { kind: 'pass', actorId, targetId: selectedTargetPlayerId }
+									: selectedAction === 'dribble'
+									? { kind: 'dribble', actorId, from: scen.players.find(p => p.id === actorId)?.pos, to: selectedPoint }
+									: selectedAction === 'shoot'
+									? { kind: 'shoot', actorId }
+									: { kind: 'defend', from: selectedPoint, to: selectedPoint }
+								,
+								{ allowedActions: (question as MatchScenarioQuestion).allowedActions, focusLane: scen.keyActors?.focusLane }
+							);
 							setFeedback(result.message ?? (result.valid ? 'Rätt!' : 'Fel'));
 							if (result.xpDelta) setXp((v) => v + result.xpDelta!);
 						}}
-					/>
+					>
+						<Text style={styles.nextText}>Validera</Text>
+					</Pressable>
 					<Text style={styles.feedback}>{feedback}</Text>
 					<Text style={styles.xp}>XP: {xp}</Text>
-					<Pressable style={styles.nextBtn} onPress={() => { setQIndex(qIndex + 1); setFeedback(''); }}>
+					<Pressable style={styles.nextBtn} onPress={() => { setQIndex(qIndex + 1); setFeedback(''); setSelectedAction(undefined); setSelectedTargetPlayerId(undefined); setSelectedPoint(undefined); }}>
 						<Text style={styles.nextText}>Nästa</Text>
 					</Pressable>
 				</View>
