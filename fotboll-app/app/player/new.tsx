@@ -1,15 +1,31 @@
 import { useState } from 'react';
 import { View, Text, TextInput, Pressable, StyleSheet, Keyboard, Platform, ScrollView, KeyboardAvoidingView } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useRouter, Link } from 'expo-router';
+import { useRouter, Link, usePathname } from 'expo-router';
 import { useAppStore } from '@/store/useAppStore';
 import { FC25 } from '@/app/components/Theme';
 
 export default function NewPlayer() {
   const router = useRouter();
+  const pathname = usePathname();
   const setName = useAppStore((s) => s.actions.setName);
   const [name, setLocalName] = useState('');
   const [error, setError] = useState<string>('');
+  const [lastNav, setLastNav] = useState<string>('');
+
+  const navigateToAvatar = () => {
+    setLastNav(`tap:${Date.now()} route:${pathname}`);
+    // Primary
+    try { router.replace('/player/avatar'); } catch {}
+    // Fallback 1: delayed push
+    setTimeout(() => { try { router.push('/player/avatar'); } catch {} }, 50);
+    // Fallback 2: go to player home, then avatar
+    setTimeout(() => {
+      try { router.push('/player'); } catch {}
+      setTimeout(() => { try { router.push('/player/avatar'); } catch {} }, 50);
+    }, 120);
+  };
+
   return (
     <SafeAreaView style={[styles.container, { backgroundColor: FC25.colors.bg }]}> 
       <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} keyboardVerticalOffset={64} style={{ flex: 1 }}>
@@ -30,7 +46,7 @@ export default function NewPlayer() {
                 if (!trimmed) { setError('Ange ett namn för att fortsätta'); return; }
                 setName(trimmed);
                 Keyboard.dismiss();
-                requestAnimationFrame(() => router.replace('/player/avatar'));
+                requestAnimationFrame(navigateToAvatar);
               }}
             />
             {!!error && <Text style={[styles.error, { color: '#ff3b30' }]}>{error}</Text>}
@@ -42,7 +58,7 @@ export default function NewPlayer() {
                 if (!trimmed) { setError('Ange ett namn för att fortsätta'); return; }
                 setName(trimmed);
                 Keyboard.dismiss();
-                requestAnimationFrame(() => router.replace('/player/avatar'));
+                requestAnimationFrame(navigateToAvatar);
               }}
             >
               <Text style={styles.buttonText}>Fortsätt</Text>
@@ -73,11 +89,12 @@ export default function NewPlayer() {
               if (!trimmed) { setError('Ange ett namn för att fortsätta'); return; }
               setName(trimmed);
               Keyboard.dismiss();
-              setTimeout(() => router.replace('/player/avatar'), 50);
+              setTimeout(navigateToAvatar, 50);
             }}
           >
             Gå vidare om knappen inte fungerar
           </Text>
+          <Text style={{ color: FC25.colors.subtle, textAlign: 'center', marginTop: 6 }}>debug: {lastNav}</Text>
         </ScrollView>
       </KeyboardAvoidingView>
     </SafeAreaView>
