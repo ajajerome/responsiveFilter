@@ -1,29 +1,36 @@
-import { View, Text, StyleSheet, Pressable, Alert, Platform } from 'react-native';
+import { View, Text, StyleSheet, Pressable } from 'react-native';
 import { useRouter, Link } from 'expo-router';
 import { useAppStore } from '@/store/useAppStore';
 import { FC25 } from '@/app/components/Theme';
+import { useState } from 'react';
 
 export default function AvatarSetup() {
   const router = useRouter();
   const name = useAppStore((s) => s.profile.name);
+  const [navigating, setNavigating] = useState(false);
 
   const goNext = () => {
+    if (navigating) return;
+    setNavigating(true);
     try { router.replace('/player/dashboard'); } catch {}
     setTimeout(() => { try { router.push('/player/dashboard'); } catch {} }, 60);
     setTimeout(() => { try { router.push('/player/interaction'); } catch {} }, 140);
   };
 
   return (
-    <View style={[styles.container, { backgroundColor: FC25.colors.bg }]}> 
+    <View
+      style={[styles.container, { backgroundColor: FC25.colors.bg, opacity: navigating ? 0.4 : 1 }]}
+      pointerEvents={navigating ? 'none' : 'auto'}
+    >
       <Text style={[styles.title, { color: FC25.colors.text }]}>Bygg avatar</Text>
       <Text style={{ color: FC25.colors.subtle }}>Hej {name ?? 'spelare'}! Välj utseende (demo).</Text>
 
-      <Pressable style={[styles.button, { backgroundColor: FC25.colors.primary }]} hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }} onPress={goNext}>
+      <Pressable style={[styles.button, { backgroundColor: FC25.colors.primary }]} onPress={goNext} disabled={navigating}>
         <Text style={styles.buttonText}>Fortsätt</Text>
       </Pressable>
 
       <Link href="/player/dashboard" asChild>
-        <Pressable style={[styles.button, { backgroundColor: FC25.colors.secondary }]}> 
+        <Pressable style={[styles.button, { backgroundColor: FC25.colors.secondary }]} disabled={navigating}> 
           <Text style={styles.buttonText}>Fortsätt (länk)</Text>
         </Pressable>
       </Link>
