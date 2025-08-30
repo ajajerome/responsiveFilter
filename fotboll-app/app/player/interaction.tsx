@@ -54,6 +54,7 @@ export default function InteractionScreen() {
 	const level = useMemo(() => deriveLevelFromAge(age), [age]);
 	const ageTier = useMemo(() => deriveAgeTier(age), [age]);
     const { actions, progress } = useAppStore((s) => ({ actions: s.actions, progress: s.progress }));
+	const limits: any = useAppStore((s: any) => (s as any).limits);
 
 	const relevantQuestions: Question[] = useMemo(() => {
 		return QUESTIONS.filter((q) => q.level === level);
@@ -71,6 +72,14 @@ export default function InteractionScreen() {
 	const [selectedTargetPlayerId, setSelectedTargetPlayerId] = useState<string | undefined>();
 	const [selectedPoint, setSelectedPoint] = useState<Vector2 | undefined>();
 	const [stepIndex, setStepIndex] = useState<number>(0);
+
+	// Limits
+	const now = new Date();
+	const hour = now.getHours();
+	const maxPerDay = limits?.maxScenariosPerDay ?? 10;
+	const scenariosToday = limits?.scenariosToday ?? 0;
+	const curfew = limits?.curfew ?? { startHour: 7, endHour: 20 };
+	const isCurfew = hour < curfew.startHour || hour >= curfew.endHour;
 
 	return (
 		<ScrollView contentContainerStyle={[styles.container, { backgroundColor: FC25.colors.bg }] }>
@@ -105,7 +114,14 @@ export default function InteractionScreen() {
 				</View>
 			)}
 
-			{question?.type === 'matchscenario' ? (
+			{(isCurfew || scenariosToday >= maxPerDay) ? (
+				<View style={{ backgroundColor: FC25.colors.card, borderRadius: FC25.radius, padding: 16, borderWidth: 1, borderColor: FC25.colors.border, gap: 8 }}>
+					<Text style={{ color: FC25.colors.text, fontWeight: '800', fontSize: 18 }}>{isCurfew ? 'Dags att vila' : 'Dagens gräns nådd'}</Text>
+					<Text style={{ color: FC25.colors.subtle }}>
+						{isCurfew ? 'Det är sent – sömn hjälper kroppen att växa och bli starkare.' : 'Bra jobbat idag! Fortsätt i morgon för att bli ännu bättre.'}
+					</Text>
+				</View>
+			) : question?.type === 'matchscenario' ? (
 				<PitchView
 					scenario={(question as MatchScenarioQuestion).scenario}
 					selectable
@@ -136,7 +152,7 @@ export default function InteractionScreen() {
 				</View>
 			)}
 
-			<View style={[styles.questionBox, { backgroundColor: FC25.colors.card, borderColor: FC25.colors.border }]}>
+			<View style={[styles.questionBox, { backgroundColor: FC25.colors.card, borderColor: FC25.colors.border }] }>
 				<Text style={[styles.questionTitle, { color: FC25.colors.text }]}>{question?.question ?? 'Inga frågor tillgängliga för denna nivå ännu.'}</Text>
 				{(question as any)?.options && (
 					<View style={styles.options}>
@@ -152,7 +168,7 @@ export default function InteractionScreen() {
 				)}
 			</View>
 
-			{question?.type === 'matchscenario' && (
+			{question?.type === 'matchscenario' && !isCurfew && scenariosToday < maxPerDay && (
 				<View style={styles.actionSection}>
 					{/* HUD + Step indicator */}
 					{(() => {
@@ -237,7 +253,7 @@ export default function InteractionScreen() {
 					</Pressable>
 					<Text style={[styles.feedback, { color: FC25.colors.success }]}>{feedback}</Text>
 					<Text style={[styles.xp, { color: FC25.colors.success }]}>XP: {currentLevelXp}</Text>
-					<Pressable style={styles.nextBtn} onPress={() => { const nextCount = sessionCount + 1; setSessionCount(nextCount); if (nextCount >= SESSION_LENGTH) { setSessionDone(true); } setQIndex(qIndex + 1); setFeedback(''); setSelectedAction(undefined); setSelectedTargetPlayerId(undefined); setSelectedPoint(undefined); setStepIndex(0); }}>
+					<Pressable style={styles.nextBtn} onPress={() => { const nextCount = sessionCount + 1; setSessionCount(nextCount); actions.incrementScenarioCount(); if (nextCount >= SESSION_LENGTH) { setSessionDone(true); } setQIndex(qIndex + 1); setFeedback(''); setSelectedAction(undefined); setSelectedTargetPlayerId(undefined); setSelectedPoint(undefined); setStepIndex(0); }}>
 						<Text style={styles.nextText}>Nästa</Text>
 					</Pressable>
 					<Pressable style={styles.nextBtn} onPress={() => { setSelectedAction(undefined); setSelectedTargetPlayerId(undefined); setSelectedPoint(undefined); setFeedback('Val rensade'); }}>
