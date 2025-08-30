@@ -1,4 +1,4 @@
-import type { Scenario, ActionEvent, ScenarioValidation } from '@/types/scenario';
+import type { Scenario, ActionEvent, ScenarioValidation, ScenarioSequence } from '@/types/scenario';
 import type { ActionType } from '@/types/content';
 
 function distance(a: { x: number; y: number }, b: { x: number; y: number }): number {
@@ -135,5 +135,21 @@ export function getAllowedPassTargets(
 		.filter((p) => distance(from.pos, p.pos) <= R.maxPass)
 		.filter((p) => inFocusLane(p.pos.y))
 		.map((p) => p.id);
+}
+
+export function scoreSequenceStep(
+	s: Scenario,
+	sequence: ScenarioSequence,
+	stepIndex: number,
+	action: ActionEvent,
+	options?: { allowedActions?: import('@/types/content').ActionType[]; focusLane?: 'left' | 'center' | 'right' }
+): ScenarioValidation {
+	const step = sequence.steps[stepIndex];
+	if (!step) return { valid: false, message: 'Ingen stegdata.' };
+	if (step.expected !== action.kind) return { valid: false, message: 'Fel åtgärd för detta steg.' };
+	// Delegate to base validation
+	const base = validateAction(s, action, options);
+	if (!base.valid) return base;
+	return { valid: true, message: base.message, xpDelta: (base.xpDelta ?? 0) + (step.xpBonus ?? 0) };
 }
 

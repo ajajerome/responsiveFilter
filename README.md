@@ -47,3 +47,10 @@ Nästa steg:
 ## Unity (översikt)
 
 Se `fotbollsresan-unity/README.md` för iOS/TestFlight och Staging.
+
+## Expo-app prioriteringar
+
+- Åldersanpassade formationer och scenarier per nivå (5/7/9-manna)
+- Sekvenslogik: fler-stegs scenarier (pass -> rörelse -> avslut) med scoring
+- FC25-tema konsekvent över hela appen
+- XP-progression kopplad till actions (implementerat)

@@ -41,3 +41,17 @@ export interface ScenarioValidation {
 	message?: string;
 	xpDelta?: number;
 }
+
+export interface ScenarioStep {
+	// Expected action kind for this step and optional hints
+	expected: 'pass' | 'dribble' | 'shoot' | 'defend';
+	hint?: string;
+	// Optional: constrain target to same-team or specific player ids
+	allowedTargetIds?: string[];
+	// Optional extra scoring/bonus for this step
+	xpBonus?: number;
+}
+
+export interface ScenarioSequence {
+	steps: ScenarioStep[];
+}

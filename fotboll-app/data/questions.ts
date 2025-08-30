@@ -47,5 +47,36 @@ export const QUESTIONS: Question[] = [
     allowedActions: ['pass', 'dribble', 'shoot'],
     explanation: 'I 5-manna med boll på kanten: sök trianglar och spelbarhet inåt.'
   }
+  ,
+  {
+    id: 's002',
+    type: 'matchscenario',
+    level: '7-manna',
+    position: 'mittfält',
+    question: 'Bygg anfall: först pass inåt, sedan avslut.',
+    scenario: {
+      level: '7-manna',
+      attacking: 'home',
+      possession: 'home',
+      players: [
+        { id: 'h-gk', role: 'GK', team: 'home', pos: { x: 8, y: 50 } },
+        { id: 'h-lb', role: 'LB', team: 'home', pos: { x: 22, y: 30 } },
+        { id: 'h-cb', role: 'CB', team: 'home', pos: { x: 20, y: 50 } },
+        { id: 'h-rb', role: 'RB', team: 'home', pos: { x: 22, y: 70 } },
+        { id: 'h-lm', role: 'LM', team: 'home', pos: { x: 45, y: 28 } },
+        { id: 'h-cm', role: 'CM', team: 'home', pos: { x: 50, y: 50 } },
+        { id: 'h-rm', role: 'RM', team: 'home', pos: { x: 45, y: 72 } },
+        { id: 'h-st', role: 'ST', team: 'home', pos: { x: 72, y: 50 } },
+        { id: 'a-gk', role: 'GK', team: 'away', pos: { x: 92, y: 50 } },
+        { id: 'a-lb', role: 'LB', team: 'away', pos: { x: 78, y: 30 } },
+        { id: 'a-cb', role: 'CB', team: 'away', pos: { x: 80, y: 50 } },
+        { id: 'a-rb', role: 'RB', team: 'away', pos: { x: 78, y: 70 } },
+      ],
+      ball: { pos: { x: 45, y: 72 } },
+      keyActors: { ballCarrierId: 'h-rm', focusLane: 'right' }
+    } as Scenario,
+    allowedActions: ['pass', 'shoot'],
+    explanation: 'Pass inåt till CM/ ST och sedan avslut.'
+  }
 ];
 
