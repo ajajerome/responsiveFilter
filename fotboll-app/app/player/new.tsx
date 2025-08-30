@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { View, Text, TextInput, Pressable, StyleSheet, Keyboard, Platform, ScrollView, KeyboardAvoidingView } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useRouter } from 'expo-router';
+import { useRouter, Link } from 'expo-router';
 import { useAppStore } from '@/store/useAppStore';
 import { FC25 } from '@/app/components/Theme';
 
@@ -48,6 +48,20 @@ export default function NewPlayer() {
               <Text style={styles.buttonText}>Fortsätt</Text>
             </Pressable>
           </View>
+          <Link href="/player/avatar" asChild>
+            <Pressable
+              style={[styles.button, { backgroundColor: name.trim() ? FC25.colors.secondary : FC25.colors.border }]}
+              disabled={!name.trim()}
+              onPress={() => {
+                const trimmed = name.trim();
+                if (!trimmed) { setError('Ange ett namn för att fortsätta'); return; }
+                setName(trimmed);
+                Keyboard.dismiss();
+              }}
+            >
+              <Text style={styles.buttonText}>Fortsätt (länk)</Text>
+            </Pressable>
+          </Link>
         </ScrollView>
       </KeyboardAvoidingView>
     </SafeAreaView>
