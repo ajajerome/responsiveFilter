@@ -10,6 +10,7 @@ type LevelProgress = {
 };
 
 type Profile = {
+  name?: string;
   avatar: {
     gender?: 'kille' | 'tjej' | 'annat';
     hair?: string;
@@ -20,9 +21,11 @@ type Profile = {
 
 type AppState = {
   profile: Profile;
+  season: { number: number; xp: number };
   progress: Partial<Record<Level, LevelProgress>>;
   badges: string[];
   actions: {
+    setName: (name: string) => void;
     setFavoritePosition: (pos: Position) => void;
     addXp: (level: Level, amount: number) => void;
     markQuestionCompleted: (level: Level, questionId: string) => void;
@@ -40,19 +43,28 @@ export const useAppStore = create<AppState>()(
   persist(
     (set, get) => ({
       profile: { avatar: {} },
+      season: { number: 1, xp: 0 },
       progress: initialProgress,
       badges: [],
       actions: {
+        setName: (name) => set((s) => ({ profile: { ...s.profile, name } })),
         setFavoritePosition: (pos) =>
           set((s) => ({ profile: { ...s.profile, favoritePosition: pos } })),
         addXp: (level, amount) =>
           set((s) => {
             const lv = s.progress[level] ?? { unlocked: level === '5-manna', xp: 0, completedQuestionIds: [] };
+            const nextSeasonXp = Math.max(0, (s.season?.xp ?? 0) + amount);
+            // Simple season rollover at 1000 XP
+            const shouldLevelSeason = nextSeasonXp >= 1000;
+            const season = shouldLevelSeason
+              ? { number: (s.season?.number ?? 1) + 1, xp: nextSeasonXp - 1000 }
+              : { number: s.season?.number ?? 1, xp: nextSeasonXp };
             return {
               progress: {
                 ...s.progress,
                 [level]: { ...lv, xp: Math.max(0, lv.xp + amount) },
               },
+              season,
             };
           }),
         markQuestionCompleted: (level, questionId) =>

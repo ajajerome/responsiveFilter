@@ -9,6 +9,9 @@ export default function HomeIndex() {
       <Link href="/player" asChild>
         <Pressable style={[styles.button, { backgroundColor: FC25.colors.primary }]}><Text style={styles.buttonText}>Starta som spelare</Text></Pressable>
       </Link>
+      <Link href="/player/new" asChild>
+        <Pressable style={[styles.button, { backgroundColor: FC25.colors.secondary }]}><Text style={styles.buttonText}>Ny spelare</Text></Pressable>
+      </Link>
       <Link href="/trainer" asChild>
         <Pressable style={[styles.button, { backgroundColor: FC25.colors.secondary }]}><Text style={styles.buttonText}>Förälder/Tränare</Text></Pressable>
       </Link>
