@@ -49,16 +49,21 @@ function TeamView({ level, color, label }: { level: Level; color: string; label:
 }
 
 export default function InteractionScreen() {
-	const [age, setAge] = useState<number>(10);
+	const [age, setAge] = useState<number>(9);
+	const [showAgeControls, setShowAgeControls] = useState<boolean>(false);
 	const level = useMemo(() => deriveLevelFromAge(age), [age]);
 	const ageTier = useMemo(() => deriveAgeTier(age), [age]);
     const { actions, progress } = useAppStore((s) => ({ actions: s.actions, progress: s.progress }));
+	const limits: any = useAppStore((s: any) => (s as any).limits);
 
 	const relevantQuestions: Question[] = useMemo(() => {
 		return QUESTIONS.filter((q) => q.level === level);
 	}, [level]);
 
+	const SESSION_LENGTH = 5;
 	const [qIndex, setQIndex] = useState(0);
+	const [sessionCount, setSessionCount] = useState(0);
+	const [sessionDone, setSessionDone] = useState(false);
 	const question = relevantQuestions[qIndex % Math.max(1, relevantQuestions.length)];
 	const [feedback, setFeedback] = useState<string>('');
 	const [xp, setXp] = useState<number>(0);
@@ -68,19 +73,55 @@ export default function InteractionScreen() {
 	const [selectedPoint, setSelectedPoint] = useState<Vector2 | undefined>();
 	const [stepIndex, setStepIndex] = useState<number>(0);
 
+	// Limits
+	const now = new Date();
+	const hour = now.getHours();
+	const maxPerDay = limits?.maxScenariosPerDay ?? 10;
+	const scenariosToday = limits?.scenariosToday ?? 0;
+	const curfew = limits?.curfew ?? { startHour: 7, endHour: 20 };
+	const isCurfew = hour < curfew.startHour || hour >= curfew.endHour;
+
 	return (
-		<ScrollView contentContainerStyle={styles.container}>
-			<Text style={styles.title}>Matchscenario – Interaktivt läge</Text>
-			<Text style={styles.subtitle}>Ålder: {age} ({ageTier}) • Nivå: {level}</Text>
-			<View style={styles.ageControls}>
-				{[7, 8, 9, 10, 11, 12, 13].map((a) => (
-					<Pressable key={a} style={[styles.ageButton, age === a && styles.ageButtonActive]} onPress={() => setAge(a)}>
-						<Text style={[styles.ageButtonText, age === a && styles.ageButtonTextActive]}>{a}</Text>
-					</Pressable>
-				))}
+		<ScrollView contentContainerStyle={[styles.container, { backgroundColor: FC25.colors.bg }] }>
+			<View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+				<Text style={[styles.title, { color: FC25.colors.text }]}>Matchscenario – Interaktivt läge</Text>
+				<Pressable onPress={() => setShowAgeControls(!showAgeControls)}>
+					<Text style={{ color: FC25.colors.subtle }}>{showAgeControls ? 'Dölj ålder' : 'Ålder'}</Text>
+				</Pressable>
+			</View>
+			<Text style={[styles.subtitle, { color: FC25.colors.subtle }]}>Ålder: {age} ({ageTier}) • Nivå: {level}</Text>
+			{showAgeControls && (
+				<View style={styles.ageControls}>
+					{[7, 8, 9, 10, 11, 12, 13].map((a) => (
+						<Pressable key={a} style={[styles.ageButton, age === a && styles.ageButtonActive]} onPress={() => setAge(a)}>
+							<Text style={[styles.ageButtonText, age === a && styles.ageButtonTextActive]}>{a}</Text>
+						</Pressable>
+					))}
+				</View>
+			)}
+
+			<View style={{ backgroundColor: FC25.colors.card, borderRadius: FC25.radius, padding: 8, borderWidth: 1, borderColor: FC25.colors.border }}>
+				<Text style={{ color: FC25.colors.text, fontWeight: '700' }}>XP: {currentLevelXp}</Text>
 			</View>
 
-			{question?.type === 'matchscenario' ? (
+			{sessionDone && (
+				<View style={{ backgroundColor: FC25.colors.card, borderRadius: FC25.radius, padding: 16, borderWidth: 1, borderColor: FC25.colors.border, alignItems: 'center', gap: 8 }}>
+					<Text style={{ color: FC25.colors.text, fontSize: 18, fontWeight: '800' }}>Session klar!</Text>
+					<Text style={{ color: FC25.colors.subtle }}>Bra jobbat! Du klarade {SESSION_LENGTH} scenarier.</Text>
+					<Pressable style={styles.nextBtn} onPress={() => { setSessionDone(false); setSessionCount(0); setQIndex(0); setFeedback(''); setSelectedAction(undefined); setSelectedTargetPlayerId(undefined); setSelectedPoint(undefined); setStepIndex(0); }}>
+						<Text style={styles.nextText}>Spela igen</Text>
+					</Pressable>
+				</View>
+			)}
+
+			{(isCurfew || scenariosToday >= maxPerDay) ? (
+				<View style={{ backgroundColor: FC25.colors.card, borderRadius: FC25.radius, padding: 16, borderWidth: 1, borderColor: FC25.colors.border, gap: 8 }}>
+					<Text style={{ color: FC25.colors.text, fontWeight: '800', fontSize: 18 }}>{isCurfew ? 'Dags att vila' : 'Dagens gräns nådd'}</Text>
+					<Text style={{ color: FC25.colors.subtle }}>
+						{isCurfew ? 'Det är sent – sömn hjälper kroppen att växa och bli starkare.' : 'Bra jobbat idag! Fortsätt i morgon för att bli ännu bättre.'}
+					</Text>
+				</View>
+			) : question?.type === 'matchscenario' ? (
 				<PitchView
 					scenario={(question as MatchScenarioQuestion).scenario}
 					selectable
@@ -111,23 +152,23 @@ export default function InteractionScreen() {
 				</View>
 			)}
 
-			<View style={styles.questionBox}>
-				<Text style={styles.questionTitle}>{question?.question ?? 'Inga frågor tillgängliga för denna nivå ännu.'}</Text>
+			<View style={[styles.questionBox, { backgroundColor: FC25.colors.card, borderColor: FC25.colors.border }] }>
+				<Text style={[styles.questionTitle, { color: FC25.colors.text }]}>{question?.question ?? 'Inga frågor tillgängliga för denna nivå ännu.'}</Text>
 				{(question as any)?.options && (
 					<View style={styles.options}>
 						{(question as any).options.map((opt: string, i: number) => (
 							<Pressable key={i} style={styles.option} onPress={() => setQIndex(qIndex + 1)}>
-								<Text>{opt}</Text>
+								<Text style={{ color: FC25.colors.text }}>{opt}</Text>
 							</Pressable>
 						))}
 					</View>
 				)}
 				{!question && (
-					<Text style={styles.noQuestions}>Lägg till frågor i data/questions.ts för nivån {level}.</Text>
+					<Text style={[styles.noQuestions, { color: FC25.colors.subtle }]}>Lägg till frågor i data/questions.ts för nivån {level}.</Text>
 				)}
 			</View>
 
-			{question?.type === 'matchscenario' && (
+			{question?.type === 'matchscenario' && !isCurfew && scenariosToday < maxPerDay && (
 				<View style={styles.actionSection}>
 					{/* HUD + Step indicator */}
 					{(() => {
@@ -161,9 +202,9 @@ export default function InteractionScreen() {
 									? 'Välj en medspelare att passa till'
 								: act === 'dribble'
 									? 'Tryck på planen dit du vill dribbla'
-									: act === 'defend'
+								: act === 'defend'
 									? 'Välj en försvarare och tryck dit du vill pressa'
-									: 'Försök avslut om du är nära mål'
+								: 'Försök avslut om du är nära mål'
 							);
 						}}
 					/>
@@ -210,9 +251,9 @@ export default function InteractionScreen() {
 					>
 						<Text style={styles.nextText}>Validera</Text>
 					</Pressable>
-					<Text style={styles.feedback}>{feedback}</Text>
-					<Text style={styles.xp}>XP: {currentLevelXp}</Text>
-					<Pressable style={styles.nextBtn} onPress={() => { setQIndex(qIndex + 1); setFeedback(''); setSelectedAction(undefined); setSelectedTargetPlayerId(undefined); setSelectedPoint(undefined); setStepIndex(0); }}>
+					<Text style={[styles.feedback, { color: FC25.colors.success }]}>{feedback}</Text>
+					<Text style={[styles.xp, { color: FC25.colors.success }]}>XP: {currentLevelXp}</Text>
+					<Pressable style={styles.nextBtn} onPress={() => { const nextCount = sessionCount + 1; setSessionCount(nextCount); actions.incrementScenarioCount(); if (nextCount >= SESSION_LENGTH) { setSessionDone(true); } setQIndex(qIndex + 1); setFeedback(''); setSelectedAction(undefined); setSelectedTargetPlayerId(undefined); setSelectedPoint(undefined); setStepIndex(0); }}>
 						<Text style={styles.nextText}>Nästa</Text>
 					</Pressable>
 					<Pressable style={styles.nextBtn} onPress={() => { setSelectedAction(undefined); setSelectedTargetPlayerId(undefined); setSelectedPoint(undefined); setFeedback('Val rensade'); }}>

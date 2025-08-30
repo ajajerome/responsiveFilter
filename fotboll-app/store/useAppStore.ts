@@ -21,7 +21,7 @@ type Profile = {
 
 type AppState = {
   profile: Profile;
-  season: { number: number; xp: number };
+  season: { number: number; xp: number; startIso: string };
   progress: Partial<Record<Level, LevelProgress>>;
   badges: string[];
   actions: {
@@ -30,6 +30,9 @@ type AppState = {
     addXp: (level: Level, amount: number) => void;
     markQuestionCompleted: (level: Level, questionId: string) => void;
     unlockLevel: (level: Level) => void;
+    incrementScenarioCount: (now?: Date) => void;
+    setMaxScenariosPerDay: (max: number) => void;
+    setCurfew: (startHour: number, endHour: number) => void;
   };
 };
 
@@ -43,9 +46,10 @@ export const useAppStore = create<AppState>()(
   persist(
     (set, get) => ({
       profile: { avatar: {} },
-      season: { number: 1, xp: 0 },
+      season: { number: 1, xp: 0, startIso: new Date().toISOString() },
       progress: initialProgress,
       badges: [],
+      limits: undefined as any,
       actions: {
         setName: (name) => set((s) => ({ profile: { ...s.profile, name } })),
         setFavoritePosition: (pos) =>
@@ -53,12 +57,15 @@ export const useAppStore = create<AppState>()(
         addXp: (level, amount) =>
           set((s) => {
             const lv = s.progress[level] ?? { unlocked: level === '5-manna', xp: 0, completedQuestionIds: [] };
-            const nextSeasonXp = Math.max(0, (s.season?.xp ?? 0) + amount);
-            // Simple season rollover at 1000 XP
-            const shouldLevelSeason = nextSeasonXp >= 1000;
-            const season = shouldLevelSeason
-              ? { number: (s.season?.number ?? 1) + 1, xp: nextSeasonXp - 1000 }
-              : { number: s.season?.number ?? 1, xp: nextSeasonXp };
+            // Week-based season rollover
+            const now = new Date();
+            const start = s.season?.startIso ? new Date(s.season.startIso) : new Date();
+            const days = Math.floor((now.getTime() - start.getTime()) / (1000 * 60 * 60 * 24));
+            const rolled = days >= 7;
+            const baseSeason = rolled
+              ? { number: (s.season?.number ?? 1) + 1, xp: 0, startIso: now.toISOString() }
+              : { number: s.season?.number ?? 1, xp: s.season?.xp ?? 0, startIso: s.season?.startIso ?? now.toISOString() };
+            const season = { ...baseSeason, xp: Math.max(0, baseSeason.xp + amount) };
             return {
               progress: {
                 ...s.progress,
@@ -82,6 +89,44 @@ export const useAppStore = create<AppState>()(
           set((s) => {
             const lv = s.progress[level] ?? { unlocked: false, xp: 0, completedQuestionIds: [] };
             return { progress: { ...s.progress, [level]: { ...lv, unlocked: true } } };
+          }),
+        incrementScenarioCount: (now = new Date()) =>
+          set((s) => {
+            const today = now.toISOString().slice(0, 10);
+            const limits = s as any as {
+              limits?: { maxScenariosPerDay: number; scenariosToday: number; lastActiveDateIso?: string; curfew: { startHour: number; endHour: number } };
+            };
+            const cur = limits.limits ?? { maxScenariosPerDay: 10, scenariosToday: 0, lastActiveDateIso: today, curfew: { startHour: 7, endHour: 20 } };
+            const last = cur.lastActiveDateIso ?? today;
+            const isNewDay = last !== today;
+            const scenariosToday = isNewDay ? 0 : cur.scenariosToday ?? 0;
+            return {
+              ...(s as any),
+              limits: {
+                maxScenariosPerDay: cur.maxScenariosPerDay,
+                scenariosToday: Math.min(cur.maxScenariosPerDay, scenariosToday + 1),
+                lastActiveDateIso: today,
+                curfew: cur.curfew,
+              },
+            } as any;
+          }),
+        setMaxScenariosPerDay: (max) =>
+          set((s) => {
+            const today = new Date().toISOString().slice(0, 10);
+            const cur = (s as any).limits ?? { scenariosToday: 0, lastActiveDateIso: today, curfew: { startHour: 7, endHour: 20 } };
+            return {
+              ...(s as any),
+              limits: { ...cur, maxScenariosPerDay: Math.max(1, Math.floor(max)) },
+            } as any;
+          }),
+        setCurfew: (startHour, endHour) =>
+          set((s) => {
+            const today = new Date().toISOString().slice(0, 10);
+            const cur = (s as any).limits ?? { scenariosToday: 0, lastActiveDateIso: today, maxScenariosPerDay: 10 };
+            return {
+              ...(s as any),
+              limits: { ...cur, curfew: { startHour, endHour } },
+            } as any;
           }),
       },
     }),

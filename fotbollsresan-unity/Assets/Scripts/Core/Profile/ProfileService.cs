@@ -9,12 +9,21 @@ namespace Fotbollsresan.Core
 {
     public class ProfileService : MonoBehaviour
     {
+        public static ProfileService Instance { get; private set; }
         public PlayerProfile CurrentProfile;
 
         private string ProfilePath => Path.Combine(Application.persistentDataPath, "profile.json");
 
         private void Awake()
         {
+            if (Instance != null && Instance != this)
+            {
+                Destroy(gameObject);
+                return;
+            }
+            Instance = this;
+            DontDestroyOnLoad(gameObject);
+
             LoadProfile();
             if (CurrentProfile == null)
             {
@@ -53,6 +62,19 @@ namespace Fotbollsresan.Core
             var json = File.ReadAllText(ProfilePath);
             var wrapper = JsonUtility.FromJson<SerializableProfile>(json);
             CurrentProfile = wrapper?.ToProfile();
+        }
+
+        private void OnDisable()
+        {
+            Debug.LogWarning($"{nameof(ProfileService)} was disabled. This service is expected to persist across scenes.");
+        }
+
+        private void OnDestroy()
+        {
+            if (Instance == this)
+            {
+                Debug.LogWarning($"{nameof(ProfileService)} was destroyed. Ensure exactly one persistent instance exists in the bootstrap scene.");
+            }
         }
 
         [Serializable]
