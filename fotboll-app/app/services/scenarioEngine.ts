@@ -109,3 +109,31 @@ export function validateAction(
 	}
 }
 
+export function getAllowedPassTargets(
+	s: Scenario,
+	actorId: string | undefined,
+	options?: { focusLane?: 'left' | 'center' | 'right' }
+): string[] {
+	if (!actorId) return [];
+	const RULES = {
+		'5-manna': { maxPass: 40 },
+		'7-manna': { maxPass: 50 },
+		'9-manna': { maxPass: 60 },
+	} as const;
+	const R = RULES[s.level];
+	const from = s.players.find((p) => p.id === actorId);
+	if (!from) return [];
+	function inFocusLane(y: number) {
+		if (!options?.focusLane) return true;
+		if (options.focusLane === 'left') return y <= 33;
+		if (options.focusLane === 'center') return y > 33 && y < 66;
+		return y >= 66;
+	}
+	return s.players
+		.filter((p) => p.team === from.team && p.id !== from.id)
+		.filter((p) => isAttackingForward(s, from.pos.x, p.pos.x))
+		.filter((p) => distance(from.pos, p.pos) <= R.maxPass)
+		.filter((p) => inFocusLane(p.pos.y))
+		.map((p) => p.id);
+}
+

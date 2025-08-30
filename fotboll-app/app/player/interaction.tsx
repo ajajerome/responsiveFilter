@@ -5,9 +5,10 @@ import type { Level, Question, MatchScenarioQuestion } from '@/types/content';
 import PitchView from '@/app/components/PitchView';
 import ActionBar from '@/app/components/ActionBar';
 import { FC25 } from '@/app/components/Theme';
-import { validateAction } from '@/app/services/scenarioEngine';
+import { validateAction, getAllowedPassTargets } from '@/app/services/scenarioEngine';
 import type { ActionType } from '@/types/content';
 import type { Vector2 } from '@/types/scenario';
+import * as Haptics from 'expo-haptics';
 
 type AgeTier = 'U7' | 'U9' | 'U11' | 'U13+';
 
@@ -79,8 +80,15 @@ export default function InteractionScreen() {
 				<PitchView
 					scenario={(question as MatchScenarioQuestion).scenario}
 					selectable
-					highlightPlayerIds={selectedTargetPlayerId ? [selectedTargetPlayerId] : []}
+					highlightPlayerIds={(() => {
+						const scen = (question as MatchScenarioQuestion).scenario;
+						if (selectedAction === 'pass') {
+							return getAllowedPassTargets(scen, scen.keyActors?.ballCarrierId, { focusLane: scen.keyActors?.focusLane });
+						}
+						return selectedTargetPlayerId ? [selectedTargetPlayerId] : [];
+					})()}
 					selectedPoint={selectedPoint}
+					ghostPath={selectedAction === 'dribble' && selectedPoint ? { from: (question as MatchScenarioQuestion).scenario.players.find(p => p.id === (question as MatchScenarioQuestion).scenario.keyActors?.ballCarrierId)!.pos, to: selectedPoint } : undefined}
 					onSelectPlayer={(pid) => {
 						if (!selectedAction) return;
 						if (selectedAction === 'pass') {
@@ -117,6 +125,17 @@ export default function InteractionScreen() {
 
 			{question?.type === 'matchscenario' && (
 				<View style={styles.actionSection}>
+					{/* HUD */}
+					{(() => {
+						const scen = (question as MatchScenarioQuestion).scenario;
+						const actor = scen.players.find(p => p.id === scen.keyActors?.ballCarrierId);
+						return (
+							<View style={{ gap: 6 }}>
+								<Text style={{ color: FC25.colors.text }}>Bollhållare: {actor?.role ?? 'okänd'} • Lane: {scen.keyActors?.focusLane ?? '-'}</Text>
+							</View>
+						);
+					})()}
+
 					<ActionBar
 						allowed={(question as MatchScenarioQuestion).allowedActions}
 						onSelect={(act: ActionType) => {
@@ -152,6 +171,11 @@ export default function InteractionScreen() {
 							);
 							setFeedback(result.message ?? (result.valid ? 'Rätt!' : 'Fel'));
 							if (result.xpDelta) setXp((v) => v + result.xpDelta!);
+							if (result.valid) {
+								Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+							} else {
+								Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
+							}
 						}}
 					>
 						<Text style={styles.nextText}>Validera</Text>

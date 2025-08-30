@@ -1,6 +1,6 @@
 import { memo, useMemo, useCallback } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
-import Svg, { Rect, Line, Circle } from 'react-native-svg';
+import Svg, { Rect, Line, Circle, Path } from 'react-native-svg';
 import type { Scenario, Vector2 } from '@/types/scenario';
 
 type Props = {
@@ -12,6 +12,7 @@ type Props = {
 	onSelectPoint?: (pos: Vector2) => void;
 	highlightPlayerIds?: string[];
 	selectedPoint?: Vector2;
+	ghostPath?: { from: Vector2; to: Vector2 };
 };
 
 function normalize(x: number, y: number, w: number, h: number) {
@@ -30,7 +31,7 @@ function formationZones(level: Scenario['level']) {
 	}
 }
 
-export const PitchView = memo(function PitchView({ scenario, width = 340, height = 220, selectable, onSelectPlayer, onSelectPoint, highlightPlayerIds, selectedPoint }: Props) {
+export const PitchView = memo(function PitchView({ scenario, width = 340, height = 220, selectable, onSelectPlayer, onSelectPoint, highlightPlayerIds, selectedPoint, ghostPath }: Props) {
 	const zones = useMemo(() => formationZones(scenario.level), [scenario.level]);
 
 	const handlePitchPress = useCallback((e: any) => {
@@ -89,6 +90,22 @@ export const PitchView = memo(function PitchView({ scenario, width = 340, height
 					(() => {
 						const { cx, cy } = normalize(selectedPoint.x, selectedPoint.y, width, height);
 						return <Circle cx={cx} cy={cy} r={6} fill="rgba(0,240,255,0.9)" stroke="#0a0a0f" strokeWidth={1.5} />;
+					})()
+				)}
+
+				{/* Ghost path for passes/dribbles */}
+				{ghostPath && (
+					(() => {
+						const s = normalize(ghostPath.from.x, ghostPath.from.y, width, height);
+						const t = normalize(ghostPath.to.x, ghostPath.to.y, width, height);
+						return (
+							<Path
+								d={`M ${s.cx} ${s.cy} L ${t.cx} ${t.cy}`}
+								stroke="rgba(0,240,255,0.8)"
+								strokeDasharray="6 6"
+								strokeWidth={3}
+							/>
+						);
 					})()
 				)}
 			</Svg>
