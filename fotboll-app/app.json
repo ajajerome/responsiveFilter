@@ -11,6 +11,9 @@
     "experiments": {
       "typedRoutes": true
     },
+    "plugins": [
+      "expo-router"
+    ],
     "splash": {
       "image": "./assets/splash-icon.png",
       "resizeMode": "contain",
@@ -28,7 +31,8 @@
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "edgeToEdgeEnabled": true
+      "edgeToEdgeEnabled": true,
+      "package": "com.ajagames.learnfotball"
     },
     "web": {
       "favicon": "./assets/favicon.png"
