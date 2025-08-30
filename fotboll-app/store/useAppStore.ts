@@ -16,6 +16,10 @@ type Profile = {
     hair?: string;
     shirtColor?: string;
   };
+  age?: number;
+  jerseyNumber?: number;
+  teamColor?: string;
+  skinTone?: string;
   favoritePosition?: Position;
 };
 
@@ -26,6 +30,11 @@ type AppState = {
   badges: string[];
   actions: {
     setName: (name: string) => void;
+    setAge: (age: number) => void;
+    setJerseyNumber: (num: number) => void;
+    setTeamColor: (hex: string) => void;
+    setSkinTone: (hex: string) => void;
+    setGender: (g: 'kille' | 'tjej' | 'annat') => void;
     setFavoritePosition: (pos: Position) => void;
     addXp: (level: Level, amount: number) => void;
     markQuestionCompleted: (level: Level, questionId: string) => void;
@@ -52,6 +61,11 @@ export const useAppStore = create<AppState>()(
       limits: undefined as any,
       actions: {
         setName: (name) => set((s) => ({ profile: { ...s.profile, name } })),
+        setAge: (age) => set((s) => ({ profile: { ...s.profile, age } })),
+        setJerseyNumber: (jerseyNumber) => set((s) => ({ profile: { ...s.profile, jerseyNumber } })),
+        setTeamColor: (teamColor) => set((s) => ({ profile: { ...s.profile, teamColor } })),
+        setSkinTone: (skinTone) => set((s) => ({ profile: { ...s.profile, skinTone } })),
+        setGender: (gender) => set((s) => ({ profile: { ...s.profile, avatar: { ...s.profile.avatar, gender } } })),
         setFavoritePosition: (pos) =>
           set((s) => ({ profile: { ...s.profile, favoritePosition: pos } })),
         addXp: (level, amount) =>
