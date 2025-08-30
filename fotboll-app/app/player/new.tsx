@@ -14,14 +14,21 @@ export default function NewPlayer() {
   const [lastNav, setLastNav] = useState<string>('ready');
 
   const navigateToAvatar = () => {
-    setLastNav(`tap:${Date.now()} route:${pathname}`);
-    Alert.alert('Navigerar', 'Försöker gå vidare...', [{ text: 'OK' }], { cancelable: true });
-    try { router.replace('/player/avatar'); } catch {}
-    setTimeout(() => { try { router.push('/player/avatar'); } catch {} }, 60);
-    setTimeout(() => {
-      try { router.push('/player'); } catch {}
-      setTimeout(() => { try { router.push('/player/avatar'); } catch {} }, 60);
-    }, 140);
+    const attempts: Array<{ label: string; fn: () => void }> = [
+      { label: 'replace:/player/avatar', fn: () => router.replace('/player/avatar') },
+      { label: 'push:/player/avatar', fn: () => router.push('/player/avatar') },
+      { label: 'navigate:/player/avatar', fn: () => (router as any).navigate?.('/player/avatar') },
+      { label: 'replace:player/avatar', fn: () => router.replace('player/avatar') },
+      { label: 'push:player/avatar', fn: () => router.push('player/avatar') },
+      { label: 'navigate:player/avatar', fn: () => (router as any).navigate?.('player/avatar') },
+    ];
+    attempts.forEach((a, idx) => {
+      setTimeout(() => {
+        setLastNav(`${a.label} t:${Date.now()} cur:${pathname}`);
+        try { a.fn(); } catch {}
+      }, 80 * idx);
+    });
+    Alert.alert('Navigerar', 'Försöker öppna avatar...', [{ text: 'OK' }], { cancelable: true });
   };
 
   return (
