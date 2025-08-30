@@ -5,7 +5,7 @@ import type { Level, Question, MatchScenarioQuestion } from '@/types/content';
 import PitchView from '@/app/components/PitchView';
 import ActionBar from '@/app/components/ActionBar';
 import { FC25 } from '@/app/components/Theme';
-import { validateAction, getAllowedPassTargets } from '@/app/services/scenarioEngine';
+import { validateAction, getAllowedPassTargets, scoreSequenceStep } from '@/app/services/scenarioEngine';
 import type { ActionType } from '@/types/content';
 import type { Vector2 } from '@/types/scenario';
 import * as Haptics from 'expo-haptics';
@@ -66,6 +66,7 @@ export default function InteractionScreen() {
 	const [selectedAction, setSelectedAction] = useState<ActionType | undefined>();
 	const [selectedTargetPlayerId, setSelectedTargetPlayerId] = useState<string | undefined>();
 	const [selectedPoint, setSelectedPoint] = useState<Vector2 | undefined>();
+	const [stepIndex, setStepIndex] = useState<number>(0);
 
 	return (
 		<ScrollView contentContainerStyle={styles.container}>
@@ -128,19 +129,31 @@ export default function InteractionScreen() {
 
 			{question?.type === 'matchscenario' && (
 				<View style={styles.actionSection}>
-					{/* HUD */}
+					{/* HUD + Step indicator */}
 					{(() => {
 						const scen = (question as MatchScenarioQuestion).scenario;
 						const actor = scen.players.find(p => p.id === scen.keyActors?.ballCarrierId);
+						const seq = (question as MatchScenarioQuestion).sequence;
+						const currentStep = seq?.steps?.[stepIndex];
 						return (
 							<View style={{ gap: 6 }}>
 								<Text style={{ color: FC25.colors.text }}>Bollhållare: {actor?.role ?? 'okänd'} • Lane: {scen.keyActors?.focusLane ?? '-'}</Text>
+								{seq && (
+									<View style={styles.stepBar}>
+										<Text style={styles.stepText}>Steg {stepIndex + 1}/{seq.steps.length}</Text>
+										{currentStep?.hint && <Text style={styles.hintText}>Hint: {currentStep.hint}</Text>}
+									</View>
+								)}
 							</View>
 						);
 					})()}
 
 					<ActionBar
-						allowed={(question as MatchScenarioQuestion).allowedActions}
+						allowed={(() => {
+							const seq = (question as MatchScenarioQuestion).sequence;
+							const expected = seq?.steps?.[stepIndex]?.expected as ActionType | undefined;
+							return expected ? [expected] : (question as MatchScenarioQuestion).allowedActions;
+						})()}
 						onSelect={(act: ActionType) => {
 							setSelectedAction(act);
 							setFeedback(
@@ -160,18 +173,17 @@ export default function InteractionScreen() {
 							if (question?.type !== 'matchscenario' || !selectedAction) return;
 							const scen = (question as MatchScenarioQuestion).scenario;
 							const actorId = selectedAction === 'defend' ? undefined : scen.keyActors?.ballCarrierId;
-							const result = validateAction(
-								scen,
-								selectedAction === 'pass'
-									? { kind: 'pass', actorId, targetId: selectedTargetPlayerId }
-									: selectedAction === 'dribble'
-									? { kind: 'dribble', actorId, from: scen.players.find(p => p.id === actorId)?.pos, to: selectedPoint }
-									: selectedAction === 'shoot'
-									? { kind: 'shoot', actorId }
-									: { kind: 'defend', from: selectedPoint, to: selectedPoint }
-								,
-								{ allowedActions: (question as MatchScenarioQuestion).allowedActions, focusLane: scen.keyActors?.focusLane }
-							);
+							const act = selectedAction === 'pass'
+								? ({ kind: 'pass', actorId, targetId: selectedTargetPlayerId } as const)
+								: selectedAction === 'dribble'
+								? ({ kind: 'dribble', actorId, from: (scen.players.find(p => p.id === actorId)?.pos as Vector2), to: (selectedPoint as Vector2) } as const)
+								: selectedAction === 'shoot'
+								? ({ kind: 'shoot', actorId } as const)
+								: ({ kind: 'defend', from: (selectedPoint as Vector2), to: (selectedPoint as Vector2) } as const);
+							const seq = (question as MatchScenarioQuestion).sequence;
+							const result = seq
+								? scoreSequenceStep(scen, seq, stepIndex, act as any, { allowedActions: (question as MatchScenarioQuestion).allowedActions, focusLane: scen.keyActors?.focusLane })
+								: validateAction(scen, act as any, { allowedActions: (question as MatchScenarioQuestion).allowedActions, focusLane: scen.keyActors?.focusLane });
 							setFeedback(result.message ?? (result.valid ? 'Rätt!' : 'Fel'));
 							if (result.xpDelta) {
 								// Persist XP to store for this level
@@ -180,6 +192,17 @@ export default function InteractionScreen() {
 							}
 							if (result.valid) {
 								Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+								if (seq) {
+									const next = stepIndex + 1;
+									if (next < seq.steps.length) {
+										setStepIndex(next);
+										setSelectedAction(undefined);
+										setSelectedTargetPlayerId(undefined);
+										setSelectedPoint(undefined);
+									} else {
+										setFeedback('Sekvens klar!');
+									}
+								}
 							} else {
 								Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
 							}
@@ -189,7 +212,7 @@ export default function InteractionScreen() {
 					</Pressable>
 					<Text style={styles.feedback}>{feedback}</Text>
 					<Text style={styles.xp}>XP: {currentLevelXp}</Text>
-					<Pressable style={styles.nextBtn} onPress={() => { setQIndex(qIndex + 1); setFeedback(''); setSelectedAction(undefined); setSelectedTargetPlayerId(undefined); setSelectedPoint(undefined); }}>
+					<Pressable style={styles.nextBtn} onPress={() => { setQIndex(qIndex + 1); setFeedback(''); setSelectedAction(undefined); setSelectedTargetPlayerId(undefined); setSelectedPoint(undefined); setStepIndex(0); }}>
 						<Text style={styles.nextText}>Nästa</Text>
 					</Pressable>
 					<Pressable style={styles.nextBtn} onPress={() => { setSelectedAction(undefined); setSelectedTargetPlayerId(undefined); setSelectedPoint(undefined); setFeedback('Val rensade'); }}>
@@ -225,5 +248,8 @@ const styles = StyleSheet.create({
 	xp: { color: '#34c759', fontWeight: '700' },
 	nextBtn: { backgroundColor: FC25.colors.primary, paddingVertical: 12, borderRadius: 10, alignItems: 'center' },
 	nextText: { color: '#0a0a0f', fontWeight: '800' },
+	stepBar: { backgroundColor: FC25.colors.card, borderRadius: 10, padding: 8, borderWidth: 1, borderColor: FC25.colors.border },
+	stepText: { color: FC25.colors.text, fontWeight: '700' },
+	hintText: { color: FC25.colors.warning },
 });
 

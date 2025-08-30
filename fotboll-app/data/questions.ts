@@ -87,5 +87,43 @@ export const QUESTIONS: Question[] = [
     ]},
     explanation: 'Pass inåt till CM/ ST och sedan avslut.'
   }
+  ,
+  {
+    id: 's003',
+    type: 'matchscenario',
+    level: '9-manna',
+    position: 'anfallare',
+    question: 'Uppbyggnad till vänster: skapa 2v1 och avslut.',
+    scenario: {
+      level: '9-manna',
+      attacking: 'home',
+      possession: 'home',
+      players: [
+        { id: 'h-gk', role: 'GK', team: 'home', pos: { x: 6, y: 50 } },
+        { id: 'h-lb', role: 'LB', team: 'home', pos: { x: 20, y: 30 } },
+        { id: 'h-cb1', role: 'CB', team: 'home', pos: { x: 18, y: 45 } },
+        { id: 'h-cb2', role: 'CB', team: 'home', pos: { x: 18, y: 55 } },
+        { id: 'h-rb', role: 'RB', team: 'home', pos: { x: 20, y: 70 } },
+        { id: 'h-lm', role: 'LM', team: 'home', pos: { x: 40, y: 30 } },
+        { id: 'h-cm', role: 'CM', team: 'home', pos: { x: 45, y: 50 } },
+        { id: 'h-rm', role: 'RM', team: 'home', pos: { x: 40, y: 70 } },
+        { id: 'h-st', role: 'ST', team: 'home', pos: { x: 70, y: 50 } },
+        { id: 'a-gk', role: 'GK', team: 'away', pos: { x: 94, y: 50 } },
+        { id: 'a-lb', role: 'LB', team: 'away', pos: { x: 82, y: 30 } },
+        { id: 'a-cb1', role: 'CB', team: 'away', pos: { x: 84, y: 45 } },
+        { id: 'a-cb2', role: 'CB', team: 'away', pos: { x: 84, y: 55 } },
+        { id: 'a-rb', role: 'RB', team: 'away', pos: { x: 82, y: 70 } },
+      ],
+      ball: { pos: { x: 40, y: 30 } },
+      keyActors: { ballCarrierId: 'h-lm', focusLane: 'left' },
+    } as Scenario,
+    allowedActions: ['pass', 'dribble', 'shoot'],
+    sequence: { steps: [
+      { expected: 'pass', hint: 'Skapa 2v1 med LB på kanten', xpBonus: 3 },
+      { expected: 'dribble', hint: 'Bryt in eller ta yta längs kanten', xpBonus: 2 },
+      { expected: 'shoot', hint: 'Sök avslut eller inspel mot ST', xpBonus: 4 },
+    ]},
+    explanation: 'Spela ut, skapa övertalighet och avsluta.'
+  }
 ];
 
