@@ -37,6 +37,13 @@ Nästa steg:
 - Utöka till åldersanpassad frågebank och formationsdata
 - Lägg till scoring, feedback och sekvenslogik (passing/formation)
 
+## XP och progression (RN)
+
+- XP tilldelas vid giltiga åtgärder i `Interaction` (pass/dribbling/skott/försvar)
+- Tilldelningen sker via Zustand: `useAppStore().actions.addXp(level, amount)`
+- Aktuell XP per nivå visas i `player/interaction` (hämtas från store)
+- Exempel: validerad passning ger +10 XP, dribbling +8, avslut +15
+
 ## Unity (översikt)
 
 Se `fotbollsresan-unity/README.md` för iOS/TestFlight och Staging.

@@ -9,6 +9,7 @@ import { validateAction, getAllowedPassTargets } from '@/app/services/scenarioEn
 import type { ActionType } from '@/types/content';
 import type { Vector2 } from '@/types/scenario';
 import * as Haptics from 'expo-haptics';
+import { useAppStore } from '@/store/useAppStore';
 
 type AgeTier = 'U7' | 'U9' | 'U11' | 'U13+';
 
@@ -51,6 +52,7 @@ export default function InteractionScreen() {
 	const [age, setAge] = useState<number>(10);
 	const level = useMemo(() => deriveLevelFromAge(age), [age]);
 	const ageTier = useMemo(() => deriveAgeTier(age), [age]);
+    const { actions, progress } = useAppStore((s) => ({ actions: s.actions, progress: s.progress }));
 
 	const relevantQuestions: Question[] = useMemo(() => {
 		return QUESTIONS.filter((q) => q.level === level);
@@ -60,6 +62,7 @@ export default function InteractionScreen() {
 	const question = relevantQuestions[qIndex % Math.max(1, relevantQuestions.length)];
 	const [feedback, setFeedback] = useState<string>('');
 	const [xp, setXp] = useState<number>(0);
+	const currentLevelXp = progress[level]?.xp ?? 0;
 	const [selectedAction, setSelectedAction] = useState<ActionType | undefined>();
 	const [selectedTargetPlayerId, setSelectedTargetPlayerId] = useState<string | undefined>();
 	const [selectedPoint, setSelectedPoint] = useState<Vector2 | undefined>();
@@ -170,7 +173,11 @@ export default function InteractionScreen() {
 								{ allowedActions: (question as MatchScenarioQuestion).allowedActions, focusLane: scen.keyActors?.focusLane }
 							);
 							setFeedback(result.message ?? (result.valid ? 'Rätt!' : 'Fel'));
-							if (result.xpDelta) setXp((v) => v + result.xpDelta!);
+							if (result.xpDelta) {
+								// Persist XP to store for this level
+								actions.addXp(level, result.xpDelta);
+								setXp((v) => v + result.xpDelta!);
+							}
 							if (result.valid) {
 								Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
 							} else {
@@ -181,7 +188,7 @@ export default function InteractionScreen() {
 						<Text style={styles.nextText}>Validera</Text>
 					</Pressable>
 					<Text style={styles.feedback}>{feedback}</Text>
-					<Text style={styles.xp}>XP: {xp}</Text>
+					<Text style={styles.xp}>XP: {currentLevelXp}</Text>
 					<Pressable style={styles.nextBtn} onPress={() => { setQIndex(qIndex + 1); setFeedback(''); setSelectedAction(undefined); setSelectedTargetPlayerId(undefined); setSelectedPoint(undefined); }}>
 						<Text style={styles.nextText}>Nästa</Text>
 					</Pressable>
