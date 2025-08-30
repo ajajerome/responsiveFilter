@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { View, Text, TextInput, Pressable, StyleSheet, Keyboard, Platform, ScrollView, KeyboardAvoidingView } from 'react-native';
+import { View, Text, TextInput, Pressable, StyleSheet, Keyboard, Platform, ScrollView, KeyboardAvoidingView, Alert } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter, Link, usePathname } from 'expo-router';
 import { useAppStore } from '@/store/useAppStore';
@@ -11,25 +11,23 @@ export default function NewPlayer() {
   const setName = useAppStore((s) => s.actions.setName);
   const [name, setLocalName] = useState('');
   const [error, setError] = useState<string>('');
-  const [lastNav, setLastNav] = useState<string>('');
+  const [lastNav, setLastNav] = useState<string>('ready');
 
   const navigateToAvatar = () => {
     setLastNav(`tap:${Date.now()} route:${pathname}`);
-    // Primary
+    Alert.alert('Navigerar', 'Försöker gå vidare...', [{ text: 'OK' }], { cancelable: true });
     try { router.replace('/player/avatar'); } catch {}
-    // Fallback 1: delayed push
-    setTimeout(() => { try { router.push('/player/avatar'); } catch {} }, 50);
-    // Fallback 2: go to player home, then avatar
+    setTimeout(() => { try { router.push('/player/avatar'); } catch {} }, 60);
     setTimeout(() => {
       try { router.push('/player'); } catch {}
-      setTimeout(() => { try { router.push('/player/avatar'); } catch {} }, 50);
-    }, 120);
+      setTimeout(() => { try { router.push('/player/avatar'); } catch {} }, 60);
+    }, 140);
   };
 
   return (
     <SafeAreaView style={[styles.container, { backgroundColor: FC25.colors.bg }]}> 
       <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} keyboardVerticalOffset={64} style={{ flex: 1 }}>
-        <ScrollView contentContainerStyle={{ flexGrow: 1, justifyContent: 'center', paddingVertical: 24 }} keyboardShouldPersistTaps="handled">
+        <ScrollView contentContainerStyle={{ flexGrow: 1, justifyContent: 'center', paddingVertical: 24 }} keyboardShouldPersistTaps="always">
           <View style={{ paddingHorizontal: 24, gap: 12 }}>
             <Text style={[styles.title, { color: FC25.colors.text }]}>Ny spelare</Text>
             <TextInput
@@ -53,6 +51,7 @@ export default function NewPlayer() {
             <Pressable
               style={[styles.button, { backgroundColor: name.trim() ? FC25.colors.primary : FC25.colors.border }]}
               hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+              onPressIn={() => setLastNav(`pressIn:${Date.now()}`)}
               onPress={() => {
                 const trimmed = name.trim();
                 if (!trimmed) { setError('Ange ett namn för att fortsätta'); return; }
@@ -75,6 +74,7 @@ export default function NewPlayer() {
               }
               setName(trimmed);
               Keyboard.dismiss();
+              Alert.alert('Navigerar', 'Link-tryck registrerat', [{ text: 'OK' }]);
             }}
             asChild
           >
