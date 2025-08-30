@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { View, Text, TextInput, Pressable, StyleSheet } from 'react-native';
+import { View, Text, TextInput, Pressable, StyleSheet, Keyboard } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 import { useAppStore } from '@/store/useAppStore';
@@ -19,11 +19,14 @@ export default function NewPlayer() {
         onChangeText={(t) => { setLocalName(t); if (error) setError(''); }}
         style={[styles.input, { color: FC25.colors.text, borderColor: FC25.colors.border }]}
         placeholderTextColor={FC25.colors.subtle}
+        autoCapitalize="words"
+        autoCorrect={false}
         returnKeyType="done"
         onSubmitEditing={() => {
           const trimmed = name.trim();
           if (!trimmed) { setError('Ange ett namn för att fortsätta'); return; }
           setName(trimmed);
+          Keyboard.dismiss();
           // Use replace to avoid back-navigating to onboarding step and ensure navigation fires immediately
           router.replace('/player/avatar');
         }}
@@ -31,11 +34,11 @@ export default function NewPlayer() {
       {!!error && <Text style={[styles.error, { color: '#ff3b30' }]}>{error}</Text>}
       <Pressable
         style={[styles.button, { backgroundColor: name.trim() ? FC25.colors.primary : FC25.colors.border }]}
-        disabled={!name.trim()}
         onPress={() => {
           const trimmed = name.trim();
           if (!trimmed) { setError('Ange ett namn för att fortsätta'); return; }
           setName(trimmed);
+          Keyboard.dismiss();
           // Defer navigation to next frame to prevent any keyboard/layout interference
           requestAnimationFrame(() => router.replace('/player/avatar'));
         }}
