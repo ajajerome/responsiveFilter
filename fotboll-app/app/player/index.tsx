@@ -17,6 +17,9 @@ export default function PlayerHome() {
       <Link href="/player/repetition" asChild>
         <Pressable style={[styles.button, { backgroundColor: '#ff9f0a' }]}><Text style={styles.buttonText}>Repetitionsläge</Text></Pressable>
       </Link>
+      <Link href="/player/interaction" asChild>
+        <Pressable style={[styles.button, { backgroundColor: '#5856d6' }]}><Text style={styles.buttonText}>Interaktivt läge</Text></Pressable>
+      </Link>
     </View>
   );
 }
