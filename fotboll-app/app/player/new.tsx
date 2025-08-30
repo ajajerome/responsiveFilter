@@ -13,14 +13,14 @@ export default function NewPlayer() {
   const [error, setError] = useState<string>('');
   const [lastNav, setLastNav] = useState<string>('ready');
 
-  const navigateToAvatar = () => {
+  const navigateToDashboard = () => {
     const attempts: Array<{ label: string; fn: () => void }> = [
-      { label: 'replace:/player/avatar', fn: () => router.replace('/player/avatar') },
-      { label: 'push:/player/avatar', fn: () => router.push('/player/avatar') },
-      { label: 'navigate:/player/avatar', fn: () => (router as any).navigate?.('/player/avatar') },
-      { label: 'replace:player/avatar', fn: () => router.replace('player/avatar') },
-      { label: 'push:player/avatar', fn: () => router.push('player/avatar') },
-      { label: 'navigate:player/avatar', fn: () => (router as any).navigate?.('player/avatar') },
+      { label: 'replace:/player/dashboard', fn: () => router.replace('/player/dashboard') },
+      { label: 'push:/player/dashboard', fn: () => router.push('/player/dashboard') },
+      { label: 'navigate:/player/dashboard', fn: () => (router as any).navigate?.('/player/dashboard') },
+      { label: 'replace:player/dashboard', fn: () => router.replace('player/dashboard') },
+      { label: 'push:player/dashboard', fn: () => router.push('player/dashboard') },
+      { label: 'navigate:player/dashboard', fn: () => (router as any).navigate?.('player/dashboard') },
     ];
     attempts.forEach((a, idx) => {
       setTimeout(() => {
@@ -28,7 +28,7 @@ export default function NewPlayer() {
         try { a.fn(); } catch {}
       }, 80 * idx);
     });
-    Alert.alert('Navigerar', 'Försöker öppna avatar...', [{ text: 'OK' }], { cancelable: true });
+    Alert.alert('Navigerar', 'Försöker öppna Dashboard...', [{ text: 'OK' }], { cancelable: true });
   };
 
   return (
@@ -51,7 +51,7 @@ export default function NewPlayer() {
                 if (!trimmed) { setError('Ange ett namn för att fortsätta'); return; }
                 setName(trimmed);
                 Keyboard.dismiss();
-                requestAnimationFrame(navigateToAvatar);
+                requestAnimationFrame(navigateToDashboard);
               }}
             />
             {!!error && <Text style={[styles.error, { color: '#ff3b30' }]}>{error}</Text>}
@@ -64,14 +64,14 @@ export default function NewPlayer() {
                 if (!trimmed) { setError('Ange ett namn för att fortsätta'); return; }
                 setName(trimmed);
                 Keyboard.dismiss();
-                requestAnimationFrame(navigateToAvatar);
+                requestAnimationFrame(navigateToDashboard);
               }}
             >
               <Text style={styles.buttonText}>Fortsätt</Text>
             </Pressable>
           </View>
           <Link
-            href="/player/avatar"
+            href="/player/dashboard"
             onPress={(e) => {
               const trimmed = name.trim();
               if (!trimmed) {
@@ -96,7 +96,7 @@ export default function NewPlayer() {
               if (!trimmed) { setError('Ange ett namn för att fortsätta'); return; }
               setName(trimmed);
               Keyboard.dismiss();
-              setTimeout(navigateToAvatar, 50);
+              setTimeout(navigateToDashboard, 50);
             }}
           >
             Gå vidare om knappen inte fungerar
