@@ -62,6 +62,18 @@ export default function NewPlayer() {
               <Text style={styles.buttonText}>Fortsätt (länk)</Text>
             </Pressable>
           </Link>
+          <Text
+            style={{ color: FC25.colors.text, textAlign: 'center', textDecorationLine: 'underline', marginTop: 10 }}
+            onPress={() => {
+              const trimmed = name.trim();
+              if (!trimmed) { setError('Ange ett namn för att fortsätta'); return; }
+              setName(trimmed);
+              Keyboard.dismiss();
+              setTimeout(() => router.replace('/player/avatar'), 50);
+            }}
+          >
+            Gå vidare om knappen inte fungerar
+          </Text>
         </ScrollView>
       </KeyboardAvoidingView>
     </SafeAreaView>
