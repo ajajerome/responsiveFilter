@@ -3,6 +3,10 @@ import { View, Text, StyleSheet, Pressable, ScrollView } from 'react-native';
 import { QUESTIONS } from '@/data/questions';
 import type { Level, Question, MatchScenarioQuestion } from '@/types/content';
 import PitchView from '@/app/components/PitchView';
+import ActionBar from '@/app/components/ActionBar';
+import { FC25 } from '@/app/components/Theme';
+import { validateAction } from '@/app/services/scenarioEngine';
+import type { ActionType } from '@/types/content';
 
 type AgeTier = 'U7' | 'U9' | 'U11' | 'U13+';
 
@@ -52,6 +56,8 @@ export default function InteractionScreen() {
 
 	const [qIndex, setQIndex] = useState(0);
 	const question = relevantQuestions[qIndex % Math.max(1, relevantQuestions.length)];
+	const [feedback, setFeedback] = useState<string>('');
+	const [xp, setXp] = useState<number>(0);
 
 	return (
 		<ScrollView contentContainerStyle={styles.container}>
@@ -89,6 +95,29 @@ export default function InteractionScreen() {
 					<Text style={styles.noQuestions}>Lägg till frågor i data/questions.ts för nivån {level}.</Text>
 				)}
 			</View>
+
+			{question?.type === 'matchscenario' && (
+				<View style={styles.actionSection}>
+					<ActionBar
+						allowed={(question as MatchScenarioQuestion).allowedActions}
+						onSelect={(act: ActionType) => {
+							const scen = (question as MatchScenarioQuestion).scenario;
+							const actorId = scen.keyActors?.ballCarrierId;
+							const result = validateAction(scen, { kind: act, actorId }, {
+								allowedActions: (question as MatchScenarioQuestion).allowedActions,
+								focusLane: scen.keyActors?.focusLane,
+							});
+							setFeedback(result.message ?? (result.valid ? 'Rätt!' : 'Fel'));
+							if (result.xpDelta) setXp((v) => v + result.xpDelta!);
+						}}
+					/>
+					<Text style={styles.feedback}>{feedback}</Text>
+					<Text style={styles.xp}>XP: {xp}</Text>
+					<Pressable style={styles.nextBtn} onPress={() => { setQIndex(qIndex + 1); setFeedback(''); }}>
+						<Text style={styles.nextText}>Nästa</Text>
+					</Pressable>
+				</View>
+			)}
 		</ScrollView>
 	);
 }
@@ -112,5 +141,10 @@ const styles = StyleSheet.create({
 	options: { gap: 8 },
 	option: { backgroundColor: '#f2f2f7', padding: 12, borderRadius: 8 },
 	noQuestions: { color: '#999' },
+	actionSection: { gap: 10 },
+	feedback: { color: '#0a84ff', fontWeight: '600' },
+	xp: { color: '#34c759', fontWeight: '700' },
+	nextBtn: { backgroundColor: FC25.colors.primary, paddingVertical: 12, borderRadius: 10, alignItems: 'center' },
+	nextText: { color: '#0a0a0f', fontWeight: '800' },
 });
 
