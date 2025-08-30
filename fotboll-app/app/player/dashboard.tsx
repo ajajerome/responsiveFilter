@@ -20,7 +20,7 @@ export default function Dashboard() {
         <Text style={[styles.cardText, { color: FC25.colors.text }]}>Säsong: {season.number}</Text>
         <Text style={[styles.cardText, { color: FC25.colors.text }]}>Säsongs-XP: {season.xp}</Text>
       </View>
-      <Link href="/player/interaction" asChild>
+      <Link href="/player/training" asChild>
         <Pressable style={[styles.button, { backgroundColor: FC25.colors.primary }]}>
           <Text style={styles.buttonText}>Jag vill träna</Text>
         </Pressable>

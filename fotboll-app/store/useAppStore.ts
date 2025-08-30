@@ -26,6 +26,7 @@ type AppState = {
   badges: string[];
   actions: {
     setName: (name: string) => void;
+    updateAvatar: (avatar: Partial<AppState['profile']['avatar']>) => void;
     setFavoritePosition: (pos: Position) => void;
     addXp: (level: Level, amount: number) => void;
     markQuestionCompleted: (level: Level, questionId: string) => void;
@@ -48,6 +49,8 @@ export const useAppStore = create<AppState>()(
       badges: [],
       actions: {
         setName: (name) => set((s) => ({ profile: { ...s.profile, name } })),
+        updateAvatar: (avatar) =>
+          set((s) => ({ profile: { ...s.profile, avatar: { ...s.profile.avatar, ...avatar } } })),
         setFavoritePosition: (pos) =>
           set((s) => ({ profile: { ...s.profile, favoritePosition: pos } })),
         addXp: (level, amount) =>
