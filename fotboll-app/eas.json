@@ -33,6 +33,12 @@
   },
   "submit": {
     "production": {},
-    "appstore-staging": {}
+    "appstore-staging": {
+      "ios": {
+        "ascApiKeyPath": "./AuthKey_MU8Q59T4DJ.p8",
+        "ascApiKeyId": "MU8Q59T4DJ",
+        "ascApiIssuerId": "53453a8f-44af-414d-9591-530aa5856564"
+      }
+    }
   }
 }
