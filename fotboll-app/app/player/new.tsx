@@ -50,8 +50,7 @@ export default function NewPlayer() {
           </View>
           <Link href="/player/avatar" asChild>
             <Pressable
-              style={[styles.button, { backgroundColor: name.trim() ? FC25.colors.secondary : FC25.colors.border }]}
-              disabled={!name.trim()}
+              style={[styles.button, { backgroundColor: FC25.colors.secondary }]}
               onPress={() => {
                 const trimmed = name.trim();
                 if (!trimmed) { setError('Ange ett namn för att fortsätta'); return; }
