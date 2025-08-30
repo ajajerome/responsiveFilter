@@ -22,10 +22,17 @@
       }
     },
     "production": {
-      "channel": "production"
+      "channel": "production",
+      "distribution": "appstore"
+    },
+    "appstore-staging": {
+      "channel": "staging",
+      "distribution": "appstore",
+      "env": { "APP_ENV": "staging" }
     }
   },
   "submit": {
-    "production": {}
+    "production": {},
+    "appstore-staging": {}
   }
 }
