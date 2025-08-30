@@ -1,4 +1,5 @@
 import { Question } from '@/types/content';
+import type { Scenario } from '@/types/scenario';
 
 export const QUESTIONS: Question[] = [
   {
@@ -19,5 +20,139 @@ export const QUESTIONS: Question[] = [
     options: ['Breda ytterbackar', 'Alla i mitten'],
     correctIndex: 0,
   },
+  {
+    id: 's001',
+    type: 'matchscenario',
+    level: '5-manna',
+    position: 'mittfält',
+    question: 'Ytter tar emot bollen – bästa valet?',
+    scenario: {
+      level: '5-manna',
+      attacking: 'home',
+      possession: 'home',
+      players: [
+        { id: 'h-gk', role: 'GK', team: 'home', pos: { x: 10, y: 50 } },
+        { id: 'h-lb', role: 'LB', team: 'home', pos: { x: 25, y: 30 } },
+        { id: 'h-rb', role: 'RB', team: 'home', pos: { x: 25, y: 70 } },
+        { id: 'h-lw', role: 'LW', team: 'home', pos: { x: 50, y: 25 } },
+        { id: 'h-st', role: 'ST', team: 'home', pos: { x: 70, y: 50 } },
+        { id: 'h-rw', role: 'RW', team: 'home', pos: { x: 50, y: 75 } },
+        { id: 'a-gk', role: 'GK', team: 'away', pos: { x: 90, y: 50 } },
+        { id: 'a-d1', role: 'CB', team: 'away', pos: { x: 75, y: 40 } },
+        { id: 'a-d2', role: 'CB', team: 'away', pos: { x: 75, y: 60 } },
+      ],
+      ball: { pos: { x: 50, y: 75 } },
+      keyActors: { ballCarrierId: 'h-rw', focusLane: 'right' },
+    } as Scenario,
+    allowedActions: ['pass', 'dribble', 'shoot'],
+    sequence: { steps: [
+      { expected: 'pass', hint: 'Triangel upp mot centralt läge', xpBonus: 2 },
+      { expected: 'dribble', hint: 'Ta yta framåt i samma lane', xpBonus: 2 },
+      { expected: 'shoot', hint: 'Avsluta när du når sista tredjedelen', xpBonus: 3 },
+    ]},
+    explanation: 'I 5-manna med boll på kanten: sök trianglar och spelbarhet inåt.'
+  }
+  ,
+  {
+    id: 's002',
+    type: 'matchscenario',
+    level: '7-manna',
+    position: 'mittfält',
+    question: 'Bygg anfall: först pass inåt, sedan avslut.',
+    scenario: {
+      level: '7-manna',
+      attacking: 'home',
+      possession: 'home',
+      players: [
+        { id: 'h-gk', role: 'GK', team: 'home', pos: { x: 8, y: 50 } },
+        { id: 'h-lb', role: 'LB', team: 'home', pos: { x: 22, y: 30 } },
+        { id: 'h-cb', role: 'CB', team: 'home', pos: { x: 20, y: 50 } },
+        { id: 'h-rb', role: 'RB', team: 'home', pos: { x: 22, y: 70 } },
+        { id: 'h-lm', role: 'LM', team: 'home', pos: { x: 45, y: 28 } },
+        { id: 'h-cm', role: 'CM', team: 'home', pos: { x: 50, y: 50 } },
+        { id: 'h-rm', role: 'RM', team: 'home', pos: { x: 45, y: 72 } },
+        { id: 'h-st', role: 'ST', team: 'home', pos: { x: 72, y: 50 } },
+        { id: 'a-gk', role: 'GK', team: 'away', pos: { x: 92, y: 50 } },
+        { id: 'a-lb', role: 'LB', team: 'away', pos: { x: 78, y: 30 } },
+        { id: 'a-cb', role: 'CB', team: 'away', pos: { x: 80, y: 50 } },
+        { id: 'a-rb', role: 'RB', team: 'away', pos: { x: 78, y: 70 } },
+      ],
+      ball: { pos: { x: 45, y: 72 } },
+      keyActors: { ballCarrierId: 'h-rm', focusLane: 'right' }
+    } as Scenario,
+    allowedActions: ['pass', 'shoot'],
+    sequence: { steps: [
+      { expected: 'pass', hint: 'Spela inåt till CM/ST i ficka', xpBonus: 3 },
+      { expected: 'shoot', hint: 'Avsluta snabbt efter väggspel', xpBonus: 4 },
+    ]},
+    explanation: 'Pass inåt till CM/ ST och sedan avslut.'
+  }
+  ,
+  {
+    id: 's003',
+    type: 'matchscenario',
+    level: '9-manna',
+    position: 'anfallare',
+    question: 'Uppbyggnad till vänster: skapa 2v1 och avslut.',
+    scenario: {
+      level: '9-manna',
+      attacking: 'home',
+      possession: 'home',
+      players: [
+        { id: 'h-gk', role: 'GK', team: 'home', pos: { x: 6, y: 50 } },
+        { id: 'h-lb', role: 'LB', team: 'home', pos: { x: 20, y: 30 } },
+        { id: 'h-cb1', role: 'CB', team: 'home', pos: { x: 18, y: 45 } },
+        { id: 'h-cb2', role: 'CB', team: 'home', pos: { x: 18, y: 55 } },
+        { id: 'h-rb', role: 'RB', team: 'home', pos: { x: 20, y: 70 } },
+        { id: 'h-lm', role: 'LM', team: 'home', pos: { x: 40, y: 30 } },
+        { id: 'h-cm', role: 'CM', team: 'home', pos: { x: 45, y: 50 } },
+        { id: 'h-rm', role: 'RM', team: 'home', pos: { x: 40, y: 70 } },
+        { id: 'h-st', role: 'ST', team: 'home', pos: { x: 70, y: 50 } },
+        { id: 'a-gk', role: 'GK', team: 'away', pos: { x: 94, y: 50 } },
+        { id: 'a-lb', role: 'LB', team: 'away', pos: { x: 82, y: 30 } },
+        { id: 'a-cb1', role: 'CB', team: 'away', pos: { x: 84, y: 45 } },
+        { id: 'a-cb2', role: 'CB', team: 'away', pos: { x: 84, y: 55 } },
+        { id: 'a-rb', role: 'RB', team: 'away', pos: { x: 82, y: 70 } },
+      ],
+      ball: { pos: { x: 40, y: 30 } },
+      keyActors: { ballCarrierId: 'h-lm', focusLane: 'left' },
+    } as Scenario,
+    allowedActions: ['pass', 'dribble', 'shoot'],
+    sequence: { steps: [
+      { expected: 'pass', hint: 'Skapa 2v1 med LB på kanten', xpBonus: 3 },
+      { expected: 'dribble', hint: 'Bryt in eller ta yta längs kanten', xpBonus: 2 },
+      { expected: 'shoot', hint: 'Sök avslut eller inspel mot ST', xpBonus: 4 },
+    ]},
+    explanation: 'Spela ut, skapa övertalighet och avsluta.'
+  }
+  ,
+  {
+    id: 's004',
+    type: 'matchscenario',
+    level: '5-manna',
+    position: 'back',
+    question: 'Spelvändning från höger till vänster och avslut.',
+    scenario: {
+      level: '5-manna', attacking: 'home', possession: 'home',
+      players: [
+        { id: 'h-gk', role: 'GK', team: 'home', pos: { x: 10, y: 50 } },
+        { id: 'h-rb', role: 'RB', team: 'home', pos: { x: 25, y: 70 } },
+        { id: 'h-lw', role: 'LW', team: 'home', pos: { x: 50, y: 25 } },
+        { id: 'h-st', role: 'ST', team: 'home', pos: { x: 70, y: 50 } },
+        { id: 'a-gk', role: 'GK', team: 'away', pos: { x: 90, y: 50 } },
+        { id: 'a-d1', role: 'CB', team: 'away', pos: { x: 75, y: 40 } },
+        { id: 'a-d2', role: 'CB', team: 'away', pos: { x: 75, y: 60 } },
+      ],
+      ball: { pos: { x: 25, y: 70 } },
+      keyActors: { ballCarrierId: 'h-rb', focusLane: 'right' },
+    } as Scenario,
+    allowedActions: ['pass', 'dribble', 'shoot'],
+    sequence: { steps: [
+      { expected: 'pass', hint: 'Vänd spelet till vänsterkanten', xpBonus: 2 },
+      { expected: 'dribble', hint: 'Ta yta längs vänsterkanten', xpBonus: 2 },
+      { expected: 'shoot', hint: 'Sök avslut centralt', xpBonus: 3 },
+    ]},
+    explanation: 'Spelvändning skapar yta på motsatt sida.'
+  }
 ];
 

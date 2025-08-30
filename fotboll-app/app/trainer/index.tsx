@@ -1,10 +1,11 @@
 import { View, Text, StyleSheet } from "react-native";
+import { FC25 } from '@/app/components/Theme';
 
 export default function TrainerHome() {
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Förälder/Tränare</Text>
-      <Text>Se barnets progression (demo).</Text>
+    <View style={[styles.container, { backgroundColor: FC25.colors.bg }]}>
+      <Text style={[styles.title, { color: FC25.colors.text }]}>Förälder/Tränare</Text>
+      <Text style={{ color: FC25.colors.subtle }}>Se barnets progression (demo).</Text>
     </View>
   );
 }

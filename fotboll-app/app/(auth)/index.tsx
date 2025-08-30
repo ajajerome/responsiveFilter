@@ -1,12 +1,13 @@
 import { Link } from "expo-router";
 import { View, Text, Pressable, StyleSheet } from "react-native";
+import { FC25 } from '@/app/components/Theme';
 
 export default function AuthIndex() {
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Välj inloggning</Text>
+    <View style={[styles.container, { backgroundColor: FC25.colors.bg }]}>
+      <Text style={[styles.title, { color: FC25.colors.text }]}>Välj inloggning</Text>
       <Link href="/(home)" asChild>
-        <Pressable style={styles.button}><Text style={styles.buttonText}>Fortsätt utan konto</Text></Pressable>
+        <Pressable style={[styles.button, { backgroundColor: FC25.colors.primary }]}><Text style={styles.buttonText}>Fortsätt utan konto</Text></Pressable>
       </Link>
     </View>
   );
