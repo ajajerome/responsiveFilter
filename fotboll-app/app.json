@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "fotboll-app",
-    "slug": "fotboll-app",
+    "name": "fotbollstranaren",
+    "slug": "fotbollstranaren",
     "version": "1.0.0",
     "scheme": "fotbollapp",
     "orientation": "portrait",
@@ -17,7 +17,11 @@
       "backgroundColor": "#ffffff"
     },
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.ajagames.learnfotball",
+      "infoPlist": {
+        "ITSAppUsesNonExemptEncryption": false
+      }
     },
     "android": {
       "adaptiveIcon": {
@@ -28,6 +32,17 @@
     },
     "web": {
       "favicon": "./assets/favicon.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "7cae0243-bae5-4dee-b10d-11a4169cbac0"
+      }
+    },
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/7cae0243-bae5-4dee-b10d-11a4169cbac0"
     }
   }
 }
