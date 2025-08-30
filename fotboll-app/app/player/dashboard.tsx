@@ -1,5 +1,5 @@
 import { View, Text, StyleSheet, Pressable } from 'react-native';
-import { Link } from 'expo-router';
+import { useRouter } from 'expo-router';
 import { useAppStore } from '@/store/useAppStore';
 import { FC25 } from '@/app/components/Theme';
 
@@ -11,6 +11,7 @@ function greeting() {
 }
 
 export default function Dashboard() {
+  const router = useRouter();
   const { name } = useAppStore((s) => s.profile);
   const season = useAppStore((s) => s.season);
   return (
@@ -20,11 +21,9 @@ export default function Dashboard() {
         <Text style={[styles.cardText, { color: FC25.colors.text }]}>Säsong: {season.number}</Text>
         <Text style={[styles.cardText, { color: FC25.colors.text }]}>Säsongs-XP: {season.xp}</Text>
       </View>
-      <Link href="/player/interaction" asChild>
-        <Pressable style={[styles.button, { backgroundColor: FC25.colors.primary }]}>
-          <Text style={styles.buttonText}>Jag vill träna</Text>
-        </Pressable>
-      </Link>
+      <Pressable style={[styles.button, { backgroundColor: FC25.colors.primary }]} onPress={() => router.push('/player/interaction')}>
+        <Text style={styles.buttonText}>Jag vill träna</Text>
+      </Pressable>
     </View>
   );
 }

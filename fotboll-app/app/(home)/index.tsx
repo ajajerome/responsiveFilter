@@ -1,4 +1,4 @@
-import { Link, useRouter } from "expo-router";
+import { useRouter } from "expo-router";
 import { View, Text, Pressable, StyleSheet } from "react-native";
 import { FC25 } from '@/app/components/Theme';
 import { useAppStore } from '@/store/useAppStore';
@@ -12,17 +12,15 @@ export default function HomeIndex() {
       <Pressable style={[styles.button, { backgroundColor: FC25.colors.primary }]} onPress={() => router.push(name ? '/player/dashboard' : '/player/new')}>
         <Text style={styles.buttonText}>Starta som spelare</Text>
       </Pressable>
-      <Link href="/player/new" asChild>
-        <Pressable style={[styles.button, { backgroundColor: FC25.colors.secondary }]}><Text style={styles.buttonText}>Ny spelare</Text></Pressable>
-      </Link>
-      <Link href="/trainer" asChild>
-        <Pressable style={[styles.button, { backgroundColor: FC25.colors.secondary }]}><Text style={styles.buttonText}>Förälder/Tränare</Text></Pressable>
-      </Link>
-      <Link href="/settings" asChild>
-        <Pressable style={[styles.button, { backgroundColor: FC25.colors.card, borderWidth: 1, borderColor: FC25.colors.border }]}>
-          <Text style={[styles.buttonText, { color: FC25.colors.text }]}>Inställningar (förälder)</Text>
-        </Pressable>
-      </Link>
+      <Pressable style={[styles.button, { backgroundColor: FC25.colors.secondary }]} onPress={() => router.push('/player/new')}>
+        <Text style={styles.buttonText}>Ny spelare</Text>
+      </Pressable>
+      <Pressable style={[styles.button, { backgroundColor: FC25.colors.secondary }]} onPress={() => router.push('/trainer')}>
+        <Text style={styles.buttonText}>Förälder/Tränare</Text>
+      </Pressable>
+      <Pressable style={[styles.button, { backgroundColor: FC25.colors.card, borderWidth: 1, borderColor: FC25.colors.border }]} onPress={() => router.push('/settings')}>
+        <Text style={[styles.buttonText, { color: FC25.colors.text }]}>Inställningar (förälder)</Text>
+      </Pressable>
     </View>
   );
 }
