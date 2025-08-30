@@ -38,6 +38,7 @@ export interface MatchScenarioQuestion extends BaseQuestion {
   scenario: import('./scenario').Scenario;
   allowedActions: ActionType[];
   explanation?: string;
+  sequence?: import('./scenario').ScenarioSequence;
 }
 
 export type Question = QuizQuestion | DragDropQuestion | MatchScenarioQuestion; 
