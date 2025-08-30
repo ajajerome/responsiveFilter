@@ -71,6 +71,19 @@ namespace Fotbollsresan.Core.Progression
             var loaded = JsonUtility.FromJson<LevelState>(json);
             if (loaded != null) state = loaded;
         }
+
+        private void OnDisable()
+        {
+            Debug.LogWarning($"{nameof(LevelSystem)} was disabled. This system is expected to persist across scenes.");
+        }
+
+        private void OnDestroy()
+        {
+            if (Instance == this)
+            {
+                Debug.LogWarning($"{nameof(LevelSystem)} was destroyed. Ensure a single persistent instance exists in the bootstrap scene.");
+            }
+        }
     }
 }
 

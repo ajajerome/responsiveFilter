@@ -28,8 +28,14 @@ namespace Fotbollsresan.Core.Progression
 
         private void OnDisable()
         {
+            Debug.Log($"{nameof(SeasonManager)} disabling – unsubscribing and saving.");
             GameEvents.OnXpGained -= OnXpGained;
             Save();
+        }
+
+        private void OnDestroy()
+        {
+            Debug.Log($"{nameof(SeasonManager)} destroyed.");
         }
 
         private void OnXpGained(XpGainedEvent e)

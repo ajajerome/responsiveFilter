@@ -64,6 +64,19 @@ namespace Fotbollsresan.Core
             CurrentProfile = wrapper?.ToProfile();
         }
 
+        private void OnDisable()
+        {
+            Debug.LogWarning($"{nameof(ProfileService)} was disabled. This service is expected to persist across scenes.");
+        }
+
+        private void OnDestroy()
+        {
+            if (Instance == this)
+            {
+                Debug.LogWarning($"{nameof(ProfileService)} was destroyed. Ensure exactly one persistent instance exists in the bootstrap scene.");
+            }
+        }
+
         [Serializable]
         private class SerializableProfile
         {
