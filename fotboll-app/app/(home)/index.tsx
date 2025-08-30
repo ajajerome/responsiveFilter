@@ -18,6 +18,11 @@ export default function HomeIndex() {
       <Link href="/trainer" asChild>
         <Pressable style={[styles.button, { backgroundColor: FC25.colors.secondary }]}><Text style={styles.buttonText}>Förälder/Tränare</Text></Pressable>
       </Link>
+      <Link href="/settings" asChild>
+        <Pressable style={[styles.button, { backgroundColor: FC25.colors.card, borderWidth: 1, borderColor: FC25.colors.border }]}>
+          <Text style={[styles.buttonText, { color: FC25.colors.text }]}>Inställningar (förälder)</Text>
+        </Pressable>
+      </Link>
     </View>
   );
 }
