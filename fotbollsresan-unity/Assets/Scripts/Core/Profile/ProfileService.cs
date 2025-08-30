@@ -9,12 +9,21 @@ namespace Fotbollsresan.Core
 {
     public class ProfileService : MonoBehaviour
     {
+        public static ProfileService Instance { get; private set; }
         public PlayerProfile CurrentProfile;
 
         private string ProfilePath => Path.Combine(Application.persistentDataPath, "profile.json");
 
         private void Awake()
         {
+            if (Instance != null && Instance != this)
+            {
+                Destroy(gameObject);
+                return;
+            }
+            Instance = this;
+            DontDestroyOnLoad(gameObject);
+
             LoadProfile();
             if (CurrentProfile == null)
             {

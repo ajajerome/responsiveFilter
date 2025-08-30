@@ -15,6 +15,7 @@ namespace Fotbollsresan.Core.Progression
 
     public class LevelSystem : MonoBehaviour
     {
+        public static LevelSystem Instance { get; private set; }
         [SerializeField] private LevelState state = new LevelState();
 
         private string SavePath => Path.Combine(Application.persistentDataPath, "level.json");
@@ -25,6 +26,13 @@ namespace Fotbollsresan.Core.Progression
 
         private void Awake()
         {
+            if (Instance != null && Instance != this)
+            {
+                Destroy(gameObject);
+                return;
+            }
+            Instance = this;
+            DontDestroyOnLoad(gameObject);
             Load();
         }
 
