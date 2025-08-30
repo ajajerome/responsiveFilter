@@ -45,6 +45,11 @@ export const QUESTIONS: Question[] = [
       keyActors: { ballCarrierId: 'h-rw', focusLane: 'right' },
     } as Scenario,
     allowedActions: ['pass', 'dribble', 'shoot'],
+    sequence: { steps: [
+      { expected: 'pass', hint: 'Triangel upp mot centralt läge', xpBonus: 2 },
+      { expected: 'dribble', hint: 'Ta yta framåt i samma lane', xpBonus: 2 },
+      { expected: 'shoot', hint: 'Avsluta när du når sista tredjedelen', xpBonus: 3 },
+    ]},
     explanation: 'I 5-manna med boll på kanten: sök trianglar och spelbarhet inåt.'
   }
   ,
@@ -76,6 +81,10 @@ export const QUESTIONS: Question[] = [
       keyActors: { ballCarrierId: 'h-rm', focusLane: 'right' }
     } as Scenario,
     allowedActions: ['pass', 'shoot'],
+    sequence: { steps: [
+      { expected: 'pass', hint: 'Spela inåt till CM/ST i ficka', xpBonus: 3 },
+      { expected: 'shoot', hint: 'Avsluta snabbt efter väggspel', xpBonus: 4 },
+    ]},
     explanation: 'Pass inåt till CM/ ST och sedan avslut.'
   }
 ];
