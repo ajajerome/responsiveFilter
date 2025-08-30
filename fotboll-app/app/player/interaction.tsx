@@ -1,7 +1,8 @@
 import { useState, useMemo } from 'react';
 import { View, Text, StyleSheet, Pressable, ScrollView } from 'react-native';
 import { QUESTIONS } from '@/data/questions';
-import type { Level, Question } from '@/types/content';
+import type { Level, Question, MatchScenarioQuestion } from '@/types/content';
+import PitchView from '@/app/components/PitchView';
 
 type AgeTier = 'U7' | 'U9' | 'U11' | 'U13+';
 
@@ -64,10 +65,14 @@ export default function InteractionScreen() {
 				))}
 			</View>
 
-			<View style={styles.teamsWrapper}>
-				<TeamView level={level} color="#1e90ff" label="Lag Blå" />
-				<TeamView level={level} color="#ff3b30" label="Lag Röd" />
-			</View>
+			{question?.type === 'matchscenario' ? (
+				<PitchView scenario={(question as MatchScenarioQuestion).scenario} />
+			) : (
+				<View style={styles.teamsWrapper}>
+					<TeamView level={level} color="#1e90ff" label="Lag Blå" />
+					<TeamView level={level} color="#ff3b30" label="Lag Röd" />
+				</View>
+			)}
 
 			<View style={styles.questionBox}>
 				<Text style={styles.questionTitle}>{question?.question ?? 'Inga frågor tillgängliga för denna nivå ännu.'}</Text>

@@ -30,5 +30,15 @@ export interface DragDropQuestion extends BaseQuestion {
   variants?: Array<Record<string, unknown>>;
 }
 
-export type Question = QuizQuestion | DragDropQuestion; 
+// Scenario-based question payload
+export type ActionType = 'pass' | 'dribble' | 'shoot' | 'defend';
+
+export interface MatchScenarioQuestion extends BaseQuestion {
+  type: 'matchscenario';
+  scenario: import('./scenario').Scenario;
+  allowedActions: ActionType[];
+  explanation?: string;
+}
+
+export type Question = QuizQuestion | DragDropQuestion | MatchScenarioQuestion; 
 
