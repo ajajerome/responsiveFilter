@@ -185,6 +185,9 @@ export default function InteractionScreen() {
 					<Pressable style={styles.nextBtn} onPress={() => { setQIndex(qIndex + 1); setFeedback(''); setSelectedAction(undefined); setSelectedTargetPlayerId(undefined); setSelectedPoint(undefined); }}>
 						<Text style={styles.nextText}>Nästa</Text>
 					</Pressable>
+					<Pressable style={styles.nextBtn} onPress={() => { setSelectedAction(undefined); setSelectedTargetPlayerId(undefined); setSelectedPoint(undefined); setFeedback('Val rensade'); }}>
+						<Text style={styles.nextText}>Ångra/Rensa val</Text>
+					</Pressable>
 				</View>
 			)}
 		</ScrollView>

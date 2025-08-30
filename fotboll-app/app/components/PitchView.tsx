@@ -1,5 +1,5 @@
 import { memo, useMemo, useCallback } from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, PanResponder, GestureResponderEvent, PanResponderGestureState } from 'react-native';
 import Svg, { Rect, Line, Circle, Path } from 'react-native-svg';
 import type { Scenario, Vector2 } from '@/types/scenario';
 
@@ -42,9 +42,21 @@ export const PitchView = memo(function PitchView({ scenario, width = 340, height
 		const ny = Math.max(0, Math.min(100, (ly / height) * 100));
 		onSelectPoint({ x: nx, y: ny });
 	}, [selectable, onSelectPoint, width, height]);
+
+	const panResponder = useMemo(() => PanResponder.create({
+		onMoveShouldSetPanResponder: () => !!selectable,
+		onPanResponderMove: (evt: GestureResponderEvent, gestureState: PanResponderGestureState) => {
+			if (!selectable || !onSelectPoint) return;
+			const lx = gestureState.moveX - (evt.nativeEvent.pageX - evt.nativeEvent.locationX);
+			const ly = gestureState.moveY - (evt.nativeEvent.pageY - evt.nativeEvent.locationY);
+			const nx = Math.max(0, Math.min(100, (lx / width) * 100));
+			const ny = Math.max(0, Math.min(100, (ly / height) * 100));
+			onSelectPoint({ x: nx, y: ny });
+		},
+	}), [selectable, onSelectPoint, width, height]);
 	return (
 		<View style={styles.wrapper}>
-			<Svg width={width} height={height}>
+			<Svg width={width} height={height} {...(selectable ? panResponder.panHandlers : {})}>
 				<Rect x={0} y={0} width={width} height={height} rx={10} ry={10} fill="#0c7a43" />
 				<Rect x={6} y={6} width={width - 12} height={height - 12} stroke="#ffffff" strokeWidth={2} fill="transparent" onPress={handlePitchPress} />
 				{/* Mid line */}
@@ -111,6 +123,7 @@ export const PitchView = memo(function PitchView({ scenario, width = 340, height
 			</Svg>
 			<View style={styles.legend}>
 				<Text style={styles.legendText}>Blå: Hemmalag • Röd: Bortalag • Gul ring: Bollhållare</Text>
+				<Text style={styles.legendText}>Drag för målpunkt • Streckad linje = planerad rörelse</Text>
 			</View>
 		</View>
 	);
