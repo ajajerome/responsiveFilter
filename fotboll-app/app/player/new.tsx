@@ -1,40 +1,25 @@
 import { useState } from 'react';
-import { View, Text, TextInput, Pressable, StyleSheet, Keyboard, Platform, ScrollView, KeyboardAvoidingView, Alert } from 'react-native';
+import { View, Text, TextInput, Pressable, StyleSheet, Keyboard, Platform, ScrollView, KeyboardAvoidingView } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useRouter, Link, usePathname } from 'expo-router';
+import { useRouter } from 'expo-router';
 import { useAppStore } from '@/store/useAppStore';
 import { FC25 } from '@/app/components/Theme';
 
 export default function NewPlayer() {
   const router = useRouter();
-  const pathname = usePathname();
-  const setName = useAppStore((s) => s.actions.setName);
+  const actions = useAppStore((s) => s.actions);
   const [name, setLocalName] = useState('');
   const [error, setError] = useState<string>('');
-  const [lastNav, setLastNav] = useState<string>('ready');
 
-  const navigateToDashboard = () => {
-    const attempts: Array<{ label: string; fn: () => void }> = [
-      { label: 'replace:/player/dashboard', fn: () => router.replace('/player/dashboard') },
-      { label: 'push:/player/dashboard', fn: () => router.push('/player/dashboard') },
-      { label: 'navigate:/player/dashboard', fn: () => (router as any).navigate?.('/player/dashboard') },
-      { label: 'replace:player/dashboard', fn: () => router.replace('player/dashboard') },
-      { label: 'push:player/dashboard', fn: () => router.push('player/dashboard') },
-      { label: 'navigate:player/dashboard', fn: () => (router as any).navigate?.('player/dashboard') },
-    ];
-    attempts.forEach((a, idx) => {
-      setTimeout(() => {
-        setLastNav(`${a.label} t:${Date.now()} cur:${pathname}`);
-        try { a.fn(); } catch {}
-      }, 80 * idx);
-    });
-    Alert.alert('Navigerar', 'Försöker öppna Dashboard...', [{ text: 'OK' }], { cancelable: true });
+  const goNext = () => {
+    Keyboard.dismiss();
+    requestAnimationFrame(() => router.replace('/player/dashboard'));
   };
 
   return (
     <SafeAreaView style={[styles.container, { backgroundColor: FC25.colors.bg }]}> 
       <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} keyboardVerticalOffset={64} style={{ flex: 1 }}>
-        <ScrollView contentContainerStyle={{ flexGrow: 1, justifyContent: 'center', paddingVertical: 24 }} keyboardShouldPersistTaps="always">
+        <ScrollView contentContainerStyle={{ flexGrow: 1, justifyContent: 'center', paddingVertical: 24 }} keyboardShouldPersistTaps="handled">
           <View style={{ paddingHorizontal: 24, gap: 12 }}>
             <Text style={[styles.title, { color: FC25.colors.text }]}>Ny spelare</Text>
             <TextInput
@@ -49,59 +34,23 @@ export default function NewPlayer() {
               onSubmitEditing={() => {
                 const trimmed = name.trim();
                 if (!trimmed) { setError('Ange ett namn för att fortsätta'); return; }
-                setName(trimmed);
-                Keyboard.dismiss();
-                requestAnimationFrame(navigateToDashboard);
+                actions.setName(trimmed);
+                goNext();
               }}
             />
             {!!error && <Text style={[styles.error, { color: '#ff3b30' }]}>{error}</Text>}
             <Pressable
               style={[styles.button, { backgroundColor: name.trim() ? FC25.colors.primary : FC25.colors.border }]}
-              hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
-              onPressIn={() => setLastNav(`pressIn:${Date.now()}`)}
               onPress={() => {
                 const trimmed = name.trim();
                 if (!trimmed) { setError('Ange ett namn för att fortsätta'); return; }
-                setName(trimmed);
-                Keyboard.dismiss();
-                requestAnimationFrame(navigateToDashboard);
+                actions.setName(trimmed);
+                goNext();
               }}
             >
               <Text style={styles.buttonText}>Fortsätt</Text>
             </Pressable>
           </View>
-          <Link
-            href="/player/dashboard"
-            onPress={(e) => {
-              const trimmed = name.trim();
-              if (!trimmed) {
-                e.preventDefault();
-                setError('Ange ett namn för att fortsätta');
-                return;
-              }
-              setName(trimmed);
-              Keyboard.dismiss();
-              Alert.alert('Navigerar', 'Link-tryck registrerat', [{ text: 'OK' }]);
-            }}
-            asChild
-          >
-            <Pressable style={[styles.button, { backgroundColor: FC25.colors.secondary }]}> 
-              <Text style={styles.buttonText}>Fortsätt (länk)</Text>
-            </Pressable>
-          </Link>
-          <Text
-            style={{ color: FC25.colors.text, textAlign: 'center', textDecorationLine: 'underline', marginTop: 10 }}
-            onPress={() => {
-              const trimmed = name.trim();
-              if (!trimmed) { setError('Ange ett namn för att fortsätta'); return; }
-              setName(trimmed);
-              Keyboard.dismiss();
-              setTimeout(navigateToDashboard, 50);
-            }}
-          >
-            Gå vidare om knappen inte fungerar
-          </Text>
-          <Text style={{ color: FC25.colors.subtle, textAlign: 'center', marginTop: 6 }}>debug: {lastNav}</Text>
         </ScrollView>
       </KeyboardAvoidingView>
     </SafeAreaView>

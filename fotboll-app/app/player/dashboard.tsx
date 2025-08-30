@@ -2,11 +2,18 @@ import { View, Text, StyleSheet, Pressable, ScrollView } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useAppStore } from '@/store/useAppStore';
 import { FC25 } from '@/app/components/Theme';
+import { useEffect } from 'react';
 
 export default function Dashboard() {
   const router = useRouter();
   const { name } = useAppStore((s) => s.profile);
   const season = useAppStore((s) => s.season);
+
+  useEffect(() => {
+    if (!name || !name.trim()) {
+      router.replace('/player/new');
+    }
+  }, [name]);
 
   return (
     <ScrollView contentContainerStyle={styles.container} style={{ backgroundColor: FC25.colors.bg }}>
