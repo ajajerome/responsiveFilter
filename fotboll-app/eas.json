@@ -8,6 +8,12 @@
       "distribution": "internal",
       "channel": "development"
     },
+    "dev-staging": {
+      "developmentClient": true,
+      "distribution": "internal",
+      "channel": "staging",
+      "env": { "APP_ENV": "staging" }
+    },
     "staging": {
       "distribution": "internal",
       "channel": "staging",
