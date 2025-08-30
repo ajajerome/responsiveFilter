@@ -48,16 +48,21 @@ export default function NewPlayer() {
               <Text style={styles.buttonText}>Fortsätt</Text>
             </Pressable>
           </View>
-          <Link href="/player/avatar" asChild>
-            <Pressable
-              style={[styles.button, { backgroundColor: FC25.colors.secondary }]}
-              onPress={() => {
-                const trimmed = name.trim();
-                if (!trimmed) { setError('Ange ett namn för att fortsätta'); return; }
-                setName(trimmed);
-                Keyboard.dismiss();
-              }}
-            >
+          <Link
+            href="/player/avatar"
+            onPress={(e) => {
+              const trimmed = name.trim();
+              if (!trimmed) {
+                e.preventDefault();
+                setError('Ange ett namn för att fortsätta');
+                return;
+              }
+              setName(trimmed);
+              Keyboard.dismiss();
+            }}
+            asChild
+          >
+            <Pressable style={[styles.button, { backgroundColor: FC25.colors.secondary }]}> 
               <Text style={styles.buttonText}>Fortsätt (länk)</Text>
             </Pressable>
           </Link>
