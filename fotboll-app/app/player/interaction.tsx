@@ -49,12 +49,14 @@ function TeamView({ level, color, label }: { level: Level; color: string; label:
 }
 
 export default function InteractionScreen() {
-	const [age, setAge] = useState<number>(9);
+	const storedAge = useAppStore((s) => s.profile.age);
+	const storedTeam = useAppStore((s) => s.profile.teamColor);
+	const [age, setAge] = useState<number>(storedAge ?? 9);
 	const [showAgeControls, setShowAgeControls] = useState<boolean>(false);
 	const level = useMemo(() => deriveLevelFromAge(age), [age]);
 	const ageTier = useMemo(() => deriveAgeTier(age), [age]);
     const { actions, progress } = useAppStore((s) => ({ actions: s.actions, progress: s.progress }));
-	const limits: any = useAppStore((s: any) => (s as any).limits);
+    const limits: any = useAppStore((s: any) => (s as any).limits);
 
 	const relevantQuestions: Question[] = useMemo(() => {
 		return QUESTIONS.filter((q) => q.level === level);
@@ -104,16 +106,6 @@ export default function InteractionScreen() {
 				<Text style={{ color: FC25.colors.text, fontWeight: '700' }}>XP: {currentLevelXp}</Text>
 			</View>
 
-			{sessionDone && (
-				<View style={{ backgroundColor: FC25.colors.card, borderRadius: FC25.radius, padding: 16, borderWidth: 1, borderColor: FC25.colors.border, alignItems: 'center', gap: 8 }}>
-					<Text style={{ color: FC25.colors.text, fontSize: 18, fontWeight: '800' }}>Session klar!</Text>
-					<Text style={{ color: FC25.colors.subtle }}>Bra jobbat! Du klarade {SESSION_LENGTH} scenarier.</Text>
-					<Pressable style={styles.nextBtn} onPress={() => { setSessionDone(false); setSessionCount(0); setQIndex(0); setFeedback(''); setSelectedAction(undefined); setSelectedTargetPlayerId(undefined); setSelectedPoint(undefined); setStepIndex(0); }}>
-						<Text style={styles.nextText}>Spela igen</Text>
-					</Pressable>
-				</View>
-			)}
-
 			{(isCurfew || scenariosToday >= maxPerDay) ? (
 				<View style={{ backgroundColor: FC25.colors.card, borderRadius: FC25.radius, padding: 16, borderWidth: 1, borderColor: FC25.colors.border, gap: 8 }}>
 					<Text style={{ color: FC25.colors.text, fontWeight: '800', fontSize: 18 }}>{isCurfew ? 'Dags att vila' : 'Dagens gräns nådd'}</Text>
@@ -147,7 +139,7 @@ export default function InteractionScreen() {
 				/>
 			) : (
 				<View style={styles.teamsWrapper}>
-					<TeamView level={level} color="#1e90ff" label="Lag Blå" />
+					<TeamView level={level} color={storedTeam ?? '#1e90ff'} label="Lag Blå" />
 					<TeamView level={level} color="#ff3b30" label="Lag Röd" />
 				</View>
 			)}
