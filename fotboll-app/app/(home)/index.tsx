@@ -9,7 +9,7 @@ export default function HomeIndex() {
   return (
     <View style={[styles.container, { backgroundColor: FC25.colors.bg }]}>
       <Text style={[styles.title, { color: FC25.colors.text }]}>Fotbollsteori – Resan börjar</Text>
-      <Pressable style={[styles.button, { backgroundColor: FC25.colors.primary }]} onPress={() => router.push('/player/dashboard')}>
+      <Pressable style={[styles.button, { backgroundColor: FC25.colors.primary }]} onPress={() => router.push('/player/landing')}>
         <Text style={styles.buttonText}>Fortsätt karriär</Text>
       </Pressable>
       <Pressable style={[styles.button, { backgroundColor: FC25.colors.secondary }]} onPress={() => router.push('/player/new')}>

@@ -20,7 +20,7 @@ export default function NewPlayer() {
 
   const goNext = () => {
     Keyboard.dismiss();
-    requestAnimationFrame(() => router.push('/player/dashboard'));
+    requestAnimationFrame(() => router.push('/player/landing'));
   };
 
   return (
