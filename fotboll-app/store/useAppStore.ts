@@ -136,14 +136,14 @@ export const useAppStore = create<AppState>()(
             const today = now.toISOString().slice(0, 10);
             const plan = s.dayPlan;
             if (plan?.dateIso === today) return {} as any;
-            // Default targets per your plan: 3-4 interactive, 3-4 quiz, 2-3 quick
-            return {
-              dayPlan: {
-                dateIso: today,
-                totals: { interactive: 4, quiz: 4, quick: 2 },
-                done: { interactive: 0, quiz: 0, quick: 0 },
-              },
-            } as any;
+            const age = s.profile?.age ?? 10;
+            // Age-tuned totals within <=10 per day
+            const totals = age <= 9
+              ? { interactive: 3, quiz: 3, quick: 2 } // 8 totalt
+              : age <= 11
+              ? { interactive: 4, quiz: 3, quick: 2 } // 9 totalt
+              : { interactive: 4, quiz: 4, quick: 2 }; // 10 totalt
+            return { dayPlan: { dateIso: today, totals, done: { interactive: 0, quiz: 0, quick: 0 } } } as any;
           }),
         markDone: (kind, now = new Date()) =>
           set((s) => {
