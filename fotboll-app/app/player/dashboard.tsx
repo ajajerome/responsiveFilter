@@ -1,9 +1,10 @@
-import { View, Text, StyleSheet, Pressable, ScrollView } from 'react-native';
+import { View, Text, StyleSheet, Pressable } from 'react-native';
 import { useEffect } from 'react';
 import { useRouter, Link } from 'expo-router';
 import { useAppStore } from '@/store/useAppStore';
 import { FC25 } from '@/app/components/Theme';
 import ErrorBoundary from '@/app/components/ErrorBoundary';
+import Screen from '@/app/components/Screen';
 
 export default function Dashboard() {
   const router = useRouter();
@@ -19,7 +20,7 @@ export default function Dashboard() {
   }, []);
 
   return (
-    <ScrollView contentContainerStyle={styles.container} style={{ backgroundColor: FC25.colors.bg }}>
+    <Screen>
       <ErrorBoundary fallback={<View style={{ padding: 16 }}><Text style={{ color: FC25.colors.warning }}>Kunde inte ladda dashboarden.</Text></View>}>
       <Text style={[styles.title, { color: FC25.colors.text }]}>Hej {name || 'spelare'}</Text>
       <View style={[styles.card, { borderColor: FC25.colors.border, backgroundColor: FC25.colors.card }]}>
@@ -72,12 +73,12 @@ export default function Dashboard() {
         <Text style={styles.buttonText}>Välj nivå</Text>
       </Pressable>
       </ErrorBoundary>
-    </ScrollView>
+    </Screen>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { padding: 24, gap: 16 },
+  container: { gap: 16 },
   title: { fontSize: 24, fontWeight: '800' },
   card: { borderWidth: 1, borderRadius: 12, padding: 16, gap: 8 },
   cardText: { fontSize: 16 },
