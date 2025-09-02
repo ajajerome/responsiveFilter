@@ -1,6 +1,7 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { View, Text, TextInput, Pressable, StyleSheet, Keyboard, Platform, ScrollView, KeyboardAvoidingView } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import * as Haptics from 'expo-haptics';
 import { useRouter } from 'expo-router';
 import { useAppStore } from '@/store/useAppStore';
 import { FC25 } from '@/app/components/Theme';
@@ -11,10 +12,15 @@ export default function NewPlayer() {
   const [name, setLocalName] = useState('');
   const [error, setError] = useState<string>('');
   const [age, setAge] = useState<string>('');
+  const isValid = useMemo(() => {
+    const trimmed = name.trim();
+    const parsedAge = parseInt(age, 10);
+    return !!trimmed && !!parsedAge && parsedAge >= 7 && parsedAge <= 13;
+  }, [name, age]);
 
   const goNext = () => {
     Keyboard.dismiss();
-    requestAnimationFrame(() => router.replace('/player/dashboard'));
+    requestAnimationFrame(() => router.push('/player/dashboard'));
   };
 
   return (
@@ -39,6 +45,7 @@ export default function NewPlayer() {
                 if (!parsedAge || parsedAge < 7 || parsedAge > 13) { setError('Ange ålder 7–13'); return; }
                 actions.setName(trimmed);
                 actions.setAge(parsedAge);
+                Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
                 goNext();
               }}
             />
@@ -57,19 +64,22 @@ export default function NewPlayer() {
                 if (!parsedAge || parsedAge < 7 || parsedAge > 13) { setError('Ange ålder 7–13'); return; }
                 actions.setName(trimmed);
                 actions.setAge(parsedAge);
+                Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
                 goNext();
               }}
             />
             {!!error && <Text style={[styles.error, { color: '#ff3b30' }]}>{error}</Text>}
             <Pressable
-              style={[styles.button, { backgroundColor: name.trim() ? FC25.colors.primary : FC25.colors.border }]}
+              disabled={!isValid}
+              style={[styles.button, { backgroundColor: isValid ? FC25.colors.primary : FC25.colors.border }]}
               onPress={() => {
                 const trimmed = name.trim();
                 const parsedAge = parseInt(age, 10);
-                if (!trimmed) { setError('Ange ett namn för att fortsätta'); return; }
-                if (!parsedAge || parsedAge < 7 || parsedAge > 13) { setError('Ange ålder 7–13'); return; }
+                if (!trimmed) { setError('Ange ett namn för att fortsätta'); Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error); return; }
+                if (!parsedAge || parsedAge < 7 || parsedAge > 13) { setError('Ange ålder 7–13'); Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error); return; }
                 actions.setName(trimmed);
                 actions.setAge(parsedAge);
+                Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
                 goNext();
               }}
             >
