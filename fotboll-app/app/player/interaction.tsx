@@ -12,6 +12,7 @@ import type { ActionType } from '@/types/content';
 import type { Vector2 } from '@/types/scenario';
 import * as Haptics from 'expo-haptics';
 import { useAppStore } from '@/store/useAppStore';
+import { useLocalSearchParams } from 'expo-router';
 
 type AgeTier = 'U7' | 'U9' | 'U11' | 'U13+';
 
@@ -56,6 +57,9 @@ export default function InteractionScreen() {
 	const level = useMemo(() => deriveLevelFromAge(age), [age]);
 	const ageTier = useMemo(() => deriveAgeTier(age), [age]);
     const { actions, progress } = useAppStore((s) => ({ actions: s.actions, progress: s.progress }));
+    const { safe } = useLocalSearchParams<{ safe?: string }>();
+    const safeMode = safe === '1';
+    const enableHaptics = !safeMode;
 
 	function isValidScenario(s: any): boolean {
 		return !!s && Array.isArray(s.players) && s.players.length >= 3 && !!s.ball && !!s.level;
@@ -116,6 +120,11 @@ export default function InteractionScreen() {
 			<Text style={[styles.subtitle, { color: FC25.colors.subtle }]}>Ålder: {age} ({ageTier}) • Nivå: {level} • Fallback: {isValidScenario(sourceQuestion.scenario) ? 'Nej' : 'Ja'}</Text>
 
 			<ErrorBoundary fallback={<View style={{ padding: 12 }}><Text style={{ color: FC25.colors.warning }}>Kunde inte rendera planen.</Text></View>}>
+			{safeMode ? (
+				<View style={[styles.questionBox, { backgroundColor: FC25.colors.card, borderColor: FC25.colors.border }]}>
+					<Text style={[styles.questionTitle, { color: FC25.colors.text }]}>Säkert läge – planen är tillfälligt avstängd.</Text>
+				</View>
+			) : (
 			<PitchView
 				scenario={scenario}
 				selectable
@@ -138,6 +147,7 @@ export default function InteractionScreen() {
 					if (selectedAction === 'dribble' || selectedAction === 'defend') setSelectedPoint(pt);
 				}}
 			/>
+			)}
 			</ErrorBoundary>
 
 			<View style={[styles.questionBox, { backgroundColor: FC25.colors.card, borderColor: FC25.colors.border }] }>
@@ -200,7 +210,7 @@ export default function InteractionScreen() {
 							setXp((v) => v + result.xpDelta!);
 						}
 						if (result.valid) {
-							Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+							if (enableHaptics) Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
 							if (seq) {
 								const next = stepIndex + 1;
 								if (next < seq.steps.length) {
@@ -213,7 +223,7 @@ export default function InteractionScreen() {
 								}
 							}
 						} else {
-							Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
+							if (enableHaptics) Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
 						}
 					}}
 				>
