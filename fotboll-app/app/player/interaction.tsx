@@ -2,7 +2,7 @@ import { useState, useMemo } from 'react';
 import { View, Text, StyleSheet, Pressable, ScrollView } from 'react-native';
 import { QUESTIONS } from '@/data/questions';
 import type { Level, Question, MatchScenarioQuestion } from '@/types/content';
-import PitchView from '@/app/components/PitchView';
+import { PitchView } from '@/app/components/PitchView';
 import ActionBar from '@/app/components/ActionBar';
 import { FC25 } from '@/app/components/Theme';
 import { validateAction, getAllowedPassTargets, scoreSequenceStep } from '@/app/services/scenarioEngine';
