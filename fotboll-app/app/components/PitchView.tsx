@@ -32,6 +32,13 @@ function formationZones(level: Scenario['level']) {
 }
 
 export const PitchView = memo(function PitchView({ scenario, width = 340, height = 220, selectable, onSelectPlayer, onSelectPoint, highlightPlayerIds, selectedPoint, ghostPath }: Props) {
+	if (!scenario || !Array.isArray(scenario.players) || !scenario.ball) {
+		return (
+			<View style={styles.wrapper}>
+				<Text style={styles.legendText}>Ingen scenario-data</Text>
+			</View>
+		);
+	}
 	const zones = useMemo(() => formationZones(scenario.level), [scenario.level]);
 
 	const handlePitchPress = useCallback((e: any) => {

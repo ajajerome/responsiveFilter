@@ -5,6 +5,7 @@ import type { Level, Question, MatchScenarioQuestion } from '@/types/content';
 import { PitchView } from '@/app/components/PitchView';
 import ActionBar from '@/app/components/ActionBar';
 import { FC25 } from '@/app/components/Theme';
+import ErrorBoundary from '@/app/components/ErrorBoundary';
 import { validateAction, getAllowedPassTargets, scoreSequenceStep } from '@/app/services/scenarioEngine';
 import type { ActionType } from '@/types/content';
 import type { Vector2 } from '@/types/scenario';
@@ -106,12 +107,13 @@ export default function InteractionScreen() {
 	const [stepIndex, setStepIndex] = useState<number>(0);
 
 	return (
-		<ScrollView contentContainerStyle={[styles.container, { backgroundColor: FC25.colors.bg }] }>
+		<ScrollView contentContainerStyle={[styles.container]} style={{ backgroundColor: FC25.colors.bg }}>
 			<View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
 				<Text style={[styles.title, { color: FC25.colors.text }]}>Matchscenario – Interaktivt läge</Text>
 			</View>
 			<Text style={[styles.subtitle, { color: FC25.colors.subtle }]}>Ålder: {age} ({ageTier}) • Nivå: {level} • Fallback: {isValidScenario(sourceQuestion.scenario) ? 'Nej' : 'Ja'}</Text>
 
+			<ErrorBoundary fallback={<View style={{ padding: 12 }}><Text style={{ color: FC25.colors.warning }}>Kunde inte rendera planen.</Text></View>}>
 			<PitchView
 				scenario={scenario}
 				selectable
@@ -134,6 +136,7 @@ export default function InteractionScreen() {
 					if (selectedAction === 'dribble' || selectedAction === 'defend') setSelectedPoint(pt);
 				}}
 			/>
+			</ErrorBoundary>
 
 			<View style={[styles.questionBox, { backgroundColor: FC25.colors.card, borderColor: FC25.colors.border }] }>
 				<Text style={[styles.questionTitle, { color: FC25.colors.text }]}>{questionText}</Text>
