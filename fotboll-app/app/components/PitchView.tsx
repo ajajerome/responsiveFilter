@@ -1,5 +1,6 @@
 import { memo, useMemo, useCallback, useState, useEffect } from 'react';
 import { View, Text, StyleSheet, PanResponder, GestureResponderEvent, PanResponderGestureState } from 'react-native';
+import Svg, { Rect, Line, Circle, Path } from 'react-native-svg';
 import type { Scenario, Vector2 } from '@/types/scenario';
 
 type Props = {
