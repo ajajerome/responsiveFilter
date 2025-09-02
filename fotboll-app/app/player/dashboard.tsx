@@ -15,8 +15,8 @@ export default function Dashboard() {
   const actions = useAppStore((s) => s.actions);
 
   useEffect(() => {
-    if (!dayPlan) actions.ensureDayPlan();
-  }, [dayPlan]);
+    actions.ensureDayPlan();
+  }, []);
 
   return (
     <ScrollView contentContainerStyle={styles.container} style={{ backgroundColor: FC25.colors.bg }}>
@@ -27,16 +27,25 @@ export default function Dashboard() {
         <Text style={[styles.cardText, { color: FC25.colors.text }]}>Säsongs-XP: {season.xp}</Text>
       </View>
       {(() => {
-        const totals = dayPlan?.totals ?? { interactive: 4, quiz: 4, quick: 2 };
-        const done = dayPlan?.done ?? { interactive: 0, quiz: 0, quick: 0 };
-        return (
-          <View style={[styles.card, { borderColor: FC25.colors.border, backgroundColor: FC25.colors.card }]}>
-            <Text style={[styles.cardText, { color: FC25.colors.text }]}>Dagens plan</Text>
-            <Text style={[styles.cardText, { color: FC25.colors.text }]}>Interaktivt: {done.interactive}/{totals.interactive}</Text>
-            <Text style={[styles.cardText, { color: FC25.colors.text }]}>Quiz: {done.quiz}/{totals.quiz}</Text>
-            <Text style={[styles.cardText, { color: FC25.colors.text }]}>Snabbfrågor: {done.quick}/{totals.quick}</Text>
-          </View>
-        );
+        try {
+          const totals = dayPlan?.totals ?? { interactive: 4, quiz: 4, quick: 2 };
+          const done = dayPlan?.done ?? { interactive: 0, quiz: 0, quick: 0 };
+          return (
+            <View style={[styles.card, { borderColor: FC25.colors.border, backgroundColor: FC25.colors.card }]}>
+              <Text style={[styles.cardText, { color: FC25.colors.text }]}>Dagens plan</Text>
+              <Text style={[styles.cardText, { color: FC25.colors.text }]}>Interaktivt: {done.interactive}/{totals.interactive}</Text>
+              <Text style={[styles.cardText, { color: FC25.colors.text }]}>Quiz: {done.quiz}/{totals.quiz}</Text>
+              <Text style={[styles.cardText, { color: FC25.colors.text }]}>Snabbfrågor: {done.quick}/{totals.quick}</Text>
+            </View>
+          );
+        } catch {
+          return (
+            <View style={[styles.card, { borderColor: FC25.colors.border, backgroundColor: FC25.colors.card }]}>
+              <Text style={[styles.cardText, { color: FC25.colors.text }]}>Dagens plan</Text>
+              <Text style={[styles.cardText, { color: FC25.colors.subtle }]}>Kunde inte läsa planen just nu.</Text>
+            </View>
+          );
+        }
       })()}
 
       <Pressable
