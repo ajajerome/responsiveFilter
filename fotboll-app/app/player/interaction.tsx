@@ -58,15 +58,43 @@ export default function InteractionScreen() {
     const { actions, progress } = useAppStore((s) => ({ actions: s.actions, progress: s.progress }));
     const limits: any = useAppStore((s: any) => (s as any).limits);
 
-	const relevantQuestions: Question[] = useMemo(() => {
-		return QUESTIONS.filter((q) => q.level === level);
-	}, [level]);
+	const relevant: Question[] = useMemo(() => QUESTIONS.filter((q) => q.level === level), [level]);
+	const hasQuestions = relevant.length > 0;
+
+	const FALLBACK: MatchScenarioQuestion = {
+		id: 'fallback-7m-01',
+		type: 'matchscenario',
+		level: '7-manna',
+		position: 'mittfält',
+		question: 'Snabbt anfall: pass inåt och avslut',
+		scenario: {
+			level: '7-manna', attacking: 'home', possession: 'home',
+			players: [
+				{ id: 'h-gk', role: 'GK', team: 'home', pos: { x: 8, y: 50 } },
+				{ id: 'h-lm', role: 'LM', team: 'home', pos: { x: 42, y: 28 } },
+				{ id: 'h-cm', role: 'CM', team: 'home', pos: { x: 50, y: 50 } },
+				{ id: 'h-rm', role: 'RM', team: 'home', pos: { x: 42, y: 72 } },
+				{ id: 'h-st', role: 'ST', team: 'home', pos: { x: 72, y: 50 } },
+				{ id: 'a-gk', role: 'GK', team: 'away', pos: { x: 92, y: 50 } },
+				{ id: 'a-cb', role: 'CB', team: 'away', pos: { x: 80, y: 50 } },
+			],
+			ball: { pos: { x: 42, y: 72 } },
+			keyActors: { ballCarrierId: 'h-rm', focusLane: 'right' }
+		} as any,
+		allowedActions: ['pass', 'shoot'],
+		sequence: { steps: [
+			{ expected: 'pass', hint: 'Spela inåt till CM/ST i ficka', xpBonus: 2 },
+			{ expected: 'shoot', hint: 'Avsluta snabbt', xpBonus: 3 },
+		]},
+	};
+
+	const questionsToUse: Question[] = hasQuestions ? relevant : [FALLBACK];
 
 	const SESSION_LENGTH = 5;
 	const [qIndex, setQIndex] = useState(0);
 	const [sessionCount, setSessionCount] = useState(0);
 	const [sessionDone, setSessionDone] = useState(false);
-	const question = relevantQuestions[qIndex % Math.max(1, relevantQuestions.length)];
+	const question = questionsToUse[qIndex % Math.max(1, questionsToUse.length)];
 	const [feedback, setFeedback] = useState<string>('');
 	const [xp, setXp] = useState<number>(0);
 	const currentLevelXp = progress[level]?.xp ?? 0;
@@ -85,6 +113,9 @@ export default function InteractionScreen() {
 
 	return (
 		<ScrollView contentContainerStyle={[styles.container, { backgroundColor: FC25.colors.bg }] }>
+			{!hasQuestions && (
+				<Text style={{ color: FC25.colors.subtle }}>Visar fallback-scenario för demosyfte</Text>
+			)}
 			<View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
 				<Text style={[styles.title, { color: FC25.colors.text }]}>Matchscenario – Interaktivt läge</Text>
 				<Pressable onPress={() => setShowAgeControls(!showAgeControls)}>
