@@ -1,6 +1,5 @@
-import { memo, useMemo, useCallback } from 'react';
+import { memo, useMemo, useCallback, useState, useEffect } from 'react';
 import { View, Text, StyleSheet, PanResponder, GestureResponderEvent, PanResponderGestureState } from 'react-native';
-import Svg, { Rect, Line, Circle, Path } from 'react-native-svg';
 import type { Scenario, Vector2 } from '@/types/scenario';
 
 type Props = {
@@ -137,7 +136,7 @@ export const PitchView = memo(function PitchView({ scenario, width = 340, height
 });
 
 const styles = StyleSheet.create({
-	wrapper: { alignSelf: 'center' },
+	wrapper: { alignSelf: 'center', backgroundColor: '#0c7a43' },
 	legend: { marginTop: 8, alignItems: 'center' },
 	legendText: { color: '#666' },
 });
