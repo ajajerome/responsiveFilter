@@ -1,5 +1,5 @@
 import { View, Text, StyleSheet, Pressable, ScrollView } from 'react-native';
-import { useRouter } from 'expo-router';
+import { useRouter, Link } from 'expo-router';
 import { useAppStore } from '@/store/useAppStore';
 import { FC25 } from '@/app/components/Theme';
 
@@ -15,9 +15,23 @@ export default function Dashboard() {
         <Text style={[styles.cardText, { color: FC25.colors.text }]}>Säsong: {season.number}</Text>
         <Text style={[styles.cardText, { color: FC25.colors.text }]}>Säsongs-XP: {season.xp}</Text>
       </View>
-      <Pressable style={[styles.button, { backgroundColor: FC25.colors.primary }]} onPress={() => router.push('/player/interaction')}>
+      <Pressable
+        style={[styles.button, { backgroundColor: FC25.colors.primary }]}
+        onPress={() => requestAnimationFrame(() => router.push('/player/interaction'))}
+      >
         <Text style={styles.buttonText}>Träna interaktivt</Text>
       </Pressable>
+
+      <Link href="/player/interaction" asChild>
+        <Pressable style={[styles.button, { backgroundColor: FC25.colors.secondary }]}> 
+          <Text style={styles.buttonText}>Träna interaktivt (länk)</Text>
+        </Pressable>
+      </Link>
+
+      <Text style={{ color: FC25.colors.text, textDecorationLine: 'underline' }} onPress={() => router.push('/player/interaction')}>
+        Gå till interaktiv vy
+      </Text>
+
       <Pressable style={[styles.button, { backgroundColor: FC25.colors.secondary }]} onPress={() => router.push('/player/level/7-manna')}>
         <Text style={styles.buttonText}>Spela 7-manna</Text>
       </Pressable>
