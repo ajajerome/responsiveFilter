@@ -1,5 +1,4 @@
 import { View, Text, StyleSheet, Pressable, ScrollView } from 'react-native';
-import { useEffect } from 'react';
 import { useRouter, Link } from 'expo-router';
 import { useAppStore } from '@/store/useAppStore';
 import { FC25 } from '@/app/components/Theme';
@@ -8,29 +7,15 @@ import ErrorBoundary from '@/app/components/ErrorBoundary';
 export default function Dashboard() {
   const router = useRouter();
   const { name } = useAppStore((s) => s.profile);
-  const season = useAppStore((s) => s.season);
-  const dayPlan = useAppStore((s) => s.dayPlan);
-  const actions = useAppStore((s) => s.actions);
-  useEffect(() => {
-    actions.ensureDayPlan();
-  }, []);
+  // Minimal skeleton: only read name to avoid hydration/render issues
 
   return (
     <ScrollView contentContainerStyle={styles.container} style={{ backgroundColor: FC25.colors.bg }}>
       <ErrorBoundary fallback={<View style={{ padding: 16 }}><Text style={{ color: FC25.colors.warning }}>Kunde inte ladda dashboarden.</Text></View>}>
       <Text style={[styles.title, { color: FC25.colors.text }]}>Hej {name || 'spelare'}</Text>
       <View style={[styles.card, { borderColor: FC25.colors.border, backgroundColor: FC25.colors.card }]}>
-        <Text style={[styles.cardText, { color: FC25.colors.text }]}>Säsong: {season.number}</Text>
-        <Text style={[styles.cardText, { color: FC25.colors.text }]}>Säsongs-XP: {season.xp}</Text>
+        <Text style={[styles.cardText, { color: FC25.colors.text }]}>Välj vad du vill göra</Text>
       </View>
-      {dayPlan && (
-        <View style={[styles.card, { borderColor: FC25.colors.border, backgroundColor: FC25.colors.card }]}> 
-          <Text style={[styles.cardText, { color: FC25.colors.text }]}>Dagens plan</Text>
-          <Text style={[styles.cardText, { color: FC25.colors.text }]}>Interaktivt: {dayPlan.done.interactive}/{dayPlan.totals.interactive}</Text>
-          <Text style={[styles.cardText, { color: FC25.colors.text }]}>Quiz: {dayPlan.done.quiz}/{dayPlan.totals.quiz}</Text>
-          <Text style={[styles.cardText, { color: FC25.colors.text }]}>Snabbfrågor: {dayPlan.done.quick}/{dayPlan.totals.quick}</Text>
-        </View>
-      )}
 
       <Pressable
         style={[styles.button, { backgroundColor: FC25.colors.primary }]}
