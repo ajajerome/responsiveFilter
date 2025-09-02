@@ -15,8 +15,8 @@ export default function Dashboard() {
   const actions = useAppStore((s) => s.actions);
 
   useEffect(() => {
-    if (hydrated) actions.ensureDayPlan();
-  }, [hydrated]);
+    if (!dayPlan) actions.ensureDayPlan();
+  }, [dayPlan]);
 
   return (
     <ScrollView contentContainerStyle={styles.container} style={{ backgroundColor: FC25.colors.bg }}>
@@ -26,23 +26,18 @@ export default function Dashboard() {
         <Text style={[styles.cardText, { color: FC25.colors.text }]}>Säsong: {season.number}</Text>
         <Text style={[styles.cardText, { color: FC25.colors.text }]}>Säsongs-XP: {season.xp}</Text>
       </View>
-      {hydrated && (
-        <View style={[styles.card, { borderColor: FC25.colors.border, backgroundColor: FC25.colors.card }]}>
-          <Text style={[styles.cardText, { color: FC25.colors.text }]}>Dagens plan</Text>
-          <Text style={[styles.cardText, { color: FC25.colors.text }]}>
-            Interaktivt: {dayPlan?.done.interactive ?? 0}/{dayPlan?.totals.interactive ?? 0}
-          </Text>
-          <Text style={[styles.cardText, { color: FC25.colors.text }]}>
-            Quiz: {dayPlan?.done.quiz ?? 0}/{dayPlan?.totals.quiz ?? 0}
-          </Text>
-          <Text style={[styles.cardText, { color: FC25.colors.text }]}>
-            Snabbfrågor: {dayPlan?.done.quick ?? 0}/{dayPlan?.totals.quick ?? 0}
-          </Text>
-          <Pressable style={[styles.button, { backgroundColor: FC25.colors.primary }]} onPress={() => actions.ensureDayPlan()}>
-            <Text style={styles.buttonText}>Initiera/uppdatera plan</Text>
-          </Pressable>
-        </View>
-      )}
+      {(() => {
+        const totals = dayPlan?.totals ?? { interactive: 4, quiz: 4, quick: 2 };
+        const done = dayPlan?.done ?? { interactive: 0, quiz: 0, quick: 0 };
+        return (
+          <View style={[styles.card, { borderColor: FC25.colors.border, backgroundColor: FC25.colors.card }]}>
+            <Text style={[styles.cardText, { color: FC25.colors.text }]}>Dagens plan</Text>
+            <Text style={[styles.cardText, { color: FC25.colors.text }]}>Interaktivt: {done.interactive}/{totals.interactive}</Text>
+            <Text style={[styles.cardText, { color: FC25.colors.text }]}>Quiz: {done.quiz}/{totals.quiz}</Text>
+            <Text style={[styles.cardText, { color: FC25.colors.text }]}>Snabbfrågor: {done.quick}/{totals.quick}</Text>
+          </View>
+        );
+      })()}
 
       <Pressable
         style={[styles.button, { backgroundColor: FC25.colors.primary }]}
