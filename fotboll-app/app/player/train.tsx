@@ -3,6 +3,7 @@ import { View, Text, Pressable, StyleSheet } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useAppStore } from '@/store/useAppStore';
 import { FC25 } from '@/app/components/Theme';
+import Screen from '@/app/components/Screen';
 
 export default function Train() {
   const router = useRouter();
@@ -20,7 +21,7 @@ export default function Train() {
   }, [dayPlan]);
 
   return (
-    <View style={styles.container}>
+    <Screen>
       <Text style={[styles.title, { color: FC25.colors.text }]}>Dagens mål</Text>
       <Text style={{ color: FC25.colors.subtle }}>Interaktivt kvar: {remaining.interactive} • Quiz kvar: {remaining.quiz}</Text>
       <Pressable style={[styles.btn, { backgroundColor: FC25.colors.primary }]} onPress={() => {
@@ -30,12 +31,12 @@ export default function Train() {
       }}>
         <Text style={styles.btnText}>Starta pass</Text>
       </Pressable>
-    </View>
+    </Screen>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, padding: 24, gap: 12, justifyContent: 'center', backgroundColor: FC25.colors.bg },
+  container: { flex: 1, padding: 24, gap: 12, justifyContent: 'center' },
   title: { fontSize: 22, fontWeight: '800' },
   btn: { alignItems: 'center', paddingVertical: 12, borderRadius: 10 },
   btnText: { color: '#0a0a0f', fontWeight: '800' },
