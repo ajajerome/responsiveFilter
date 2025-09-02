@@ -1,6 +1,6 @@
 import { View, Text, StyleSheet, Pressable } from 'react-native';
 import { useEffect } from 'react';
-import { useRouter, Link } from 'expo-router';
+import { useRouter, Link, useLocalSearchParams } from 'expo-router';
 import { useAppStore } from '@/store/useAppStore';
 import { FC25 } from '@/app/components/Theme';
 import ErrorBoundary from '@/app/components/ErrorBoundary';
@@ -14,10 +14,11 @@ export default function Dashboard() {
   const hydrated = useAppStore((s) => s.hydrated);
   const dayPlan = useAppStore((s) => s.dayPlan);
   const actions = useAppStore((s) => s.actions);
+  const { safe } = useLocalSearchParams<{ safe?: string }>();
 
   useEffect(() => {
-    actions.ensureDayPlan();
-  }, []);
+    if (safe !== '1') actions.ensureDayPlan();
+  }, [safe]);
 
   return (
     <Screen>
@@ -27,7 +28,7 @@ export default function Dashboard() {
         <Text style={[styles.cardText, { color: FC25.colors.text }]}>Säsong: {season.number}</Text>
         <Text style={[styles.cardText, { color: FC25.colors.text }]}>Säsongs-XP: {season.xp}</Text>
       </View>
-      {(() => {
+      {safe === '1' ? null : (() => {
         try {
           const totals = dayPlan?.totals ?? { interactive: 4, quiz: 4, quick: 2 };
           const done = dayPlan?.done ?? { interactive: 0, quiz: 0, quick: 0 };
