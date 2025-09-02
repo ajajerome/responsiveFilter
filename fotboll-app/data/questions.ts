@@ -3,16 +3,6 @@ import type { Scenario } from '@/types/scenario';
 
 export const QUESTIONS: Question[] = [
   {
-    id: 'q1234',
-    type: 'drag_drop',
-    level: '7-manna',
-    position: 'mittfält',
-    question: 'Placera spelarna rätt i en 2-3-1 uppställning',
-    microInfo: 'UEFA: Grundpositioner och bredd i uppspel för 7-manna.',
-    correct_answer: ['player1:mid_left', 'player2:mid_right'],
-    variants: [{ side: 'left' }, { side: 'right' }],
-  },
-  {
     id: 'q0001',
     type: 'quiz',
     level: '5-manna',
