@@ -1,33 +1,44 @@
 import { useLocalSearchParams } from "expo-router";
 import { View, Text, StyleSheet, Pressable } from "react-native";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import type { PedagogyTag } from '@/app/services/aiGenerator';
 import { FC25 } from '@/app/components/Theme';
-
-const sampleQuestions = [
-  { id: "q1", type: "mc", level: "5-manna", position: "mittfält", question: "Vilken yta ska mittfältaren täcka i försvar?", options: ["Centralt", "Ytterkant"], correct: 0 },
-  { id: "q2", type: "drag_drop", level: "7-manna", position: "back", question: "Placera backlinjen i 2-3-1", options: ["Höger", "Vänster"], correct: 1 }
-];
+import { QUESTIONS } from '@/data/questions';
+import { useAppStore } from '@/store/useAppStore';
 
 export default function QuizScreen() {
   const { level } = useLocalSearchParams<{ level?: string }>();
+  const profileAge = useAppStore((s) => s.profile.age ?? 10);
+  const actions = useAppStore((s) => s.actions);
   const [index, setIndex] = useState(0);
   const [selected, setSelected] = useState<number | null>(null);
   const [validated, setValidated] = useState<boolean>(false);
-  const q = sampleQuestions[index % sampleQuestions.length];
+
+  const quizBank = useMemo(() => {
+    const all = QUESTIONS.filter((qq: any) => qq.type === 'quiz');
+    // Optionally bias by age -> level mapping
+    const preferredLevel = profileAge <= 8 ? '5-manna' : profileAge <= 11 ? '7-manna' : '9-manna';
+    const prioritized = all.filter((q: any) => q.level === preferredLevel);
+    const rest = all.filter((q: any) => q.level !== preferredLevel);
+    return [...prioritized, ...rest];
+  }, [profileAge]);
+
+  const q = quizBank[(index % Math.max(quizBank.length, 1))] as any;
 
   const tags: PedagogyTag[] = ['beslut', 'samarbete'];
   return (
     <View style={styles.container}>
-      <Text style={styles.badge}>{level ?? q.level}</Text>
-      <Text style={styles.title}>{q.question}</Text>
-      <Text style={{ color: FC25.colors.subtle, marginBottom: 8 }}>UEFA: Bredda backar skapar passningsvinkel och spelbarhet.</Text>
+      <Text style={styles.badge}>{level ?? q?.level}</Text>
+      <Text style={styles.title}>{q?.question}</Text>
+      {!!q?.microInfo && (
+        <Text style={{ color: FC25.colors.subtle, marginBottom: 8 }}>{q.microInfo}</Text>
+      )}
       <View style={{ flexDirection: 'row', gap: 8, marginBottom: 8 }}>
         {tags.map((t) => (
           <View key={t} style={styles.tag}><Text style={{ fontSize: 12 }}>#{t}</Text></View>
         ))}
       </View>
-      {q.options?.map((opt, i) => (
+      {q?.options?.map((opt: string, i: number) => (
         <Pressable
           key={i}
           style={[styles.option, {
@@ -45,6 +56,7 @@ export default function QuizScreen() {
         onPress={() => {
           if (selected === null) return;
           setValidated(true);
+          actions.markDone('quiz');
           setTimeout(() => {
             setSelected(null);
             setValidated(false);
@@ -54,7 +66,7 @@ export default function QuizScreen() {
       >
         <Text style={{ color: '#0a0a0f', fontWeight: '800' }}>{validated ? 'Rätt! Nästa…' : 'Validera & Nästa'}</Text>
       </Pressable>
-      <Text style={styles.progress}>Fråga {index + 1}</Text>
+      <Text style={styles.progress}>Fråga {index + 1} av {quizBank.length}</Text>
     </View>
   );
 }
