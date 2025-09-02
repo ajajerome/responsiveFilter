@@ -35,7 +35,7 @@
     "production": {},
     "appstore-staging": {
       "ios": {
-        "ascAppId": "" 
+        "ascAppId": "6751473029"
       }
     }
   }
