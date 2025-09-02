@@ -39,7 +39,7 @@ export const PitchView = memo(function PitchView({ scenario, width = 340, height
 			</View>
 		);
 	}
-	const zones = useMemo(() => formationZones(scenario.level), [scenario.level]);
+	const zones = useMemo(() => formationZones(scenario.level) ?? [], [scenario.level]);
 
 	const handlePitchPress = useCallback((e: any) => {
 		if (!selectable || !onSelectPoint) return;
@@ -62,8 +62,8 @@ export const PitchView = memo(function PitchView({ scenario, width = 340, height
 		},
 	}), [selectable, onSelectPoint, width, height]);
 	return (
-		<View style={styles.wrapper}>
-			<Svg width={width} height={height} {...(selectable ? panResponder.panHandlers : {})}>
+		<View style={styles.wrapper} {...(selectable ? panResponder.panHandlers : {})}>
+			<Svg width={width} height={height}>
 				<Rect x={0} y={0} width={width} height={height} rx={10} ry={10} fill="#0c7a43" />
 				<Rect x={6} y={6} width={width - 12} height={height - 12} stroke="#ffffff" strokeWidth={2} fill="transparent" onPress={handlePitchPress} />
 				{/* Mid line */}
