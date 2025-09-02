@@ -3,6 +3,7 @@ import { useEffect } from 'react';
 import { useRouter, Link } from 'expo-router';
 import { useAppStore } from '@/store/useAppStore';
 import { FC25 } from '@/app/components/Theme';
+import ErrorBoundary from '@/app/components/ErrorBoundary';
 
 export default function Dashboard() {
   const router = useRouter();
@@ -16,6 +17,7 @@ export default function Dashboard() {
 
   return (
     <ScrollView contentContainerStyle={styles.container} style={{ backgroundColor: FC25.colors.bg }}>
+      <ErrorBoundary fallback={<View style={{ padding: 16 }}><Text style={{ color: FC25.colors.warning }}>Kunde inte ladda dashboarden.</Text></View>}>
       <Text style={[styles.title, { color: FC25.colors.text }]}>Hej {name || 'spelare'}</Text>
       <View style={[styles.card, { borderColor: FC25.colors.border, backgroundColor: FC25.colors.card }]}>
         <Text style={[styles.cardText, { color: FC25.colors.text }]}>Säsong: {season.number}</Text>
@@ -53,6 +55,7 @@ export default function Dashboard() {
       <Pressable style={[styles.button, { backgroundColor: FC25.colors.warning }]} onPress={() => router.push('/player/index')}>
         <Text style={styles.buttonText}>Välj nivå</Text>
       </Pressable>
+      </ErrorBoundary>
     </ScrollView>
   );
 }
