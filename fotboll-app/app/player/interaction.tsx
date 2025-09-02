@@ -1,6 +1,7 @@
 import { useState, useMemo } from 'react';
 import { View, Text, StyleSheet, Pressable, ScrollView } from 'react-native';
 import { QUESTIONS } from '@/data/questions';
+import { generateScenarioFor } from '@/app/services/aiGenerator';
 import type { Level, Question, MatchScenarioQuestion } from '@/types/content';
 import { PitchView } from '@/app/components/PitchView';
 import ActionBar from '@/app/components/ActionBar';
@@ -87,7 +88,8 @@ export default function InteractionScreen() {
 		]},
 	};
 
-	// Always use the fallback scenario for demo
+	// Always use the fallback scenario for demo, but prefer AI stub when profile age exists
+	const playerAge = useAppStore((s) => s.profile.age ?? age);
 	const sourceQuestion: MatchScenarioQuestion = FALLBACK;
 	const scenario = isValidScenario(sourceQuestion.scenario) ? sourceQuestion.scenario : FALLBACK.scenario;
 	const seq = sourceQuestion.sequence;

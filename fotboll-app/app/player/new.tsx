@@ -10,6 +10,7 @@ export default function NewPlayer() {
   const actions = useAppStore((s) => s.actions);
   const [name, setLocalName] = useState('');
   const [error, setError] = useState<string>('');
+  const [age, setAge] = useState<string>('');
 
   const goNext = () => {
     Keyboard.dismiss();
@@ -33,8 +34,29 @@ export default function NewPlayer() {
               returnKeyType="done"
               onSubmitEditing={() => {
                 const trimmed = name.trim();
+                const parsedAge = parseInt(age, 10);
                 if (!trimmed) { setError('Ange ett namn för att fortsätta'); return; }
+                if (!parsedAge || parsedAge < 7 || parsedAge > 13) { setError('Ange ålder 7–13'); return; }
                 actions.setName(trimmed);
+                actions.setAge(parsedAge);
+                goNext();
+              }}
+            />
+            <TextInput
+              placeholder="Ålder (7–13)"
+              value={age}
+              onChangeText={(t) => { setAge(t.replace(/[^0-9]/g, '')); if (error) setError(''); }}
+              keyboardType="number-pad"
+              style={[styles.input, { color: FC25.colors.text, borderColor: FC25.colors.border }]}
+              placeholderTextColor={FC25.colors.subtle}
+              returnKeyType="done"
+              onSubmitEditing={() => {
+                const trimmed = name.trim();
+                const parsedAge = parseInt(age, 10);
+                if (!trimmed) { setError('Ange ett namn för att fortsätta'); return; }
+                if (!parsedAge || parsedAge < 7 || parsedAge > 13) { setError('Ange ålder 7–13'); return; }
+                actions.setName(trimmed);
+                actions.setAge(parsedAge);
                 goNext();
               }}
             />
@@ -43,8 +65,11 @@ export default function NewPlayer() {
               style={[styles.button, { backgroundColor: name.trim() ? FC25.colors.primary : FC25.colors.border }]}
               onPress={() => {
                 const trimmed = name.trim();
+                const parsedAge = parseInt(age, 10);
                 if (!trimmed) { setError('Ange ett namn för att fortsätta'); return; }
+                if (!parsedAge || parsedAge < 7 || parsedAge > 13) { setError('Ange ålder 7–13'); return; }
                 actions.setName(trimmed);
+                actions.setAge(parsedAge);
                 goNext();
               }}
             >
