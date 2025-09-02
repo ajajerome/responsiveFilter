@@ -61,6 +61,10 @@ export default function InteractionScreen() {
 	const relevant: Question[] = useMemo(() => QUESTIONS.filter((q) => q.level === level), [level]);
 	const hasQuestions = relevant.length > 0;
 
+	function isValidScenario(s: any): boolean {
+		return !!s && Array.isArray(s.players) && s.players.length >= 3 && !!s.ball && !!s.level;
+	}
+
 	const FALLBACK: MatchScenarioQuestion = {
 		id: 'fallback-7m-01',
 		type: 'matchscenario',
@@ -88,13 +92,21 @@ export default function InteractionScreen() {
 		]},
 	};
 
-	const questionsToUse: Question[] = hasQuestions ? relevant : [FALLBACK];
-
 	const SESSION_LENGTH = 5;
 	const [qIndex, setQIndex] = useState(0);
 	const [sessionCount, setSessionCount] = useState(0);
 	const [sessionDone, setSessionDone] = useState(false);
-	const question = questionsToUse[qIndex % Math.max(1, questionsToUse.length)];
+
+	const sourceQuestion: MatchScenarioQuestion = useMemo(() => {
+		const q = hasQuestions ? relevant[qIndex % relevant.length] : FALLBACK;
+		return (q?.type === 'matchscenario' ? (q as MatchScenarioQuestion) : FALLBACK);
+	}, [hasQuestions, relevant, qIndex]);
+
+	const scenario = isValidScenario(sourceQuestion.scenario) ? sourceQuestion.scenario : FALLBACK.scenario;
+	const seq = sourceQuestion.sequence;
+	const allowed = sourceQuestion.allowedActions;
+	const questionText = sourceQuestion.question;
+
 	const [feedback, setFeedback] = useState<string>('');
 	const [xp, setXp] = useState<number>(0);
 	const currentLevelXp = progress[level]?.xp ?? 0;
@@ -113,16 +125,13 @@ export default function InteractionScreen() {
 
 	return (
 		<ScrollView contentContainerStyle={[styles.container, { backgroundColor: FC25.colors.bg }] }>
-			{!hasQuestions && (
-				<Text style={{ color: FC25.colors.subtle }}>Visar fallback-scenario för demosyfte</Text>
-			)}
 			<View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
 				<Text style={[styles.title, { color: FC25.colors.text }]}>Matchscenario – Interaktivt läge</Text>
 				<Pressable onPress={() => setShowAgeControls(!showAgeControls)}>
 					<Text style={{ color: FC25.colors.subtle }}>{showAgeControls ? 'Dölj ålder' : 'Ålder'}</Text>
 				</Pressable>
 			</View>
-			<Text style={[styles.subtitle, { color: FC25.colors.subtle }]}>Ålder: {age} ({ageTier}) • Nivå: {level}</Text>
+			<Text style={[styles.subtitle, { color: FC25.colors.subtle }]}>Ålder: {age} ({ageTier}) • Nivå: {level} • Frågor: {relevant.length} • Fallback: {!hasQuestions || !isValidScenario(sourceQuestion.scenario) ? 'Ja' : 'Nej'}</Text>
 			{showAgeControls && (
 				<View style={styles.ageControls}>
 					{[7, 8, 9, 10, 11, 12, 13].map((a) => (
@@ -144,19 +153,18 @@ export default function InteractionScreen() {
 						{isCurfew ? 'Det är sent – sömn hjälper kroppen att växa och bli starkare.' : 'Bra jobbat idag! Fortsätt i morgon för att bli ännu bättre.'}
 					</Text>
 				</View>
-			) : question?.type === 'matchscenario' ? (
+			) : (
 				<PitchView
-					scenario={(question as MatchScenarioQuestion).scenario}
+					scenario={scenario}
 					selectable
 					highlightPlayerIds={(() => {
-						const scen = (question as MatchScenarioQuestion).scenario;
 						if (selectedAction === 'pass') {
-							return getAllowedPassTargets(scen, scen.keyActors?.ballCarrierId, { focusLane: scen.keyActors?.focusLane });
+							return getAllowedPassTargets(scenario as any, (scenario as any).keyActors?.ballCarrierId, { focusLane: (scenario as any).keyActors?.focusLane });
 						}
 						return selectedTargetPlayerId ? [selectedTargetPlayerId] : [];
 					})()}
 					selectedPoint={selectedPoint}
-					ghostPath={selectedAction === 'dribble' && selectedPoint ? { from: (question as MatchScenarioQuestion).scenario.players.find(p => p.id === (question as MatchScenarioQuestion).scenario.keyActors?.ballCarrierId)!.pos, to: selectedPoint } : undefined}
+					ghostPath={selectedAction === 'dribble' && selectedPoint ? { from: ((scenario as any).players.find((p: any) => p.id === (scenario as any).keyActors?.ballCarrierId)?.pos as Vector2), to: selectedPoint } : undefined}
 					onSelectPlayer={(pid) => {
 						if (!selectedAction) return;
 						if (selectedAction === 'pass') {
@@ -168,122 +176,97 @@ export default function InteractionScreen() {
 						if (selectedAction === 'dribble' || selectedAction === 'defend') setSelectedPoint(pt);
 					}}
 				/>
-			) : (
-				<View style={styles.teamsWrapper}>
-					<TeamView level={level} color={storedTeam ?? '#1e90ff'} label="Lag Blå" />
-					<TeamView level={level} color="#ff3b30" label="Lag Röd" />
-				</View>
 			)}
 
 			<View style={[styles.questionBox, { backgroundColor: FC25.colors.card, borderColor: FC25.colors.border }] }>
-				<Text style={[styles.questionTitle, { color: FC25.colors.text }]}>{question?.question ?? 'Inga frågor tillgängliga för denna nivå ännu.'}</Text>
-				{(question as any)?.options && (
-					<View style={styles.options}>
-						{(question as any).options.map((opt: string, i: number) => (
-							<Pressable key={i} style={styles.option} onPress={() => setQIndex(qIndex + 1)}>
-								<Text style={{ color: FC25.colors.text }}>{opt}</Text>
-							</Pressable>
-						))}
-					</View>
-				)}
-				{!question && (
-					<Text style={[styles.noQuestions, { color: FC25.colors.subtle }]}>Lägg till frågor i data/questions.ts för nivån {level}.</Text>
-				)}
+				<Text style={[styles.questionTitle, { color: FC25.colors.text }]}>{questionText}</Text>
 			</View>
 
-			{question?.type === 'matchscenario' && !isCurfew && scenariosToday < maxPerDay && (
-				<View style={styles.actionSection}>
-					{/* HUD + Step indicator */}
-					{(() => {
-						const scen = (question as MatchScenarioQuestion).scenario;
-						const actor = scen.players.find(p => p.id === scen.keyActors?.ballCarrierId);
-						const seq = (question as MatchScenarioQuestion).sequence;
-						const currentStep = seq?.steps?.[stepIndex];
-						return (
-							<View style={{ gap: 6 }}>
-								<Text style={{ color: FC25.colors.text }}>Bollhållare: {actor?.role ?? 'okänd'} • Lane: {scen.keyActors?.focusLane ?? '-'}</Text>
-								{seq && (
-									<View style={styles.stepBar}>
-										<Text style={styles.stepText}>Steg {stepIndex + 1}/{seq.steps.length}</Text>
-										{currentStep?.hint && <Text style={styles.hintText}>Hint: {currentStep.hint}</Text>}
-									</View>
-								)}
-							</View>
-						);
-					})()}
+			{/* Action controls */}
+			<View style={styles.actionSection}>
+				{(() => {
+					const actor = (scenario as any).players.find((p: any) => p.id === (scenario as any).keyActors?.ballCarrierId);
+					const currentStep = seq?.steps?.[stepIndex];
+					return (
+						<View style={{ gap: 6 }}>
+							<Text style={{ color: FC25.colors.text }}>Bollhållare: {actor?.role ?? 'okänd'} • Lane: {(scenario as any).keyActors?.focusLane ?? '-'}</Text>
+							{seq && (
+								<View style={styles.stepBar}>
+									<Text style={styles.stepText}>Steg {stepIndex + 1}/{seq.steps.length}</Text>
+									{currentStep?.hint && <Text style={styles.hintText}>Hint: {currentStep.hint}</Text>}
+								</View>
+							)}
+						</View>
+					);
+				})()}
 
-					<ActionBar
-						allowed={(() => {
-							const seq = (question as MatchScenarioQuestion).sequence;
-							const expected = seq?.steps?.[stepIndex]?.expected as ActionType | undefined;
-							return expected ? [expected] : (question as MatchScenarioQuestion).allowedActions;
-						})()}
-						onSelect={(act: ActionType) => {
-							setSelectedAction(act);
-							setFeedback(
-								act === 'pass'
-									? 'Välj en medspelare att passa till'
+				<ActionBar
+					allowed={(() => {
+						const expected = seq?.steps?.[stepIndex]?.expected as ActionType | undefined;
+						return expected ? [expected] : allowed;
+					})()}
+					onSelect={(act: ActionType) => {
+						setSelectedAction(act);
+						setFeedback(
+							act === 'pass'
+								? 'Välj en medspelare att passa till'
 								: act === 'dribble'
 									? 'Tryck på planen dit du vill dribbla'
 								: act === 'defend'
 									? 'Välj en försvarare och tryck dit du vill pressa'
 								: 'Försök avslut om du är nära mål'
-							);
-						}}
-					/>
-					<Pressable
-						style={styles.nextBtn}
-						onPress={() => {
-							if (question?.type !== 'matchscenario' || !selectedAction) return;
-							const scen = (question as MatchScenarioQuestion).scenario;
-							const actorId = selectedAction === 'defend' ? undefined : scen.keyActors?.ballCarrierId;
-							const act = selectedAction === 'pass'
-								? ({ kind: 'pass', actorId, targetId: selectedTargetPlayerId } as const)
-								: selectedAction === 'dribble'
-								? ({ kind: 'dribble', actorId, from: (scen.players.find(p => p.id === actorId)?.pos as Vector2), to: (selectedPoint as Vector2) } as const)
-								: selectedAction === 'shoot'
-								? ({ kind: 'shoot', actorId } as const)
-								: ({ kind: 'defend', from: (selectedPoint as Vector2), to: (selectedPoint as Vector2) } as const);
-							const seq = (question as MatchScenarioQuestion).sequence;
-							const result = seq
-								? scoreSequenceStep(scen, seq, stepIndex, act as any, { allowedActions: (question as MatchScenarioQuestion).allowedActions, focusLane: scen.keyActors?.focusLane })
-								: validateAction(scen, act as any, { allowedActions: (question as MatchScenarioQuestion).allowedActions, focusLane: scen.keyActors?.focusLane });
-							setFeedback(result.message ?? (result.valid ? 'Rätt!' : 'Fel'));
-							if (result.xpDelta) {
-								// Persist XP to store for this level
-								actions.addXp(level, result.xpDelta);
-								setXp((v) => v + result.xpDelta!);
-							}
-							if (result.valid) {
-								Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
-								if (seq) {
-									const next = stepIndex + 1;
-									if (next < seq.steps.length) {
-										setStepIndex(next);
-										setSelectedAction(undefined);
-										setSelectedTargetPlayerId(undefined);
-										setSelectedPoint(undefined);
-									} else {
-										setFeedback('Sekvens klar!');
-									}
+						);
+					}}
+				/>
+				<Pressable
+					style={styles.nextBtn}
+					onPress={() => {
+						if (!selectedAction) return;
+						const actorId = selectedAction === 'defend' ? undefined : (scenario as any).keyActors?.ballCarrierId;
+						const act = selectedAction === 'pass'
+							? ({ kind: 'pass', actorId, targetId: selectedTargetPlayerId } as const)
+							: selectedAction === 'dribble'
+							? ({ kind: 'dribble', actorId, from: (((scenario as any).players.find((p: any) => p.id === actorId)?.pos) as Vector2), to: (selectedPoint as Vector2) } as const)
+							: selectedAction === 'shoot'
+							? ({ kind: 'shoot', actorId } as const)
+							: ({ kind: 'defend', from: (selectedPoint as Vector2), to: (selectedPoint as Vector2) } as const);
+						const result = seq
+							? scoreSequenceStep(scenario as any, seq, stepIndex, act as any, { allowedActions: allowed as any, focusLane: (scenario as any).keyActors?.focusLane })
+							: validateAction(scenario as any, act as any, { allowedActions: allowed as any, focusLane: (scenario as any).keyActors?.focusLane });
+						setFeedback(result.message ?? (result.valid ? 'Rätt!' : 'Fel'));
+						if (result.xpDelta) {
+							actions.addXp(level, result.xpDelta);
+							setXp((v) => v + result.xpDelta!);
+						}
+						if (result.valid) {
+							Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+							if (seq) {
+								const next = stepIndex + 1;
+								if (next < seq.steps.length) {
+									setStepIndex(next);
+									setSelectedAction(undefined);
+									setSelectedTargetPlayerId(undefined);
+									setSelectedPoint(undefined);
+								} else {
+									setFeedback('Sekvens klar!');
 								}
-							} else {
-								Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
 							}
-						}}
-					>
-						<Text style={styles.nextText}>Validera</Text>
-					</Pressable>
-					<Text style={[styles.feedback, { color: FC25.colors.success }]}>{feedback}</Text>
-					<Text style={[styles.xp, { color: FC25.colors.success }]}>XP: {currentLevelXp}</Text>
-					<Pressable style={styles.nextBtn} onPress={() => { const nextCount = sessionCount + 1; setSessionCount(nextCount); actions.incrementScenarioCount(); if (nextCount >= SESSION_LENGTH) { setSessionDone(true); } setQIndex(qIndex + 1); setFeedback(''); setSelectedAction(undefined); setSelectedTargetPlayerId(undefined); setSelectedPoint(undefined); setStepIndex(0); }}>
-						<Text style={styles.nextText}>Nästa</Text>
-					</Pressable>
-					<Pressable style={styles.nextBtn} onPress={() => { setSelectedAction(undefined); setSelectedTargetPlayerId(undefined); setSelectedPoint(undefined); setFeedback('Val rensade'); }}>
-						<Text style={styles.nextText}>Ångra/Rensa val</Text>
-					</Pressable>
-				</View>
-			)}
+						} else {
+							Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
+						}
+					}}
+				>
+					<Text style={styles.nextText}>Validera</Text>
+				</Pressable>
+				<Text style={[styles.feedback, { color: FC25.colors.success }]}>{feedback}</Text>
+				<Text style={[styles.xp, { color: FC25.colors.success }]}>XP: {currentLevelXp}</Text>
+				<Pressable style={styles.nextBtn} onPress={() => { const nextCount = sessionCount + 1; setSessionCount(nextCount); actions.incrementScenarioCount(); if (nextCount >= SESSION_LENGTH) { setSessionDone(true); } setQIndex(qIndex + 1); setFeedback(''); setSelectedAction(undefined); setSelectedTargetPlayerId(undefined); setSelectedPoint(undefined); setStepIndex(0); }}>
+					<Text style={styles.nextText}>Nästa</Text>
+				</Pressable>
+				<Pressable style={styles.nextBtn} onPress={() => { setSelectedAction(undefined); setSelectedTargetPlayerId(undefined); setSelectedPoint(undefined); setFeedback('Val rensade'); }}>
+					<Text style={styles.nextText}>Ångra/Rensa val</Text>
+				</Pressable>
+			</View>
 		</ScrollView>
 	);
 }
