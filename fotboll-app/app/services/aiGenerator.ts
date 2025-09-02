@@ -3,10 +3,37 @@ import type { Scenario } from '@/types/scenario';
 
 export type PedagogyTag = 'beslut' | 'rörelse' | 'samarbete' | 'strategi' | 'positionering';
 
+// Canonical sources to constrain AI question generation
+export type SourceKey =
+  | 'UEFA'
+  | 'SvFF'
+  | 'TheFA'
+  | 'USSF'
+  | 'FIFA'
+  | 'DFB'
+  | 'KNVB'
+  | 'DBU'
+  | 'NFF'
+  | 'Coerver';
+
+export const SOURCES: Record<SourceKey, { name: string; url: string; notes?: string }> = {
+  UEFA: { name: 'UEFA Grassroots / Learning', url: 'https://www.uefa.com/insideuefa/football-development/grassroots/' },
+  SvFF: { name: 'SvFF Spelarutbildning', url: 'https://www.svenskfotboll.se/utbildning/spelarutbildning/' },
+  TheFA: { name: 'The FA – The Boot Room', url: 'https://thebootroom.thefa.com/resources/coaching' },
+  USSF: { name: 'US Soccer Grassroots', url: 'https://learning.ussoccer.com/coach/courses/available/grassroots' },
+  FIFA: { name: 'FIFA Training Centre', url: 'https://www.fifatrainingcentre.com' },
+  DFB: { name: 'DFB Kinderfußball', url: 'https://www.dfb.de/kinderfussball/' },
+  KNVB: { name: 'KNVB Rinus', url: 'https://rinus.knvb.nl' },
+  DBU: { name: 'DBU Børnefodbold', url: 'https://www.dbu.dk/klubservice/boernefodbold/' },
+  NFF: { name: 'NFF Barn og ungdom', url: 'https://www.fotball.no/barn-og-ungdom/' },
+  Coerver: { name: 'Coerver Coaching', url: 'https://www.coerver.com' },
+};
+
 export interface AIGeneratedExerciseMeta {
   tags: PedagogyTag[];
   season: number;
   rationale?: string;
+  sources: SourceKey[]; // authoritative references used for generation
 }
 
 export interface GeneratedScenarioPayload {
@@ -52,6 +79,7 @@ export async function generateScenarioFor(level: Level, age: number, season: num
       tags: ['beslut', 'samarbete'],
       season,
       rationale: 'Stegvis progression enligt UEFA: passningsbeslut före avslut',
+      sources: ['UEFA', 'SvFF'],
     },
   };
 }
@@ -66,6 +94,6 @@ export async function generateQuizFor(level: Level, age: number, season: number)
     options: ['Samarbete och ytskapa', 'Skjuta från långt håll'],
     correctIndex: 0,
   } as any;
-  return { question: q, meta: { tags: ['samarbete', 'positionering'], season, rationale: 'Bredd skapar passningsvinklar (UEFA riktlinjer)' } };
+  return { question: q, meta: { tags: ['samarbete', 'positionering'], season, rationale: 'Bredd skapar passningsvinklar (UEFA/SvFF riktlinjer)', sources: ['UEFA', 'SvFF'] } };
 }
 
