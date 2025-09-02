@@ -7,14 +7,16 @@ import ErrorBoundary from '@/app/components/ErrorBoundary';
 export default function Dashboard() {
   const router = useRouter();
   const { name } = useAppStore((s) => s.profile);
-  // Minimal skeleton: only read name to avoid hydration/render issues
+  // Minimal skeleton + season card
+  const season = useAppStore((s) => s.season);
 
   return (
     <ScrollView contentContainerStyle={styles.container} style={{ backgroundColor: FC25.colors.bg }}>
       <ErrorBoundary fallback={<View style={{ padding: 16 }}><Text style={{ color: FC25.colors.warning }}>Kunde inte ladda dashboarden.</Text></View>}>
       <Text style={[styles.title, { color: FC25.colors.text }]}>Hej {name || 'spelare'}</Text>
       <View style={[styles.card, { borderColor: FC25.colors.border, backgroundColor: FC25.colors.card }]}>
-        <Text style={[styles.cardText, { color: FC25.colors.text }]}>Välj vad du vill göra</Text>
+        <Text style={[styles.cardText, { color: FC25.colors.text }]}>Säsong: {season.number}</Text>
+        <Text style={[styles.cardText, { color: FC25.colors.text }]}>Säsongs-XP: {season.xp}</Text>
       </View>
 
       <Pressable
