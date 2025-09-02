@@ -9,6 +9,9 @@ export default function Dashboard() {
   const { name } = useAppStore((s) => s.profile);
   // Minimal skeleton + season card
   const season = useAppStore((s) => s.season);
+  const hydrated = useAppStore((s) => s.hydrated);
+  const dayPlan = useAppStore((s) => s.dayPlan);
+  const actions = useAppStore((s) => s.actions);
 
   return (
     <ScrollView contentContainerStyle={styles.container} style={{ backgroundColor: FC25.colors.bg }}>
@@ -18,6 +21,23 @@ export default function Dashboard() {
         <Text style={[styles.cardText, { color: FC25.colors.text }]}>Säsong: {season.number}</Text>
         <Text style={[styles.cardText, { color: FC25.colors.text }]}>Säsongs-XP: {season.xp}</Text>
       </View>
+      {hydrated && (
+        <View style={[styles.card, { borderColor: FC25.colors.border, backgroundColor: FC25.colors.card }]}>
+          <Text style={[styles.cardText, { color: FC25.colors.text }]}>Dagens plan</Text>
+          <Text style={[styles.cardText, { color: FC25.colors.text }]}>
+            Interaktivt: {dayPlan?.done.interactive ?? 0}/{dayPlan?.totals.interactive ?? 0}
+          </Text>
+          <Text style={[styles.cardText, { color: FC25.colors.text }]}>
+            Quiz: {dayPlan?.done.quiz ?? 0}/{dayPlan?.totals.quiz ?? 0}
+          </Text>
+          <Text style={[styles.cardText, { color: FC25.colors.text }]}>
+            Snabbfrågor: {dayPlan?.done.quick ?? 0}/{dayPlan?.totals.quick ?? 0}
+          </Text>
+          <Pressable style={[styles.button, { backgroundColor: FC25.colors.primary }]} onPress={() => actions.ensureDayPlan()}>
+            <Text style={styles.buttonText}>Initiera/uppdatera plan</Text>
+          </Pressable>
+        </View>
+      )}
 
       <Pressable
         style={[styles.button, { backgroundColor: FC25.colors.primary }]}

@@ -28,6 +28,7 @@ type AppState = {
   season: { number: number; xp: number; startIso: string };
   progress: Partial<Record<Level, LevelProgress>>;
   badges: string[];
+  hydrated?: boolean;
   dayPlan?: {
     dateIso: string;
     totals: { interactive: number; quiz: number; quick: number };
@@ -66,6 +67,7 @@ export const useAppStore = create<AppState>()(
       progress: initialProgress,
       badges: [],
       limits: undefined as any,
+      hydrated: false,
       actions: {
         setName: (name) => set((s) => ({ profile: { ...s.profile, name } })),
         setAge: (age) => set((s) => ({ profile: { ...s.profile, age } })),
@@ -176,6 +178,10 @@ export const useAppStore = create<AppState>()(
       name: 'fotboll-app-store',
       storage: createJSONStorage(() => AsyncStorage),
       version: 1,
+      onRehydrateStorage: () => (state) => {
+        // Called after rehydration completes
+        set(() => ({ hydrated: true } as any));
+      },
     }
   )
 );
