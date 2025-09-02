@@ -7,6 +7,9 @@ export default function Dashboard() {
   const router = useRouter();
   const { name } = useAppStore((s) => s.profile);
   const season = useAppStore((s) => s.season);
+  const dayPlan = useAppStore((s) => s.dayPlan);
+  const actions = useAppStore((s) => s.actions);
+  if (!dayPlan) actions.ensureDayPlan();
 
   return (
     <ScrollView contentContainerStyle={styles.container} style={{ backgroundColor: FC25.colors.bg }}>
@@ -15,6 +18,15 @@ export default function Dashboard() {
         <Text style={[styles.cardText, { color: FC25.colors.text }]}>Säsong: {season.number}</Text>
         <Text style={[styles.cardText, { color: FC25.colors.text }]}>Säsongs-XP: {season.xp}</Text>
       </View>
+      {dayPlan && (
+        <View style={[styles.card, { borderColor: FC25.colors.border, backgroundColor: FC25.colors.card }]}> 
+          <Text style={[styles.cardText, { color: FC25.colors.text }]}>Dagens plan</Text>
+          <Text style={[styles.cardText, { color: FC25.colors.text }]}>Interaktivt: {dayPlan.done.interactive}/{dayPlan.totals.interactive}</Text>
+          <Text style={[styles.cardText, { color: FC25.colors.text }]}>Quiz: {dayPlan.done.quiz}/{dayPlan.totals.quiz}</Text>
+          <Text style={[styles.cardText, { color: FC25.colors.text }]}>Snabbfrågor: {dayPlan.done.quick}/{dayPlan.totals.quick}</Text>
+        </View>
+      )}
+
       <Pressable
         style={[styles.button, { backgroundColor: FC25.colors.primary }]}
         onPress={() => requestAnimationFrame(() => router.push('/player/interaction'))}

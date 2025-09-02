@@ -28,6 +28,11 @@ type AppState = {
   season: { number: number; xp: number; startIso: string };
   progress: Partial<Record<Level, LevelProgress>>;
   badges: string[];
+  dayPlan?: {
+    dateIso: string;
+    totals: { interactive: number; quiz: number; quick: number };
+    done: { interactive: number; quiz: number; quick: number };
+  };
   actions: {
     setName: (name: string) => void;
     setAge: (age: number) => void;
@@ -42,6 +47,8 @@ type AppState = {
     incrementScenarioCount: (now?: Date) => void;
     setMaxScenariosPerDay: (max: number) => void;
     setCurfew: (startHour: number, endHour: number) => void;
+    ensureDayPlan: (now?: Date) => void;
+    markDone: (kind: 'interactive' | 'quiz' | 'quick', now?: Date) => void;
   };
 };
 
@@ -123,6 +130,27 @@ export const useAppStore = create<AppState>()(
                 curfew: cur.curfew,
               },
             } as any;
+          }),
+        ensureDayPlan: (now = new Date()) =>
+          set((s) => {
+            const today = now.toISOString().slice(0, 10);
+            const plan = s.dayPlan;
+            if (plan?.dateIso === today) return {} as any;
+            // Default targets per your plan: 3-4 interactive, 3-4 quiz, 2-3 quick
+            return {
+              dayPlan: {
+                dateIso: today,
+                totals: { interactive: 4, quiz: 4, quick: 2 },
+                done: { interactive: 0, quiz: 0, quick: 0 },
+              },
+            } as any;
+          }),
+        markDone: (kind, now = new Date()) =>
+          set((s) => {
+            const today = now.toISOString().slice(0, 10);
+            const plan = s.dayPlan?.dateIso === today ? s.dayPlan : { dateIso: today, totals: { interactive: 4, quiz: 4, quick: 2 }, done: { interactive: 0, quiz: 0, quick: 0 } };
+            const nextDone = { ...plan.done, [kind]: Math.max(0, Math.min((plan.done as any)[kind] + 1, (plan.totals as any)[kind])) } as any;
+            return { dayPlan: { ...plan, done: nextDone } } as any;
           }),
         setMaxScenariosPerDay: (max) =>
           set((s) => {
