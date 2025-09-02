@@ -1,4 +1,5 @@
 import { View, Text, StyleSheet, Pressable, ScrollView } from 'react-native';
+import { useEffect } from 'react';
 import { useRouter, Link } from 'expo-router';
 import { useAppStore } from '@/store/useAppStore';
 import { FC25 } from '@/app/components/Theme';
@@ -12,6 +13,10 @@ export default function Dashboard() {
   const hydrated = useAppStore((s) => s.hydrated);
   const dayPlan = useAppStore((s) => s.dayPlan);
   const actions = useAppStore((s) => s.actions);
+
+  useEffect(() => {
+    if (hydrated) actions.ensureDayPlan();
+  }, [hydrated]);
 
   return (
     <ScrollView contentContainerStyle={styles.container} style={{ backgroundColor: FC25.colors.bg }}>
