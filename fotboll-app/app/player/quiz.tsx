@@ -1,10 +1,12 @@
 import { useLocalSearchParams } from "expo-router";
-import { View, Text, StyleSheet, Pressable } from "react-native";
-import { useMemo, useState, useEffect } from "react";
+import { View, Text, StyleSheet, Pressable, Animated } from "react-native";
+import { useMemo, useState, useEffect, useRef } from "react";
 import type { PedagogyTag } from '@/app/services/aiGenerator';
 import { FC25 } from '@/app/components/Theme';
 import { QUESTIONS } from '@/data/questions';
 import { useAppStore } from '@/store/useAppStore';
+
+const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 
 export default function QuizScreen() {
   const { level } = useLocalSearchParams<{ level?: string }>();
@@ -14,10 +16,20 @@ export default function QuizScreen() {
   const [selected, setSelected] = useState<number | null>(null);
   const [validated, setValidated] = useState<boolean>(false);
   const [isCorrect, setIsCorrect] = useState<boolean | null>(null);
+  const ctaAnim = useRef(new Animated.Value(0)).current; // 0=base, 1=coral
 
   useEffect(() => {
     try { actions.ensureDayPlan(); } catch {}
   }, []);
+
+  useEffect(() => {
+    const wrong = validated && isCorrect === false;
+    Animated.timing(ctaAnim, {
+      toValue: wrong ? 1 : 0,
+      duration: 220,
+      useNativeDriver: false,
+    }).start();
+  }, [validated, isCorrect, ctaAnim]);
 
   const quizBank = useMemo(() => {
     const all = QUESTIONS.filter((qq: any) => qq.type === 'quiz');
@@ -30,6 +42,9 @@ export default function QuizScreen() {
   const q = quizBank.length > 0 ? (quizBank[(index % quizBank.length)] as any) : null;
 
   const tags: PedagogyTag[] = ['beslut', 'samarbete'];
+  const baseColor = selected !== null ? FC25.colors.primary : '#2b2c33';
+  const ctaBg = ctaAnim.interpolate({ inputRange: [0, 1], outputRange: [baseColor, '#ff5061'] });
+
   return (
     <View style={styles.container}>
       <Text style={styles.badge}>{level ?? q?.level ?? ''}</Text>
@@ -62,8 +77,8 @@ export default function QuizScreen() {
           <Text style={{ color: selected === i && isCorrect === true ? '#0a0a0f' : FC25.colors.text }}>{opt}</Text>
         </Pressable>
       ))}
-      <Pressable
-        style={[styles.cta, { backgroundColor: selected !== null ? FC25.colors.primary : '#2b2c33' }]}
+      <AnimatedPressable
+        style={[styles.cta, { backgroundColor: ctaBg }]}
         disabled={selected === null}
         onPress={() => {
           try {
@@ -89,7 +104,7 @@ export default function QuizScreen() {
         <Text style={{ color: '#0a0a0f', fontWeight: '800' }}>
           {validated ? (isCorrect ? 'Rätt! Nästa…' : 'Inte helt rätt – försök igen') : 'Validera'}
         </Text>
-      </Pressable>
+      </AnimatedPressable>
       {validated && isCorrect === false && (
         <Text style={{ marginTop: 6, color: FC25.colors.warning }}>
           {q?.microInfo ? `Tips: ${q.microInfo}` : 'Tänk på spelbarhet, vinklar och bredd.'}
