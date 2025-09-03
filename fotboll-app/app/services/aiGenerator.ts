@@ -41,6 +41,23 @@ export interface GeneratedScenarioPayload {
   meta: AIGeneratedExerciseMeta;
 }
 
+export function adjustToneByAge(text: string, age: number): string {
+  if (!text) return text;
+  if (age <= 9) {
+    return text
+      .replace(/prioritera/gi, 'välj')
+      .replace(/kombinationsspel/gi, 'spela tillsammans')
+      .replace(/positionering/gi, 'plats på planen')
+      .replace(/spelvändning/gi, 'byta sida');
+  }
+  if (age <= 11) {
+    return text
+      .replace(/kombinationsspel/gi, 'väggspel och passningar')
+      .replace(/positionering/gi, 'din plats och yta');
+  }
+  return text;
+}
+
 export async function generateScenarioFor(level: Level, age: number, season: number): Promise<GeneratedScenarioPayload> {
   // Placeholder: deterministic stub to unblock UX. Replace with API call.
   const lane: Scenario['keyActors']['focusLane'] = age <= 9 ? 'right' : age <= 11 ? 'center' : 'left';

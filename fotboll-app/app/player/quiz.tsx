@@ -5,6 +5,7 @@ import type { PedagogyTag } from '@/app/services/aiGenerator';
 import { FC25 } from '@/app/components/Theme';
 import { QUESTIONS } from '@/data/questions';
 import { useAppStore } from '@/store/useAppStore';
+import { adjustToneByAge } from '@/app/services/aiGenerator';
 
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 
@@ -49,11 +50,14 @@ export default function QuizScreen() {
 
   const disableCta = selected === null || (validated && isCorrect === false);
 
+  const displayQuestion = adjustToneByAge(q?.question ?? 'Inga frågor tillgängliga', profileAge);
+  const displayMicro = q?.microInfo ? adjustToneByAge(q.microInfo, profileAge) : undefined;
+
   return (
     <View style={styles.container}>
       <Text style={styles.badge}>{level ?? q?.level ?? ''}</Text>
-      <Text style={styles.title}>{q?.question ?? 'Inga frågor tillgängliga'}</Text>
-      {!!q?.microInfo && (<Text style={{ color: FC25.colors.subtle, marginBottom: 8 }}>{q.microInfo}</Text>)}
+      <Text style={styles.title}>{displayQuestion}</Text>
+      {!!displayMicro && (<Text style={{ color: FC25.colors.subtle, marginBottom: 8 }}>{displayMicro}</Text>)}
       <View style={{ flexDirection: 'row', gap: 8, marginBottom: 8 }}>
         {tags.map((t) => (<View key={t} style={styles.tag}><Text style={{ fontSize: 12 }}>#{t}</Text></View>))}
       </View>
@@ -89,7 +93,7 @@ export default function QuizScreen() {
         <Text style={{ color: '#0a0a0f', fontWeight: '800' }}>{validated ? (isCorrect ? 'Rätt! Nästa…' : 'Inte helt rätt – försök igen') : 'Validera'}</Text>
       </AnimatedPressable>
       {validated && isCorrect === false && (
-        <Text style={{ marginTop: 6, color: FC25.colors.warning }}>{q?.microInfo ? `Tips: ${q.microInfo}` : 'Tänk på spelbarhet, vinklar och bredd.'}</Text>
+        <Text style={{ marginTop: 6, color: FC25.colors.warning }}>{displayMicro ?? 'Tänk på spelbarhet, vinklar och bredd.'}</Text>
       )}
       <Text style={styles.progress}>Fråga {Math.min(index + 1, Math.max(quizBank.length, 1))} av {Math.max(quizBank.length, 1)}</Text>
     </View>
