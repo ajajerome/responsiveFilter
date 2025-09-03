@@ -18,17 +18,11 @@ export default function QuizScreen() {
   const [isCorrect, setIsCorrect] = useState<boolean | null>(null);
   const ctaAnim = useRef(new Animated.Value(0)).current; // 0=base, 1=coral
 
-  useEffect(() => {
-    try { actions.ensureDayPlan(); } catch {}
-  }, []);
+  useEffect(() => { try { actions.ensureDayPlan(); } catch {} }, []);
 
   useEffect(() => {
     const wrong = validated && isCorrect === false;
-    Animated.timing(ctaAnim, {
-      toValue: wrong ? 1 : 0,
-      duration: 220,
-      useNativeDriver: false,
-    }).start();
+    Animated.timing(ctaAnim, { toValue: wrong ? 1 : 0, duration: 220, useNativeDriver: false }).start();
   }, [validated, isCorrect, ctaAnim]);
 
   const quizBank = useMemo(() => {
@@ -48,44 +42,36 @@ export default function QuizScreen() {
   function getCorrectIndex(question: any): number {
     const raw = question?.correctIndex ?? question?.correct;
     const n = typeof raw === 'string' ? parseInt(raw, 10) : raw;
-    return Number.isFinite(n) ? (n as number) : 0;
+    const idx = Number.isFinite(n) ? (n as number) : -1;
+    const len = Array.isArray(question?.options) ? question.options.length : 0;
+    return idx >= 0 && idx < len ? idx : -1;
   }
+
+  const disableCta = selected === null || (validated && isCorrect === false);
 
   return (
     <View style={styles.container}>
       <Text style={styles.badge}>{level ?? q?.level ?? ''}</Text>
       <Text style={styles.title}>{q?.question ?? 'Inga frågor tillgängliga'}</Text>
-      {!!q?.microInfo && (
-        <Text style={{ color: FC25.colors.subtle, marginBottom: 8 }}>{q.microInfo}</Text>
-      )}
+      {!!q?.microInfo && (<Text style={{ color: FC25.colors.subtle, marginBottom: 8 }}>{q.microInfo}</Text>)}
       <View style={{ flexDirection: 'row', gap: 8, marginBottom: 8 }}>
-        {tags.map((t) => (
-          <View key={t} style={styles.tag}><Text style={{ fontSize: 12 }}>#{t}</Text></View>
-        ))}
+        {tags.map((t) => (<View key={t} style={styles.tag}><Text style={{ fontSize: 12 }}>#{t}</Text></View>))}
       </View>
       {q?.options?.map((opt: string, i: number) => (
         <Pressable
           key={i}
           style={[styles.option, {
             backgroundColor: selected === i && isCorrect === true ? FC25.colors.primary : '#1b1c22',
-            borderColor:
-              selected === i && validated && isCorrect === false
-                ? FC25.colors.warning
-                : selected === i && isCorrect === true
-                  ? FC25.colors.border
-                  : '#2a2b33',
+            borderColor: selected === i && validated && isCorrect === false ? FC25.colors.warning : (selected === i && isCorrect === true ? FC25.colors.border : '#2a2b33'),
           }]}
-          onPress={() => {
-            setSelected(i);
-            if (validated || isCorrect !== null) { setValidated(false); setIsCorrect(null); }
-          }}
+          onPress={() => { setSelected(i); if (validated || isCorrect !== null) { setValidated(false); setIsCorrect(null); } }}
         >
           <Text style={{ color: selected === i && isCorrect === true ? '#0a0a0f' : FC25.colors.text }}>{opt}</Text>
         </Pressable>
       ))}
       <AnimatedPressable
         style={[styles.cta, { backgroundColor: ctaBg }]}
-        disabled={selected === null}
+        disabled={disableCta}
         onPress={() => {
           try {
             if (selected === null || !q) return;
@@ -95,26 +81,15 @@ export default function QuizScreen() {
             setIsCorrect(ok);
             if (ok) {
               try { actions.markDone('quiz'); } catch {}
-              setTimeout(() => {
-                try {
-                  setSelected(null);
-                  setValidated(false);
-                  setIsCorrect(null);
-                  setIndex((prev) => prev + 1);
-                } catch {}
-              }, 350);
+              setTimeout(() => { try { setSelected(null); setValidated(false); setIsCorrect(null); setIndex((prev) => prev + 1); } catch {} }, 350);
             }
           } catch {}
         }}
       >
-        <Text style={{ color: '#0a0a0f', fontWeight: '800' }}>
-          {validated ? (isCorrect ? 'Rätt! Nästa…' : 'Inte helt rätt – försök igen') : 'Validera'}
-        </Text>
+        <Text style={{ color: '#0a0a0f', fontWeight: '800' }}>{validated ? (isCorrect ? 'Rätt! Nästa…' : 'Inte helt rätt – försök igen') : 'Validera'}</Text>
       </AnimatedPressable>
       {validated && isCorrect === false && (
-        <Text style={{ marginTop: 6, color: FC25.colors.warning }}>
-          {q?.microInfo ? `Tips: ${q.microInfo}` : 'Tänk på spelbarhet, vinklar och bredd.'}
-        </Text>
+        <Text style={{ marginTop: 6, color: FC25.colors.warning }}>{q?.microInfo ? `Tips: ${q.microInfo}` : 'Tänk på spelbarhet, vinklar och bredd.'}</Text>
       )}
       <Text style={styles.progress}>Fråga {Math.min(index + 1, Math.max(quizBank.length, 1))} av {Math.max(quizBank.length, 1)}</Text>
     </View>
