@@ -45,6 +45,12 @@ export default function QuizScreen() {
   const baseColor = selected !== null ? FC25.colors.primary : '#2b2c33';
   const ctaBg = ctaAnim.interpolate({ inputRange: [0, 1], outputRange: [baseColor, '#ff5061'] });
 
+  function getCorrectIndex(question: any): number {
+    const raw = question?.correctIndex ?? question?.correct;
+    const n = typeof raw === 'string' ? parseInt(raw, 10) : raw;
+    return Number.isFinite(n) ? (n as number) : 0;
+  }
+
   return (
     <View style={styles.container}>
       <Text style={styles.badge}>{level ?? q?.level ?? ''}</Text>
@@ -83,7 +89,7 @@ export default function QuizScreen() {
         onPress={() => {
           try {
             if (selected === null || !q) return;
-            const ci = typeof (q as any)?.correctIndex === 'number' ? (q as any).correctIndex as number : 0;
+            const ci = getCorrectIndex(q);
             const ok = selected === ci;
             setValidated(true);
             setIsCorrect(ok);
