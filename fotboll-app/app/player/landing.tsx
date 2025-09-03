@@ -9,7 +9,7 @@ export default function PlayerLanding() {
     <Screen>
       <Text style={[styles.title, { color: FC25.colors.text }]}>Välkommen tillbaka</Text>
       <Text style={{ color: FC25.colors.subtle }}>Snabbstart</Text>
-      <Pressable style={[styles.button, { backgroundColor: FC25.colors.primary }]} onPress={() => router.push('/player/quiz')}>
+      <Pressable style={[styles.button, { backgroundColor: FC25.colors.primary }]} onPress={() => router.push('/player/train')}>
         <Text style={styles.buttonText}>Jag vill träna</Text>
       </Pressable>
       <Pressable style={[styles.button, { backgroundColor: FC25.colors.secondary }]} onPress={() => router.push('/player/dashboard?safe=1')}>

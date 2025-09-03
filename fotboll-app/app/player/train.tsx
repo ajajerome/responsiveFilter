@@ -25,9 +25,9 @@ export default function Train() {
       <Text style={[styles.title, { color: FC25.colors.text }]}>Dagens mål</Text>
       <Text style={{ color: FC25.colors.subtle }}>Interaktivt kvar: {remaining.interactive} • Quiz kvar: {remaining.quiz}</Text>
       <Pressable style={[styles.btn, { backgroundColor: FC25.colors.primary }]} onPress={() => {
-        const pick = remaining.interactive > 0 ? 'interactive' : 'quiz';
-        setChoice(pick);
-        if (pick === 'interactive') router.push('/player/interaction?safe=1'); else router.push('/player/quiz');
+        // Fallback: always quiz for stability
+        setChoice('quiz');
+        router.push('/player/quiz');
       }}>
         <Text style={styles.btnText}>Starta pass</Text>
       </Pressable>
@@ -36,7 +36,6 @@ export default function Train() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, padding: 24, gap: 12, justifyContent: 'center' },
   title: { fontSize: 22, fontWeight: '800' },
   btn: { alignItems: 'center', paddingVertical: 12, borderRadius: 10 },
   btnText: { color: '#0a0a0f', fontWeight: '800' },
