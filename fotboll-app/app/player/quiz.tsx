@@ -1,6 +1,6 @@
 import { useLocalSearchParams } from "expo-router";
 import { View, Text, StyleSheet, Pressable } from "react-native";
-import { useMemo, useState } from "react";
+import { useMemo, useState, useEffect } from "react";
 import type { PedagogyTag } from '@/app/services/aiGenerator';
 import { FC25 } from '@/app/components/Theme';
 import { QUESTIONS } from '@/data/questions';
@@ -14,9 +14,12 @@ export default function QuizScreen() {
   const [selected, setSelected] = useState<number | null>(null);
   const [validated, setValidated] = useState<boolean>(false);
 
+  useEffect(() => {
+    try { actions.ensureDayPlan(); } catch {}
+  }, []);
+
   const quizBank = useMemo(() => {
     const all = QUESTIONS.filter((qq: any) => qq.type === 'quiz');
-    // Optionally bias by age -> level mapping
     const preferredLevel = profileAge <= 8 ? '5-manna' : profileAge <= 11 ? '7-manna' : '9-manna';
     const prioritized = all.filter((q: any) => q.level === preferredLevel);
     const rest = all.filter((q: any) => q.level !== preferredLevel);
@@ -57,7 +60,7 @@ export default function QuizScreen() {
           try {
             if (selected === null || !q) return;
             setValidated(true);
-            // Temporärt av: actions.markDone('quiz'); // säkra TestFlight-stabilitet
+            try { actions.markDone('quiz'); } catch {}
             setTimeout(() => {
               try {
                 setSelected(null);
