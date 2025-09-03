@@ -23,13 +23,13 @@ export default function QuizScreen() {
     return [...prioritized, ...rest];
   }, [profileAge]);
 
-  const q = quizBank[(index % Math.max(quizBank.length, 1))] as any;
+  const q = quizBank.length > 0 ? (quizBank[(index % quizBank.length)] as any) : null;
 
   const tags: PedagogyTag[] = ['beslut', 'samarbete'];
   return (
     <View style={styles.container}>
-      <Text style={styles.badge}>{level ?? q?.level}</Text>
-      <Text style={styles.title}>{q?.question}</Text>
+      <Text style={styles.badge}>{level ?? q?.level ?? ''}</Text>
+      <Text style={styles.title}>{q?.question ?? 'Inga frågor tillgängliga'}</Text>
       {!!q?.microInfo && (
         <Text style={{ color: FC25.colors.subtle, marginBottom: 8 }}>{q.microInfo}</Text>
       )}
@@ -54,19 +54,23 @@ export default function QuizScreen() {
         style={[styles.cta, { backgroundColor: selected !== null ? FC25.colors.primary : '#2b2c33' }]}
         disabled={selected === null}
         onPress={() => {
-          if (selected === null) return;
-          setValidated(true);
-          actions.markDone('quiz');
-          setTimeout(() => {
-            setSelected(null);
-            setValidated(false);
-            setIndex(index + 1);
-          }, 600);
+          try {
+            if (selected === null || !q) return;
+            setValidated(true);
+            // Temporärt av: actions.markDone('quiz'); // säkra TestFlight-stabilitet
+            setTimeout(() => {
+              try {
+                setSelected(null);
+                setValidated(false);
+                setIndex((prev) => prev + 1);
+              } catch {}
+            }, 300);
+          } catch {}
         }}
       >
         <Text style={{ color: '#0a0a0f', fontWeight: '800' }}>{validated ? 'Rätt! Nästa…' : 'Validera & Nästa'}</Text>
       </Pressable>
-      <Text style={styles.progress}>Fråga {index + 1} av {quizBank.length}</Text>
+      <Text style={styles.progress}>Fråga {Math.min(index + 1, Math.max(quizBank.length, 1))} av {Math.max(quizBank.length, 1)}</Text>
     </View>
   );
 }
