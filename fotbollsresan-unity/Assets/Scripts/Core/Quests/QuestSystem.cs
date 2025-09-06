@@ -47,8 +47,14 @@ namespace Fotbollsresan.Core.Quests
 
         private void OnDisable()
         {
+            Debug.Log($"{nameof(QuestSystem)} disabling – unsubscribing and saving.");
             GameEvents.OnActivity -= OnActivity;
             Save();
+        }
+
+        private void OnDestroy()
+        {
+            Debug.Log($"{nameof(QuestSystem)} destroyed.");
         }
 
         public void LoadBankFromStreamingAssets(string relativePath)

@@ -16,6 +16,7 @@ export interface BaseQuestion {
   position?: Position;
   question: string;
   imageUrl?: string;
+  microInfo?: string;
 }
 
 export interface QuizQuestion extends BaseQuestion {

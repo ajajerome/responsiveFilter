@@ -1,51 +1,99 @@
-import { useState } from 'react';
-import { View, Text, TextInput, Pressable, StyleSheet } from 'react-native';
+import { useState, useMemo } from 'react';
+import { View, Text, TextInput, Pressable, StyleSheet, Keyboard, Platform, ScrollView, KeyboardAvoidingView } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import * as Haptics from 'expo-haptics';
 import { useRouter } from 'expo-router';
 import { useAppStore } from '@/store/useAppStore';
 import { FC25 } from '@/app/components/Theme';
 
 export default function NewPlayer() {
   const router = useRouter();
-  const setName = useAppStore((s) => s.actions.setName);
+  const actions = useAppStore((s) => s.actions);
   const [name, setLocalName] = useState('');
   const [error, setError] = useState<string>('');
+  const [age, setAge] = useState<string>('');
+  const isValid = useMemo(() => {
+    const trimmed = name.trim();
+    const parsedAge = parseInt(age, 10);
+    return !!trimmed && !!parsedAge && parsedAge >= 7 && parsedAge <= 13;
+  }, [name, age]);
+
+  const goNext = () => {
+    Keyboard.dismiss();
+    requestAnimationFrame(() => router.push('/player/landing'));
+  };
+
   return (
-    <SafeAreaView style={[styles.container, { backgroundColor: FC25.colors.bg }]}>
-      <Text style={[styles.title, { color: FC25.colors.text }]}>Ny spelare</Text>
-      <TextInput
-        placeholder="Ditt namn"
-        value={name}
-        onChangeText={(t) => { setLocalName(t); if (error) setError(''); }}
-        style={[styles.input, { color: FC25.colors.text, borderColor: FC25.colors.border }]}
-        placeholderTextColor={FC25.colors.subtle}
-        returnKeyType="done"
-        onSubmitEditing={() => {
-          const trimmed = name.trim();
-          if (!trimmed) { setError('Ange ett namn för att fortsätta'); return; }
-          setName(trimmed);
-          router.push('/player/avatar');
-        }}
-      />
-      {!!error && <Text style={[styles.error, { color: '#ff3b30' }]}>{error}</Text>}
-      <Pressable
-        style={[styles.button, { backgroundColor: name.trim() ? FC25.colors.primary : FC25.colors.border }]}
-        disabled={!name.trim()}
-        onPress={() => {
-          const trimmed = name.trim();
-          if (!trimmed) { setError('Ange ett namn för att fortsätta'); return; }
-          setName(trimmed);
-          router.push('/player/avatar');
-        }}
-      >
-        <Text style={styles.buttonText}>Fortsätt</Text>
-      </Pressable>
+    <SafeAreaView style={[styles.container, { backgroundColor: FC25.colors.bg }]}> 
+      <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} keyboardVerticalOffset={64} style={{ flex: 1 }}>
+        <ScrollView contentContainerStyle={{ flexGrow: 1, justifyContent: 'center', paddingVertical: 24 }} keyboardShouldPersistTaps="handled">
+          <View style={{ paddingHorizontal: 24, gap: 12 }}>
+            <Text style={[styles.title, { color: FC25.colors.text }]}>Ny spelare</Text>
+            <TextInput
+              placeholder="Ditt namn"
+              value={name}
+              onChangeText={(t) => { setLocalName(t); if (error) setError(''); }}
+              style={[styles.input, { color: FC25.colors.text, borderColor: FC25.colors.border }]}
+              placeholderTextColor={FC25.colors.subtle}
+              autoCapitalize="words"
+              autoCorrect={false}
+              returnKeyType="done"
+              onSubmitEditing={() => {
+                const trimmed = name.trim();
+                const parsedAge = parseInt(age, 10);
+                if (!trimmed) { setError('Ange ett namn för att fortsätta'); return; }
+                if (!parsedAge || parsedAge < 7 || parsedAge > 13) { setError('Ange ålder 7–13'); return; }
+                actions.setName(trimmed);
+                actions.setAge(parsedAge);
+                Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+                goNext();
+              }}
+            />
+            <TextInput
+              placeholder="Ålder (7–13)"
+              value={age}
+              onChangeText={(t) => { setAge(t.replace(/[^0-9]/g, '')); if (error) setError(''); }}
+              keyboardType="number-pad"
+              style={[styles.input, { color: FC25.colors.text, borderColor: FC25.colors.border }]}
+              placeholderTextColor={FC25.colors.subtle}
+              returnKeyType="done"
+              onSubmitEditing={() => {
+                const trimmed = name.trim();
+                const parsedAge = parseInt(age, 10);
+                if (!trimmed) { setError('Ange ett namn för att fortsätta'); return; }
+                if (!parsedAge || parsedAge < 7 || parsedAge > 13) { setError('Ange ålder 7–13'); return; }
+                actions.setName(trimmed);
+                actions.setAge(parsedAge);
+                Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+                goNext();
+              }}
+            />
+            {!!error && <Text style={[styles.error, { color: '#ff3b30' }]}>{error}</Text>}
+            <Pressable
+              disabled={!isValid}
+              style={[styles.button, { backgroundColor: isValid ? FC25.colors.primary : FC25.colors.border }]}
+              onPress={() => {
+                const trimmed = name.trim();
+                const parsedAge = parseInt(age, 10);
+                if (!trimmed) { setError('Ange ett namn för att fortsätta'); Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error); return; }
+                if (!parsedAge || parsedAge < 7 || parsedAge > 13) { setError('Ange ålder 7–13'); Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error); return; }
+                actions.setName(trimmed);
+                actions.setAge(parsedAge);
+                Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+                goNext();
+              }}
+            >
+              <Text style={styles.buttonText}>Fortsätt</Text>
+            </Pressable>
+          </View>
+        </ScrollView>
+      </KeyboardAvoidingView>
     </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, padding: 24, gap: 12, justifyContent: 'center' },
+  container: { flex: 1 },
   title: { fontSize: 22, fontWeight: '700', marginBottom: 8 },
   input: { borderWidth: 1, borderRadius: 10, paddingHorizontal: 12, paddingVertical: 10 },
   error: { marginTop: 4, fontSize: 12 },

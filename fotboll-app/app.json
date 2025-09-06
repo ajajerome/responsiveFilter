@@ -2,7 +2,7 @@
   "expo": {
     "name": "fotbollstranaren",
     "slug": "fotbollstranaren",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "scheme": "fotbollapp",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -22,6 +22,7 @@
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.ajagames.learnfotball",
+      "buildNumber": "5",
       "infoPlist": {
         "ITSAppUsesNonExemptEncryption": false
       }

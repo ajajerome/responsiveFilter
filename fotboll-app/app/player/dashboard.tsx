@@ -1,36 +1,85 @@
 import { View, Text, StyleSheet, Pressable } from 'react-native';
-import { Link } from 'expo-router';
+import { useEffect } from 'react';
+import { useRouter, Link, useLocalSearchParams } from 'expo-router';
 import { useAppStore } from '@/store/useAppStore';
 import { FC25 } from '@/app/components/Theme';
-
-function greeting() {
-  const h = new Date().getHours();
-  if (h < 11) return 'God morgon';
-  if (h < 18) return 'Hej';
-  return 'God kväll';
-}
+import ErrorBoundary from '@/app/components/ErrorBoundary';
+import Screen from '@/app/components/Screen';
 
 export default function Dashboard() {
+  const router = useRouter();
   const { name } = useAppStore((s) => s.profile);
+  // Minimal skeleton + season card
   const season = useAppStore((s) => s.season);
+  const hydrated = useAppStore((s) => s.hydrated);
+  const dayPlan = useAppStore((s) => s.dayPlan);
+  const actions = useAppStore((s) => s.actions);
+  const { safe } = useLocalSearchParams<{ safe?: string }>();
+
+  useEffect(() => {
+    if (safe !== '1') actions.ensureDayPlan();
+  }, [safe]);
+
   return (
-    <View style={[styles.container, { backgroundColor: FC25.colors.bg }]}>
-      <Text style={[styles.title, { color: FC25.colors.text }]}>{greeting()}, {name ?? 'spelare'}</Text>
+    <Screen>
+      <ErrorBoundary fallback={<View style={{ padding: 16 }}><Text style={{ color: FC25.colors.warning }}>Kunde inte ladda dashboarden.</Text></View>}>
+      <Text style={[styles.title, { color: FC25.colors.text }]}>Hej {name || 'spelare'}</Text>
       <View style={[styles.card, { borderColor: FC25.colors.border, backgroundColor: FC25.colors.card }]}>
         <Text style={[styles.cardText, { color: FC25.colors.text }]}>Säsong: {season.number}</Text>
         <Text style={[styles.cardText, { color: FC25.colors.text }]}>Säsongs-XP: {season.xp}</Text>
       </View>
+      {safe === '1' ? null : (() => {
+        try {
+          const totals = dayPlan?.totals ?? { interactive: 4, quiz: 4, quick: 2 };
+          const done = dayPlan?.done ?? { interactive: 0, quiz: 0, quick: 0 };
+          return (
+            <View style={[styles.card, { borderColor: FC25.colors.border, backgroundColor: FC25.colors.card }]}>
+              <Text style={[styles.cardText, { color: FC25.colors.text }]}>Dagens plan</Text>
+              <Text style={[styles.cardText, { color: FC25.colors.text }]}>Interaktivt: {done.interactive}/{totals.interactive}</Text>
+              <Text style={[styles.cardText, { color: FC25.colors.text }]}>Quiz: {done.quiz}/{totals.quiz}</Text>
+              <Text style={[styles.cardText, { color: FC25.colors.text }]}>Snabbfrågor: {done.quick}/{totals.quick}</Text>
+            </View>
+          );
+        } catch {
+          return (
+            <View style={[styles.card, { borderColor: FC25.colors.border, backgroundColor: FC25.colors.card }]}>
+              <Text style={[styles.cardText, { color: FC25.colors.text }]}>Dagens plan</Text>
+              <Text style={[styles.cardText, { color: FC25.colors.subtle }]}>Kunde inte läsa planen just nu.</Text>
+            </View>
+          );
+        }
+      })()}
+
+      <Pressable
+        style={[styles.button, { backgroundColor: FC25.colors.primary }]}
+        onPress={() => requestAnimationFrame(() => router.push('/player/interaction'))}
+      >
+        <Text style={styles.buttonText}>Träna interaktivt</Text>
+      </Pressable>
+
       <Link href="/player/interaction" asChild>
-        <Pressable style={[styles.button, { backgroundColor: FC25.colors.primary }]}>
-          <Text style={styles.buttonText}>Jag vill träna</Text>
+        <Pressable style={[styles.button, { backgroundColor: FC25.colors.secondary }]}> 
+          <Text style={styles.buttonText}>Träna interaktivt (länk)</Text>
         </Pressable>
       </Link>
-    </View>
+
+      <Text style={{ color: FC25.colors.text, textDecorationLine: 'underline' }} onPress={() => router.push('/player/interaction')}>
+        Gå till interaktiv vy
+      </Text>
+
+      <Pressable style={[styles.button, { backgroundColor: FC25.colors.secondary }]} onPress={() => router.push('/player/level/7-manna')}>
+        <Text style={styles.buttonText}>Spela 7-manna</Text>
+      </Pressable>
+      <Pressable style={[styles.button, { backgroundColor: FC25.colors.warning }]} onPress={() => router.push('/player/index')}>
+        <Text style={styles.buttonText}>Välj nivå</Text>
+      </Pressable>
+      </ErrorBoundary>
+    </Screen>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, padding: 24, gap: 16 },
+  container: { gap: 16 },
   title: { fontSize: 24, fontWeight: '800' },
   card: { borderWidth: 1, borderRadius: 12, padding: 16, gap: 8 },
   cardText: { fontSize: 16 },

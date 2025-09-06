@@ -15,6 +15,7 @@ namespace Fotbollsresan.Core.Progression
 
     public class LevelSystem : MonoBehaviour
     {
+        public static LevelSystem Instance { get; private set; }
         [SerializeField] private LevelState state = new LevelState();
 
         private string SavePath => Path.Combine(Application.persistentDataPath, "level.json");
@@ -25,6 +26,13 @@ namespace Fotbollsresan.Core.Progression
 
         private void Awake()
         {
+            if (Instance != null && Instance != this)
+            {
+                Destroy(gameObject);
+                return;
+            }
+            Instance = this;
+            DontDestroyOnLoad(gameObject);
             Load();
         }
 
@@ -62,6 +70,19 @@ namespace Fotbollsresan.Core.Progression
             var json = File.ReadAllText(SavePath);
             var loaded = JsonUtility.FromJson<LevelState>(json);
             if (loaded != null) state = loaded;
+        }
+
+        private void OnDisable()
+        {
+            Debug.LogWarning($"{nameof(LevelSystem)} was disabled. This system is expected to persist across scenes.");
+        }
+
+        private void OnDestroy()
+        {
+            if (Instance == this)
+            {
+                Debug.LogWarning($"{nameof(LevelSystem)} was destroyed. Ensure a single persistent instance exists in the bootstrap scene.");
+            }
         }
     }
 }

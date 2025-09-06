@@ -16,20 +16,40 @@ type Profile = {
     hair?: string;
     shirtColor?: string;
   };
+  age?: number;
+  jerseyNumber?: number;
+  teamColor?: string;
+  skinTone?: string;
   favoritePosition?: Position;
 };
 
 type AppState = {
   profile: Profile;
-  season: { number: number; xp: number };
+  season: { number: number; xp: number; startIso: string };
   progress: Partial<Record<Level, LevelProgress>>;
   badges: string[];
+  hydrated?: boolean;
+  dayPlan?: {
+    dateIso: string;
+    totals: { interactive: number; quiz: number; quick: number };
+    done: { interactive: number; quiz: number; quick: number };
+  };
   actions: {
     setName: (name: string) => void;
+    setAge: (age: number) => void;
+    setJerseyNumber: (num: number) => void;
+    setTeamColor: (hex: string) => void;
+    setSkinTone: (hex: string) => void;
+    setGender: (g: 'kille' | 'tjej' | 'annat') => void;
     setFavoritePosition: (pos: Position) => void;
     addXp: (level: Level, amount: number) => void;
     markQuestionCompleted: (level: Level, questionId: string) => void;
     unlockLevel: (level: Level) => void;
+    incrementScenarioCount: (now?: Date) => void;
+    setMaxScenariosPerDay: (max: number) => void;
+    setCurfew: (startHour: number, endHour: number) => void;
+    ensureDayPlan: (now?: Date) => void;
+    markDone: (kind: 'interactive' | 'quiz' | 'quick', now?: Date) => void;
   };
 };
 
@@ -43,22 +63,32 @@ export const useAppStore = create<AppState>()(
   persist(
     (set, get) => ({
       profile: { avatar: {} },
-      season: { number: 1, xp: 0 },
+      season: { number: 1, xp: 0, startIso: new Date().toISOString() },
       progress: initialProgress,
       badges: [],
+      limits: undefined as any,
+      hydrated: false,
       actions: {
         setName: (name) => set((s) => ({ profile: { ...s.profile, name } })),
+        setAge: (age) => set((s) => ({ profile: { ...s.profile, age } })),
+        setJerseyNumber: (jerseyNumber) => set((s) => ({ profile: { ...s.profile, jerseyNumber } })),
+        setTeamColor: (teamColor) => set((s) => ({ profile: { ...s.profile, teamColor } })),
+        setSkinTone: (skinTone) => set((s) => ({ profile: { ...s.profile, skinTone } })),
+        setGender: (gender) => set((s) => ({ profile: { ...s.profile, avatar: { ...s.profile.avatar, gender } } })),
         setFavoritePosition: (pos) =>
           set((s) => ({ profile: { ...s.profile, favoritePosition: pos } })),
         addXp: (level, amount) =>
           set((s) => {
             const lv = s.progress[level] ?? { unlocked: level === '5-manna', xp: 0, completedQuestionIds: [] };
-            const nextSeasonXp = Math.max(0, (s.season?.xp ?? 0) + amount);
-            // Simple season rollover at 1000 XP
-            const shouldLevelSeason = nextSeasonXp >= 1000;
-            const season = shouldLevelSeason
-              ? { number: (s.season?.number ?? 1) + 1, xp: nextSeasonXp - 1000 }
-              : { number: s.season?.number ?? 1, xp: nextSeasonXp };
+            // Week-based season rollover
+            const now = new Date();
+            const start = s.season?.startIso ? new Date(s.season.startIso) : new Date();
+            const days = Math.floor((now.getTime() - start.getTime()) / (1000 * 60 * 60 * 24));
+            const rolled = days >= 7;
+            const baseSeason = rolled
+              ? { number: (s.season?.number ?? 1) + 1, xp: 0, startIso: now.toISOString() }
+              : { number: s.season?.number ?? 1, xp: s.season?.xp ?? 0, startIso: s.season?.startIso ?? now.toISOString() };
+            const season = { ...baseSeason, xp: Math.max(0, baseSeason.xp + amount) };
             return {
               progress: {
                 ...s.progress,
@@ -83,12 +113,75 @@ export const useAppStore = create<AppState>()(
             const lv = s.progress[level] ?? { unlocked: false, xp: 0, completedQuestionIds: [] };
             return { progress: { ...s.progress, [level]: { ...lv, unlocked: true } } };
           }),
+        incrementScenarioCount: (now = new Date()) =>
+          set((s) => {
+            const today = now.toISOString().slice(0, 10);
+            const limits = s as any as {
+              limits?: { maxScenariosPerDay: number; scenariosToday: number; lastActiveDateIso?: string; curfew: { startHour: number; endHour: number } };
+            };
+            const cur = limits.limits ?? { maxScenariosPerDay: 10, scenariosToday: 0, lastActiveDateIso: today, curfew: { startHour: 7, endHour: 20 } };
+            const last = cur.lastActiveDateIso ?? today;
+            const isNewDay = last !== today;
+            const scenariosToday = isNewDay ? 0 : cur.scenariosToday ?? 0;
+            return {
+              ...(s as any),
+              limits: {
+                maxScenariosPerDay: cur.maxScenariosPerDay,
+                scenariosToday: Math.min(cur.maxScenariosPerDay, scenariosToday + 1),
+                lastActiveDateIso: today,
+                curfew: cur.curfew,
+              },
+            } as any;
+          }),
+        ensureDayPlan: (now = new Date()) =>
+          set((s) => {
+            const today = now.toISOString().slice(0, 10);
+            const plan = s.dayPlan;
+            if (plan?.dateIso === today) return {} as any;
+            const age = s.profile?.age ?? 10;
+            // Age-tuned totals within <=10 per day
+            const totals = age <= 9
+              ? { interactive: 3, quiz: 3, quick: 2 } // 8 totalt
+              : age <= 11
+              ? { interactive: 4, quiz: 3, quick: 2 } // 9 totalt
+              : { interactive: 4, quiz: 4, quick: 2 }; // 10 totalt
+            return { dayPlan: { dateIso: today, totals, done: { interactive: 0, quiz: 0, quick: 0 } } } as any;
+          }),
+        markDone: (kind, now = new Date()) =>
+          set((s) => {
+            const today = now.toISOString().slice(0, 10);
+            const plan = s.dayPlan?.dateIso === today ? s.dayPlan : { dateIso: today, totals: { interactive: 4, quiz: 4, quick: 2 }, done: { interactive: 0, quiz: 0, quick: 0 } };
+            const nextDone = { ...plan.done, [kind]: Math.max(0, Math.min((plan.done as any)[kind] + 1, (plan.totals as any)[kind])) } as any;
+            return { dayPlan: { ...plan, done: nextDone } } as any;
+          }),
+        setMaxScenariosPerDay: (max) =>
+          set((s) => {
+            const today = new Date().toISOString().slice(0, 10);
+            const cur = (s as any).limits ?? { scenariosToday: 0, lastActiveDateIso: today, curfew: { startHour: 7, endHour: 20 } };
+            return {
+              ...(s as any),
+              limits: { ...cur, maxScenariosPerDay: Math.max(1, Math.floor(max)) },
+            } as any;
+          }),
+        setCurfew: (startHour, endHour) =>
+          set((s) => {
+            const today = new Date().toISOString().slice(0, 10);
+            const cur = (s as any).limits ?? { scenariosToday: 0, lastActiveDateIso: today, maxScenariosPerDay: 10 };
+            return {
+              ...(s as any),
+              limits: { ...cur, curfew: { startHour, endHour } },
+            } as any;
+          }),
       },
     }),
     {
       name: 'fotboll-app-store',
       storage: createJSONStorage(() => AsyncStorage),
       version: 1,
+      onRehydrateStorage: () => (state) => {
+        // Called after rehydration completes
+        set(() => ({ hydrated: true } as any));
+      },
     }
   )
 );

@@ -26,7 +26,13 @@ namespace Fotbollsresan.Core.Progression
 
         private void OnDisable()
         {
+            Debug.Log($"{nameof(StreakTracker)} disabling – unsubscribing.");
             GameEvents.OnActivity -= OnActivity;
+        }
+
+        private void OnDestroy()
+        {
+            Debug.Log($"{nameof(StreakTracker)} destroyed.");
         }
 
         private void OnActivity(ActivityEvent e)

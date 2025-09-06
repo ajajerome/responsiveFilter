@@ -8,6 +8,12 @@
       "distribution": "internal",
       "channel": "development"
     },
+    "dev-staging": {
+      "developmentClient": true,
+      "distribution": "internal",
+      "channel": "staging",
+      "env": { "APP_ENV": "staging" }
+    },
     "staging": {
       "distribution": "internal",
       "channel": "staging",
@@ -16,10 +22,21 @@
       }
     },
     "production": {
-      "channel": "production"
+      "channel": "production",
+      "distribution": "store"
+    },
+    "appstore-staging": {
+      "channel": "staging",
+      "distribution": "store",
+      "env": { "APP_ENV": "staging" }
     }
   },
   "submit": {
-    "production": {}
+    "production": {},
+    "appstore-staging": {
+      "ios": {
+        "ascAppId": "6751473029"
+      }
+    }
   }
 }
