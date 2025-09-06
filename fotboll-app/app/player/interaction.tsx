@@ -92,7 +92,13 @@ export default function InteractionScreen() {
 						return selectedTargetPlayerId ? [selectedTargetPlayerId] : [];
 					})()}
 					selectedPoint={selectedPoint}
-					ghostPath={selectedAction === 'dribble' && selectedPoint ? { from: (question as MatchScenarioQuestion).scenario.players.find(p => p.id === (question as MatchScenarioQuestion).scenario.keyActors?.ballCarrierId)!.pos, to: selectedPoint } : undefined}
+					ghostPath={(() => {
+						if (!(selectedAction === 'dribble' && selectedPoint)) return undefined;
+						const scen = (question as MatchScenarioQuestion).scenario;
+						const actor = scen.players.find(p => p.id === scen.keyActors?.ballCarrierId);
+						if (!actor) return undefined;
+						return { from: actor.pos as Vector2, to: selectedPoint };
+					})()}
 					onSelectPlayer={(pid) => {
 						if (!selectedAction) return;
 						if (selectedAction === 'pass') {

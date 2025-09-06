@@ -29,6 +29,8 @@ function formationZones(level: Scenario['level']) {
 		case '9-manna':
 			return [0.25, 0.5, 0.75];
 	}
+	// Default safe fallback to avoid undefined errors
+	return [] as number[];
 }
 
 export const PitchView = memo(function PitchView({ scenario, width = 340, height = 220, selectable, onSelectPlayer, onSelectPoint, highlightPlayerIds, selectedPoint, ghostPath }: Props) {
