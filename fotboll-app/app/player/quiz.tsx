@@ -64,10 +64,14 @@ export default function QuizScreen() {
       {q?.options?.map((opt: string, i: number) => (
         <Pressable
           key={i}
-          style={[styles.option, {
-            backgroundColor: selected === i && isCorrect === true ? FC25.colors.primary : '#1b1c22',
-            borderColor: selected === i && validated && isCorrect === false ? FC25.colors.warning : (selected === i && isCorrect === true ? FC25.colors.border : '#2a2b33'),
-          }]}
+          style={({ pressed }) => {
+            const isSel = selected === i;
+            const wrongSel = isSel && validated && isCorrect === false;
+            const rightSel = isSel && isCorrect === true;
+            const bg = rightSel ? FC25.colors.primary : (pressed ? '#24252d' : '#1b1c22');
+            const border = wrongSel ? FC25.colors.warning : rightSel ? FC25.colors.border : (pressed ? '#3a3b44' : '#2a2b33');
+            return [styles.option, { backgroundColor: bg, borderColor: border, transform: [{ scale: pressed ? 0.98 : 1 }] }];
+          }}
           onPress={() => { setSelected(i); if (validated || isCorrect !== null) { setValidated(false); setIsCorrect(null); } }}
         >
           <Text style={{ color: selected === i && isCorrect === true ? '#0a0a0f' : FC25.colors.text }}>{opt}</Text>
