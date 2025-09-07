@@ -20,10 +20,10 @@ export default function NewPlayer() {
         placeholderTextColor={FC25.colors.subtle}
         returnKeyType="done"
         onSubmitEditing={() => {
+          // Do not navigate on keyboard submit to avoid iOS crash; use button only
           const trimmed = name.trim();
           if (!trimmed) { setError('Ange ett namn för att fortsätta'); return; }
           setName(trimmed);
-          router.push('/player/dashboard');
         }}
       />
       {!!error && <Text style={[styles.error, { color: '#ff3b30' }]}>{error}</Text>}
