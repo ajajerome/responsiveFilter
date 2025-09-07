@@ -1,11 +1,11 @@
 import { useState } from 'react';
 import { View, Text, TextInput, Pressable, StyleSheet, SafeAreaView } from 'react-native';
-import { useRouter } from 'expo-router';
+import { useNavigation } from '@react-navigation/native';
 import { useAppStore } from '@/store/useAppStore';
 import { FC25 } from '@/app/components/Theme';
 
 export default function NewPlayer() {
-  const router = useRouter();
+  const navigation = useNavigation<any>();
   const setName = useAppStore((s) => s.actions.setName);
   const [name, setLocalName] = useState('');
   const [error, setError] = useState<string>('');
@@ -20,7 +20,6 @@ export default function NewPlayer() {
         placeholderTextColor={FC25.colors.subtle}
         returnKeyType="done"
         onSubmitEditing={() => {
-          // Do not navigate on keyboard submit to avoid iOS crash; use button only
           const trimmed = name.trim();
           if (!trimmed) { setError('Ange ett namn för att fortsätta'); return; }
           setName(trimmed);
@@ -34,7 +33,7 @@ export default function NewPlayer() {
           const trimmed = name.trim();
           if (!trimmed) { setError('Ange ett namn för att fortsätta'); return; }
           setName(trimmed);
-          router.push('/player/dashboard');
+          navigation.navigate('Dashboard');
         }}
       >
         <Text style={styles.buttonText}>Fortsätt</Text>

@@ -1,5 +1,27 @@
-import { Slot } from 'expo-router';
+import 'react-native-gesture-handler';
+import { NavigationContainer } from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+
+import AuthIndex from '@/app/(auth)/index';
+import HomeIndex from '@/app/(home)/index';
+import NewPlayer from '@/app/player/new';
+import Dashboard from '@/app/player/dashboard';
+import InteractionScreen from '@/app/player/interaction';
+import QuizScreen from '@/app/player/quiz';
+
+const Stack = createNativeStackNavigator();
 
 export default function App() {
-  return <Slot />;
+  return (
+    <NavigationContainer>
+      <Stack.Navigator screenOptions={{ headerShown: false }} initialRouteName="Auth">
+        <Stack.Screen name="Auth" component={AuthIndex} />
+        <Stack.Screen name="Home" component={HomeIndex} />
+        <Stack.Screen name="PlayerNew" component={NewPlayer} />
+        <Stack.Screen name="Dashboard" component={Dashboard} />
+        <Stack.Screen name="Interaction" component={InteractionScreen} />
+        <Stack.Screen name="Quiz" component={QuizScreen} />
+      </Stack.Navigator>
+    </NavigationContainer>
+  );
 }

@@ -1,14 +1,15 @@
-import { Link } from "expo-router";
 import { View, Text, Pressable, StyleSheet } from "react-native";
+import { useNavigation } from '@react-navigation/native';
 import { FC25 } from '@/app/components/Theme';
 
 export default function AuthIndex() {
+  const navigation = useNavigation<any>();
   return (
     <View style={[styles.container, { backgroundColor: FC25.colors.bg }]}>
       <Text style={[styles.title, { color: FC25.colors.text }]}>Välj inloggning</Text>
-      <Link href="/(home)" asChild>
-        <Pressable style={[styles.button, { backgroundColor: FC25.colors.primary }]}><Text style={styles.buttonText}>Fortsätt utan konto</Text></Pressable>
-      </Link>
+      <Pressable style={[styles.button, { backgroundColor: FC25.colors.primary }]} onPress={() => navigation.navigate('Home')}>
+        <Text style={styles.buttonText}>Fortsätt utan konto</Text>
+      </Pressable>
     </View>
   );
 }
