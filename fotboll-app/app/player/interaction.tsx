@@ -198,7 +198,10 @@ export default function InteractionScreen() {
 								setXp((v) => v + result.xpDelta!);
 							}
 							if (result.valid) {
-								Haptics?.notificationAsync?.(Haptics.NotificationFeedbackType.Success);
+								const successType = (Haptics as any)?.NotificationFeedbackType?.Success;
+								if (successType && (Haptics as any)?.notificationAsync) {
+									(Haptics as any).notificationAsync(successType);
+								}
 								if (seq) {
 									const next = stepIndex + 1;
 									if (next < seq.steps.length) {
@@ -211,7 +214,10 @@ export default function InteractionScreen() {
 									}
 								}
 							} else {
-								Haptics?.notificationAsync?.(Haptics.NotificationFeedbackType.Error);
+								const errorType = (Haptics as any)?.NotificationFeedbackType?.Error;
+								if (errorType && (Haptics as any)?.notificationAsync) {
+									(Haptics as any).notificationAsync(errorType);
+								}
 							}
 						}}
 					>
