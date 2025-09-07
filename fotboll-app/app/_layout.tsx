@@ -11,7 +11,7 @@ export default function RootLayout() {
   }, []);
   return (
     <ErrorBoundary>
-      <Stack screenOptions={{ headerShown: false }}>
+      <Stack screenOptions={{ headerShown: false, detachInactiveScreens: false, animation: 'none' }}>
         <Stack.Screen name="(auth)" options={{ headerShown: false }} />
         <Stack.Screen name="(home)" options={{ headerShown: false }} />
         <Stack.Screen name="admin" options={{ headerShown: false }} />
