@@ -15,6 +15,9 @@ export default function HomeIndex() {
       <Link href="/player/new" asChild>
         <Pressable style={[styles.button, { backgroundColor: FC25.colors.secondary }]}><Text style={styles.buttonText}>Ny spelare</Text></Pressable>
       </Link>
+      <Link href="/player/interaction" asChild>
+        <Pressable style={[styles.button, { backgroundColor: FC25.colors.warning }]}><Text style={styles.buttonText}>Testa interaktivt läge</Text></Pressable>
+      </Link>
       <Link href="/trainer" asChild>
         <Pressable style={[styles.button, { backgroundColor: FC25.colors.secondary }]}><Text style={styles.buttonText}>Förälder/Tränare</Text></Pressable>
       </Link>
