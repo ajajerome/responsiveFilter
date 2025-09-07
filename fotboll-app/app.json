@@ -8,9 +8,7 @@
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
     "newArchEnabled": false,
-    "experiments": {
-      "typedRoutes": true
-    },
+    
     "plugins": [
       "expo-router"
     ],
@@ -22,7 +20,7 @@
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.ajagames.learnfotball",
-      "buildNumber": "7",
+      "buildNumber": "8",
       "infoPlist": {
         "ITSAppUsesNonExemptEncryption": false
       }
