@@ -8,7 +8,8 @@ import { FC25 } from '@/app/components/Theme';
 import { validateAction, getAllowedPassTargets, scoreSequenceStep } from '@/app/services/scenarioEngine';
 import type { ActionType } from '@/types/content';
 import type { Vector2 } from '@/types/scenario';
-import * as Haptics from 'expo-haptics';
+let Haptics: typeof import('expo-haptics') | undefined;
+try { Haptics = require('expo-haptics'); } catch {}
 import { useAppStore } from '@/store/useAppStore';
 
 type AgeTier = 'U7' | 'U9' | 'U11' | 'U13+';
@@ -197,7 +198,7 @@ export default function InteractionScreen() {
 								setXp((v) => v + result.xpDelta!);
 							}
 							if (result.valid) {
-								Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+								Haptics?.notificationAsync?.(Haptics.NotificationFeedbackType.Success);
 								if (seq) {
 									const next = stepIndex + 1;
 									if (next < seq.steps.length) {
@@ -210,7 +211,7 @@ export default function InteractionScreen() {
 									}
 								}
 							} else {
-								Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
+								Haptics?.notificationAsync?.(Haptics.NotificationFeedbackType.Error);
 							}
 						}}
 					>
