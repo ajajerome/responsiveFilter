@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import Constants from 'expo-constants';
 import type { Level, Position } from '@/types/content';
 
 type LevelProgress = {
@@ -87,7 +88,16 @@ export const useAppStore = create<AppState>()(
     }),
     {
       name: 'fotboll-app-store',
-      storage: createJSONStorage(() => AsyncStorage),
+      storage: (() => {
+        const isExpoGo = (Constants as any)?.appOwnership === 'expo';
+        const memoryStorage = {
+          getItem: async (_name: string) => null as any,
+          setItem: async (_name: string, _value: string) => {},
+          removeItem: async (_name: string) => {},
+        };
+        // In Expo Go, avoid native AsyncStorage to prevent crashes
+        return createJSONStorage(() => (isExpoGo ? (memoryStorage as any) : AsyncStorage));
+      })(),
       version: 1,
     }
   )
