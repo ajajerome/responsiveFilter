@@ -1,7 +1,14 @@
 import { Stack } from 'expo-router';
 import ErrorBoundary from '@/app/components/ErrorBoundary';
+import LoadingOverlay from '@/app/components/LoadingOverlay';
+import { useEffect, useState } from 'react';
 
 export default function RootLayout() {
+  const [showLoading, setShowLoading] = useState(true);
+  useEffect(() => {
+    const t = setTimeout(() => setShowLoading(false), 1500);
+    return () => clearTimeout(t);
+  }, []);
   return (
     <ErrorBoundary>
       <Stack screenOptions={{ headerShown: false }}>
@@ -12,6 +19,7 @@ export default function RootLayout() {
         <Stack.Screen name="trainer" options={{ headerShown: false }} />
         <Stack.Screen name="profile" options={{ headerShown: false }} />
       </Stack>
+      {showLoading && <LoadingOverlay />}
     </ErrorBoundary>
   );
 }
