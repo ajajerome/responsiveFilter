@@ -23,7 +23,7 @@ export default function NewPlayer() {
           const trimmed = name.trim();
           if (!trimmed) { setError('Ange ett namn för att fortsätta'); return; }
           setName(trimmed);
-          router.push('/player/avatar');
+          router.push('/player/dashboard');
         }}
       />
       {!!error && <Text style={[styles.error, { color: '#ff3b30' }]}>{error}</Text>}
@@ -34,7 +34,7 @@ export default function NewPlayer() {
           const trimmed = name.trim();
           if (!trimmed) { setError('Ange ett namn för att fortsätta'); return; }
           setName(trimmed);
-          router.push('/player/avatar');
+          router.push('/player/dashboard');
         }}
       >
         <Text style={styles.buttonText}>Fortsätt</Text>
