@@ -1,0 +1,47 @@
+name: iOS Build & TestFlight
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ main ]
+
+jobs:
+  build-ios:
+    runs-on: macos-14
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.2'
+      - name: Install XcodeGen
+        run: brew install xcodegen
+      - name: Generate Xcode project
+        working-directory: ios-app
+        run: xcodegen generate
+      - name: CocoaPods install (skip if none)
+        working-directory: ios-app
+        run: |
+          if [ -f Podfile ]; then
+            sudo gem install cocoapods --no-document
+            pod install --project-directory=.
+          fi
+      - name: Build app
+        working-directory: ios-app
+        run: |
+          xcodebuild -project Fotbollstranaren.xcodeproj -scheme Fotbollstranaren -sdk iphoneos -configuration Release build | xcpretty
+      - name: Install Fastlane
+        run: sudo gem install fastlane --no-document
+      - name: Submit to TestFlight
+        if: ${{ success() && env.ASC_KEY_ID && env.ASC_ISSUER_ID && env.ASC_KEY_B64 }}
+        env:
+          ASC_KEY_ID: ${{ secrets.ASC_KEY_ID }}
+          ASC_ISSUER_ID: ${{ secrets.ASC_ISSUER_ID }}
+          ASC_KEY_B64: ${{ secrets.ASC_KEY_B64 }}
+          APP_IDENTIFIER: com.ajagames.learnfotball
+        run: |
+          mkdir -p ios-app/fastlane/tmp
+          echo "$ASC_KEY_B64" | base64 --decode > ios-app/fastlane/tmp/AuthKey.p8
+          cd ios-app
+          fastlane run upload_to_testflight apple_id:6751473029 skip_waiting_for_build_processing:true
+
