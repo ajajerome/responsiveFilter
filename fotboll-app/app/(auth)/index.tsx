@@ -7,7 +7,14 @@ export default function AuthIndex() {
   return (
     <View style={[styles.container, { backgroundColor: FC25.colors.bg }]}>
       <Text style={[styles.title, { color: FC25.colors.text }]}>Välj inloggning</Text>
-      <Pressable style={[styles.button, { backgroundColor: FC25.colors.primary }]} onPress={() => navigation.navigate('Home')}>
+      <Pressable
+        style={[styles.button, { backgroundColor: FC25.colors.primary }]}
+        hitSlop={{ top: 16, bottom: 16, left: 16, right: 16 }}
+        onPress={() => {
+          try { console.warn('Navigating to Home from Auth'); } catch {}
+          navigation.navigate('Home');
+        }}
+      >
         <Text style={styles.buttonText}>Fortsätt utan konto</Text>
       </Pressable>
     </View>
