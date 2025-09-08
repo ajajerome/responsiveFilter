@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { View, Text, TextInput, Pressable, StyleSheet, SafeAreaView } from 'react-native';
+import { View, Text, TextInput, Pressable, StyleSheet, SafeAreaView, Keyboard } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { useAppStore } from '@/store/useAppStore';
 import { FC25 } from '@/app/components/Theme';
@@ -22,7 +22,8 @@ export default function NewPlayer() {
         onSubmitEditing={() => {
           const trimmed = name.trim();
           if (!trimmed) { setError('Ange ett namn för att fortsätta'); return; }
-          setName(trimmed);
+          // Bypass persistence on submit to avoid crash; navigation is done by button
+          try { console.warn('NewPlayer: submitEditing (no navigation)'); } catch {}
         }}
       />
       {!!error && <Text style={[styles.error, { color: '#ff3b30' }]}>{error}</Text>}
@@ -32,8 +33,14 @@ export default function NewPlayer() {
         onPress={() => {
           const trimmed = name.trim();
           if (!trimmed) { setError('Ange ett namn för att fortsätta'); return; }
-          setName(trimmed);
-          navigation.navigate('Dashboard');
+          try { console.warn('NewPlayer: Fortsätt pressed'); } catch {}
+          // Soften transition: dismiss keyboard, avoid immediate persistence, navigate after a short delay
+          try { Keyboard.dismiss(); } catch {}
+          setTimeout(() => {
+            // Optional: set a temporary name; avoid storage writes on this path
+            try { setName(trimmed); } catch {}
+            try { navigation.navigate('Dashboard'); } catch {}
+          }, 50);
         }}
       >
         <Text style={styles.buttonText}>Fortsätt</Text>
