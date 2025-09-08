@@ -1,6 +1,7 @@
 import 'react-native-gesture-handler';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 import AuthIndex from '@/app/(auth)/index';
 import HomeIndex from '@/app/(home)/index';
@@ -13,15 +14,17 @@ const Stack = createNativeStackNavigator();
 
 export default function App() {
   return (
-    <NavigationContainer>
-      <Stack.Navigator screenOptions={{ headerShown: false }} initialRouteName="Auth">
-        <Stack.Screen name="Auth" component={AuthIndex} />
-        <Stack.Screen name="Home" component={HomeIndex} />
-        <Stack.Screen name="PlayerNew" component={NewPlayer} />
-        <Stack.Screen name="Dashboard" component={Dashboard} />
-        <Stack.Screen name="Interaction" component={InteractionScreen} />
-        <Stack.Screen name="Quiz" component={QuizScreen} />
-      </Stack.Navigator>
-    </NavigationContainer>
+    <GestureHandlerRootView style={{ flex: 1 }}>
+      <NavigationContainer>
+        <Stack.Navigator screenOptions={{ headerShown: false }} initialRouteName="Auth">
+          <Stack.Screen name="Auth" component={AuthIndex} />
+          <Stack.Screen name="Home" component={HomeIndex} />
+          <Stack.Screen name="PlayerNew" component={NewPlayer} />
+          <Stack.Screen name="Dashboard" component={Dashboard} />
+          <Stack.Screen name="Interaction" component={InteractionScreen} />
+          <Stack.Screen name="Quiz" component={QuizScreen} />
+        </Stack.Navigator>
+      </NavigationContainer>
+    </GestureHandlerRootView>
   );
 }
