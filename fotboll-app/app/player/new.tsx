@@ -37,9 +37,8 @@ export default function NewPlayer() {
           // Soften transition: dismiss keyboard, avoid immediate persistence, navigate after a short delay
           try { Keyboard.dismiss(); } catch {}
           setTimeout(() => {
-            // Optional: set a temporary name; avoid storage writes on this path
-            try { setName(trimmed); } catch {}
-            try { navigation.navigate('Dashboard'); } catch {}
+            // Avoid persistence; navigate directly to Interaction for stability
+            try { navigation.navigate('Interaction'); } catch {}
           }, 50);
         }}
       >
