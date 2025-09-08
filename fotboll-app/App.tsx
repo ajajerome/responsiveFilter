@@ -1,6 +1,6 @@
 import 'react-native-gesture-handler';
 import { NavigationContainer } from '@react-navigation/native';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { createStackNavigator } from '@react-navigation/stack';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 import AuthIndex from '@/app/(auth)/index';
@@ -10,7 +10,7 @@ import Dashboard from '@/app/player/dashboard';
 import InteractionScreen from '@/app/player/interaction';
 import QuizScreen from '@/app/player/quiz';
 
-const Stack = createNativeStackNavigator();
+const Stack = createStackNavigator();
 
 export default function App() {
   return (
