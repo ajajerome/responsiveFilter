@@ -10,13 +10,6 @@ export default function HomeIndex() {
     <View style={[styles.container, { backgroundColor: FC25.colors.bg }]} pointerEvents="auto">
       <Text style={[styles.title, { color: FC25.colors.text }]}>Fotbollsteori – Resan börjar</Text>
       <Pressable
-        style={[styles.button, { backgroundColor: FC25.colors.primary }]}
-        hitSlop={{ top: 16, bottom: 16, left: 16, right: 16 }}
-        onPress={() => { try { console.warn('Home: Starta som spelare'); } catch {}; navigation.navigate(name ? 'Dashboard' : 'PlayerNew'); }}
-      >
-        <Text style={styles.buttonText}>Starta som spelare</Text>
-      </Pressable>
-      <Pressable
         style={[styles.button, { backgroundColor: FC25.colors.secondary }]}
         hitSlop={{ top: 16, bottom: 16, left: 16, right: 16 }}
         onPress={() => { try { console.warn('Home: Ny spelare'); } catch {}; navigation.navigate('PlayerNew'); }}
@@ -29,13 +22,6 @@ export default function HomeIndex() {
         onPress={() => { try { console.warn('Home: Interaktivt läge'); } catch {}; navigation.navigate('Interaction'); }}
       >
         <Text style={styles.buttonText}>Testa interaktivt läge</Text>
-      </Pressable>
-      <Pressable
-        style={[styles.button, { backgroundColor: FC25.colors.secondary }]}
-        hitSlop={{ top: 16, bottom: 16, left: 16, right: 16 }}
-        onPress={() => { try { console.warn('Home: Tränare'); } catch {}; navigation.navigate('Dashboard'); }}
-      >
-        <Text style={styles.buttonText}>Förälder/Tränare</Text>
       </Pressable>
     </View>
   );
