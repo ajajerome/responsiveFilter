@@ -2,18 +2,14 @@
   "expo": {
     "name": "fotbollstranaren",
     "slug": "fotbollstranaren",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "scheme": "fotbollapp",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
-    "newArchEnabled": true,
-    "experiments": {
-      "typedRoutes": true
-    },
-    "plugins": [
-      "expo-router"
-    ],
+    "newArchEnabled": false,
+    
+    "plugins": [],
     "splash": {
       "image": "./assets/splash-icon.png",
       "resizeMode": "contain",
@@ -22,6 +18,7 @@
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.ajagames.learnfotball",
+      "buildNumber": "9",
       "infoPlist": {
         "ITSAppUsesNonExemptEncryption": false
       }

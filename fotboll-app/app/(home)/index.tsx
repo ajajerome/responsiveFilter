@@ -1,23 +1,28 @@
-import { Link, useRouter } from "expo-router";
 import { View, Text, Pressable, StyleSheet } from "react-native";
+import { useNavigation } from '@react-navigation/native';
 import { FC25 } from '@/app/components/Theme';
 import { useAppStore } from '@/store/useAppStore';
 
 export default function HomeIndex() {
-  const router = useRouter();
+  const navigation = useNavigation<any>();
   const name = useAppStore((s) => s.profile.name);
   return (
-    <View style={[styles.container, { backgroundColor: FC25.colors.bg }]}>
+    <View style={[styles.container, { backgroundColor: FC25.colors.bg }]} pointerEvents="auto">
       <Text style={[styles.title, { color: FC25.colors.text }]}>Fotbollsteori – Resan börjar</Text>
-      <Pressable style={[styles.button, { backgroundColor: FC25.colors.primary }]} onPress={() => router.push(name ? '/player/dashboard' : '/player/new')}>
-        <Text style={styles.buttonText}>Starta som spelare</Text>
+      <Pressable
+        style={[styles.button, { backgroundColor: FC25.colors.secondary }]}
+        hitSlop={{ top: 16, bottom: 16, left: 16, right: 16 }}
+        onPress={() => { try { console.warn('Home: Ny spelare'); } catch {}; navigation.navigate('PlayerNew'); }}
+      >
+        <Text style={styles.buttonText}>Ny spelare</Text>
       </Pressable>
-      <Link href="/player/new" asChild>
-        <Pressable style={[styles.button, { backgroundColor: FC25.colors.secondary }]}><Text style={styles.buttonText}>Ny spelare</Text></Pressable>
-      </Link>
-      <Link href="/trainer" asChild>
-        <Pressable style={[styles.button, { backgroundColor: FC25.colors.secondary }]}><Text style={styles.buttonText}>Förälder/Tränare</Text></Pressable>
-      </Link>
+      <Pressable
+        style={[styles.button, { backgroundColor: FC25.colors.warning }]}
+        hitSlop={{ top: 16, bottom: 16, left: 16, right: 16 }}
+        onPress={() => { try { console.warn('Home: Interaktivt läge'); } catch {}; navigation.navigate('Interaction'); }}
+      >
+        <Text style={styles.buttonText}>Testa interaktivt läge</Text>
+      </Pressable>
     </View>
   );
 }

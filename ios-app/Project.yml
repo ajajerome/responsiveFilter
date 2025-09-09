@@ -1,0 +1,21 @@
+name: Fotbollstranaren
+options:
+  bundleIdPrefix: com.ajagames
+  deploymentTarget:
+    iOS: 16.0
+settings:
+  base:
+    PRODUCT_BUNDLE_IDENTIFIER: com.ajagames.learnfotball
+    DEVELOPMENT_TEAM: MW98Z2Q68W
+    SWIFT_VERSION: 5.0
+    CODE_SIGN_STYLE: Automatic
+targets:
+  Fotbollstranaren:
+    type: application
+    platform: iOS
+    sources:
+      - path: Sources
+    settings:
+      INFOPLIST_FILE: Sources/Info.plist
+    scheme:
+      testTargets: []

@@ -1,6 +1,8 @@
 import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+// Disable persistent storage for stability (memory-only)
+// import AsyncStorage from '@react-native-async-storage/async-storage';
+// import Constants from 'expo-constants';
 import type { Level, Position } from '@/types/content';
 
 type LevelProgress = {
@@ -87,7 +89,11 @@ export const useAppStore = create<AppState>()(
     }),
     {
       name: 'fotboll-app-store',
-      storage: createJSONStorage(() => AsyncStorage),
+      storage: createJSONStorage(() => ({
+        getItem: async (_name: string) => null as any,
+        setItem: async (_name: string, _value: string) => {},
+        removeItem: async (_name: string) => {},
+      } as any)),
       version: 1,
     }
   )

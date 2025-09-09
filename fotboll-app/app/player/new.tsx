@@ -1,12 +1,11 @@
 import { useState } from 'react';
-import { View, Text, TextInput, Pressable, StyleSheet } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { useRouter } from 'expo-router';
+import { View, Text, TextInput, Pressable, StyleSheet, SafeAreaView, Keyboard } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 import { useAppStore } from '@/store/useAppStore';
 import { FC25 } from '@/app/components/Theme';
 
 export default function NewPlayer() {
-  const router = useRouter();
+  const navigation = useNavigation<any>();
   const setName = useAppStore((s) => s.actions.setName);
   const [name, setLocalName] = useState('');
   const [error, setError] = useState<string>('');
@@ -23,8 +22,8 @@ export default function NewPlayer() {
         onSubmitEditing={() => {
           const trimmed = name.trim();
           if (!trimmed) { setError('Ange ett namn för att fortsätta'); return; }
-          setName(trimmed);
-          router.push('/player/avatar');
+          // Bypass persistence on submit to avoid crash; navigation is done by button
+          try { console.warn('NewPlayer: submitEditing (no navigation)'); } catch {}
         }}
       />
       {!!error && <Text style={[styles.error, { color: '#ff3b30' }]}>{error}</Text>}
@@ -34,8 +33,13 @@ export default function NewPlayer() {
         onPress={() => {
           const trimmed = name.trim();
           if (!trimmed) { setError('Ange ett namn för att fortsätta'); return; }
-          setName(trimmed);
-          router.push('/player/avatar');
+          try { console.warn('NewPlayer: Fortsätt pressed'); } catch {}
+          // Soften transition: dismiss keyboard, avoid immediate persistence, navigate after a short delay
+          try { Keyboard.dismiss(); } catch {}
+          setTimeout(() => {
+            // Avoid persistence; navigate directly to Interaction for stability
+            try { navigation.navigate('Interaction'); } catch {}
+          }, 50);
         }}
       >
         <Text style={styles.buttonText}>Fortsätt</Text>
