@@ -154,5 +154,30 @@ export const QUESTIONS: Question[] = [
     ]},
     explanation: 'Spelvändning skapar yta på motsatt sida.'
   }
+  ,
+  {
+    id: 'test001',
+    type: 'matchscenario',
+    level: '5-manna',
+    position: 'mittfält',
+    question: 'Test: enkel pass/dribbling/avslut.',
+    scenario: {
+      level: '5-manna',
+      attacking: 'home',
+      possession: 'home',
+      players: [
+        { id: 'h-gk', role: 'GK', team: 'home', pos: { x: 10, y: 50 } },
+        { id: 'h-rw', role: 'RW', team: 'home', pos: { x: 50, y: 72 } },
+        { id: 'h-st', role: 'ST', team: 'home', pos: { x: 70, y: 50 } },
+        { id: 'a-gk', role: 'GK', team: 'away', pos: { x: 90, y: 50 } },
+        { id: 'a-cb1', role: 'CB', team: 'away', pos: { x: 75, y: 45 } },
+        { id: 'a-cb2', role: 'CB', team: 'away', pos: { x: 75, y: 60 } }
+      ],
+      ball: { pos: { x: 50, y: 72 } },
+      keyActors: { ballCarrierId: 'h-rw', focusLane: 'right' }
+    } as Scenario,
+    allowedActions: ['pass', 'dribble', 'shoot'],
+    explanation: 'Testscenario för validering.'
+  }
 ];
 
